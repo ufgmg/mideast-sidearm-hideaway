@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Name: Resource name used to reference weapon in code
+  ProjectileSpriteName: String used to reference Sprite defined in SpriteData.xml
+  FireRate: # of projectiles fireable per second
+  MaxAmmo: Maximum ammo (must be > 0, even for infinite ammo)
+  AmmoConsumption: Ammo consumed per shot (must be >= 0, use 0 for infinite ammo)
+  ProjectilesPerFire: Number of projectiles fired per shot
+  Damage: Damage dealt by direct projectile contact
+  ProjectileForce: Force dealt by direct projectile contact
+  Recoil: Force applied to owner on fire in opposite direction of fire angle
+  ProjectileSpeed/Acceleration: Speed/Acceleration of projectiles (px/s, px/s^2)
+  ProjectileSpread: Inaccuracy of projectiles from fire direction in degrees
+  DissipateOnHit: Whether projectile dissipates after hitting an enemy ("true" or "false")
+  SplashDamage: Area damage dealt
+  SplashForce: Force dealt by splash effect
+  SplashRadius: Range of Splash effect. Set as 0 for no splash effect
+  MovementParticleEffect: String reference to effect in ParticleEffects.xml to be played 
+                          while particle is moving. May be ommitted.
+  SplashParticleEffect: String reference to effect in ParticleEffects.xml to be played 
+                          when particle splashes. May be ommitted.
+  -->
+<Weapons>
+  <ProjectileWeapon Name="Gun" ProjectileSpriteName="Projectile"
+                    FireRate ="5" MaxAmmo="10" AmmoConsumption="1"
+                    ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"
+                    Recoil="1000" ProjectileSpeed="800" ProjectileAcceleration="0"
+                    ProjectileSpread="30" DissipateOnHit="true"
+                    SplashDamage="0" SplashRadius="0" SplashForce="0"
+                    MaxProjectiles="5" ProjectileLife="1" />
+
+  <ProjectileWeapon Name="Rocket" ProjectileSpriteName="Rocket"
+                    FireRate ="3" MaxAmmo="30" AmmoConsumption="1"
+                    ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"
+                    Recoil="45000" ProjectileSpeed="10" ProjectileAcceleration="30"
+                    ProjectileSpread="30" DissipateOnHit="true"
+                    SplashDamage="10" SplashRadius="80" SplashForce="100000"
+                    MovementParticleEffect="RocketBooster"
+                    SplashParticleEffect="RocketExplosion"
+                    MaxProjectiles="10" ProjectileLife="3" />
+
+  <ProjectileWeapon Name="Swarmer" ProjectileSpriteName="Rocket"
+                    FireRate ="10" MaxAmmo="60" AmmoConsumption="1"
+                    ProjectilesPerFire="3" Damage="20" ProjectileForce="50000"
+                    Recoil="15000" ProjectileSpeed="10" ProjectileAcceleration="30"
+                    ProjectileSpread="30" DissipateOnHit="true"
+                    SplashDamage="10" SplashRadius="80" SplashForce="100000"
+                    MovementParticleEffect="RocketBooster"
+                    SplashParticleEffect="RocketExplosion"
+                    MaxProjectiles="20" ProjectileLife="3" />
+</Weapons>

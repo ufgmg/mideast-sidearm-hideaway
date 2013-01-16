@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!-- Speed is given in pixels/second-->
+<!-- Variance represents a percentage variance in a given value.
+     For example, SpeedVariance="0.3" means that particle speeds can vary within 30% of the Speed value-->
+<!-- Deceleration factor is the percent reduction in speed over 1 second-->
+<!-- ParticleRotation is the angle (degrees) through which a particle rotates during its entire life-->
+<!-- Spawn arc is the angle (degrees) through which particles will spawn.
+      Example: SpawnArc="30.0" means that particles will spawn between -30 and 30 degrees of the particle effect direction-->
+<!-- Spawn Rate is number of particles spawned per second-->
+<!--Particle life is how long each particle lasts, in seconds-->
+<!-- Colors are defined as "A,R,G,B"-->
+
+<ParticleEffectDatas>
+  <ParticleEffectData Name="SpacemanThruster" 
+                      Speed="250.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="720.0" 
+                      StartScale ="5.0" ScaleVariance="0.3" EndScale="40.0" 
+                      SpawnArc="30.0" SpawnRate="50" ParticleLife="0.3" ParticleLifeVariance="0.5"
+                      StartColor="255,255,0,0" EndColor ="0,50,50,50"
+                      Reversed="False"/>
+
+  <ParticleEffectData Name="BlackHoleEffect" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="100.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
+                      SpawnArc="360.0" SpawnRate="300" ParticleLife="0.5" ParticleLifeVariance="0.5"
+                      StartColor="100,0,0,0" EndColor ="200,148,0,211"
+                      Reversed="True"/>
+
+  <ParticleEffectData Name="RocketBooster" 
+                      Speed="100.0" SpeedVariance="0.3" DecelerationFactor="3.0" ParticleRotation="360.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="30.0" SpawnRate="50" ParticleLife="0.4" ParticleLifeVariance="0.5"
+                      StartColor="255,255,0,0" EndColor ="0,50,50,50"
+                      Reversed="False"/>
+
+  <ParticleEffectData Name="RocketExplosion" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="600" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,255,0,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+</ParticleEffectDatas>
