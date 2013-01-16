@@ -76,23 +76,30 @@ attack that can dangerously launch other enemies at you.
 
 ## How to work on code for the game
 
-Assuming you have already forked and cloned the repository and set up
-the upstream remote (if not, read the sections below):
+1.  Fork this repository (click the Fork button on Github).
 
-1.  Download any changes from upstream.
+2.  Clone your forked repository to your computer.
 
-        $ git fetch upstream
+3.  Set up a remote for this (kalgynirae's) repository (you have to do
+    this from Git Bash):
 
-2.  Start a new branch based on upstream/master.
+        $ git remote add kalgynirae git://github.com/kalgynirae/mideast-sidearm-hideaway.git
 
-        $ git checkout upstream/master
-        $ git checkout -b newbranchname
+4.  Download any changes from your remotes
 
-3.  Start coding! Commit often!
+        $ git fetch --all
 
-4.  Push your commits to your Github repository so others can look at them.
+5.  Start a new branch based on kalgynirae/master.
 
-### Useful Git commands
+        $ git checkout -b newbranchname kalgynirae/master
+
+6.  Start coding! Commit often!
+
+7.  Push your commits to your Github repository so others can look at them.
+
+        $ git push origin branchname
+
+### Other useful Git commands
 
     # BEST COMMAND EVER
     $ git status
