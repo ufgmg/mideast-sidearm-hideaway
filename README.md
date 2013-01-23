@@ -21,6 +21,25 @@ you need.
 *   Grappling hook grab/release (right button)
 *   Multi-dimensional anchoring boots toggle (spacebar)
 
+#### Weapons
+
+##### Projectile
+
+*   Flame thrower
+*   Gatling gun
+*   Gravity well
+*   Rocket launcher
+
+##### Beam
+
+*   Freeze ray
+*   Laser
+
+##### Melee
+
+*   Chainsaw
+*   Plank with nail
+
 ### Level mechanics
 
 You'll be knocking enemies into the black hole, either by tricking them
@@ -28,9 +47,9 @@ into the black hole or by killing or otherwise paralyzing them so that
 they naturally fall into the black hole. Once enough things fall into
 the black hole, the level ends.
 
-#### Health cart
+#### Food cart
 
-The health cart shows up along a side of the screen from time to time.
+The food cart shows up along a side of the screen from time to time.
 You can purchase health-restoring food and possibly even weapons and such
 from it. You spend points (score points), and the prices are somewhat
 proportional to your score.
