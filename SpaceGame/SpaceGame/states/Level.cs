@@ -70,8 +70,8 @@ namespace SpaceGame.states
                 gameTime = new GameTime(gameTime.TotalGameTime, 
                     TimeSpan.FromSeconds((float)gameTime.ElapsedGameTime.TotalSeconds / 2));
             
+            _blackHole.PullUnit(_player, gameTime);
             _player.Update(gameTime);
-            _player.ApplyGravity(_blackHole.Gravity, gameTime);
             _primaryWeapon.Update(gameTime);
             _secondaryWeapon.Update(gameTime);
             _primaryGadget.Update(gameTime);

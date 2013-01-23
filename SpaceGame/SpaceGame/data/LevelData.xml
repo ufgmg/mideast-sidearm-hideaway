@@ -5,6 +5,19 @@
     <BlackHole X="200" Y="700" Gravity="18000" Radius="100"/>
     <Waves>
       <Wave>
+      </Wave> 
+      <Wave>
+      </Wave> 
+      <Wave>
+      </Wave> 
+    </Waves>
+  </Level>
+
+  <Level LevelNumber="2">
+    <Player X="100" Y="100"/>
+    <BlackHole X="200" Y="700" Gravity="18000" Radius="100"/>
+    <Waves>
+      <Wave>
         <Enemy Name="Goblin" X="800" Y="400"/>
         <Enemy Name="Goblin" X="800" Y="100"/>
       </Wave> 

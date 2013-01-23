@@ -212,7 +212,7 @@ namespace SpaceGame.units
             }
             else if (Position.X + _sprite.Width >= screenWidth - BOUND_BUFFER)
             {
-                _acceleration.X += OUT_OF_BOUNDS_ACCEL_FACTOR * (screenWidth - BOUND_BUFFER - Position.X);
+                _acceleration.X += OUT_OF_BOUNDS_ACCEL_FACTOR * (screenWidth - BOUND_BUFFER - Position.X - _hitRect.Width);
             }
 
             if (Position.Y < 0)
@@ -222,7 +222,7 @@ namespace SpaceGame.units
 
             else if (Position.Y + _sprite.Height >= screenHeight)
             {
-                _acceleration.Y += OUT_OF_BOUNDS_ACCEL_FACTOR * (screenHeight - BOUND_BUFFER - Position.Y);
+                _acceleration.Y += OUT_OF_BOUNDS_ACCEL_FACTOR * (screenHeight - BOUND_BUFFER - Position.Y - _hitRect.Height);
             }
         }
 
