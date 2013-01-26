@@ -83,6 +83,10 @@ namespace SpaceGame
             //Initialize blank particle texture as a single pixel
             ParticleEffect.ParticleTexture = new Texture2D(GraphicsDevice, 1, 1);
             ParticleEffect.ParticleTexture.SetData<Color>(new Color[] {Color.White});
+
+            XnaHelper.PixelTexture = new Texture2D(GraphicsDevice, 1, 1);
+            XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});
+
         }
 
         /// <summary>

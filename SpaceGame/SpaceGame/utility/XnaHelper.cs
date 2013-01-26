@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 
 namespace SpaceGame.utility
 {
     static class XnaHelper
     {
+        public static Texture2D PixelTexture;
+
         static Random rand = new Random();
         /// <summary>
         /// get a unit vector pointing from start to end
@@ -77,5 +81,11 @@ namespace SpaceGame.utility
         {
             return centerAngle + arc * (0.5f - (float)rand.NextDouble());
         }
+
+        public static void DrawRect(Color color, Rectangle rect, SpriteBatch sb)
+        {
+            sb.Draw(PixelTexture, rect, color);
+        }
+
     }
 }

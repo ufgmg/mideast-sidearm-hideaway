@@ -197,8 +197,8 @@ namespace SpaceGame.units
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Update(gameTime);
-            _hitRect.X = (int)Position.X;
-            _hitRect.Y = (int)Position.Y;
+            _hitRect.X = (int)Position.X - _hitRect.Width / 2;
+            _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
 
             _sprite.Update(gameTime);
         }
