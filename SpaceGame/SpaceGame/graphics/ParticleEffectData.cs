@@ -51,5 +51,7 @@ namespace SpaceGame.graphics
         /// number of particles to spawn per second
         /// </summary>
         public int SpawnRate;
+
+        public Texture2D UniqueParticle;
     }
 }

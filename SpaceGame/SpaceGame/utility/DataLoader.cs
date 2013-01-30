@@ -23,6 +23,7 @@ namespace SpaceGame.utility
     /// </summary>
     static class DataLoader
     {
+        const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
         const string LEVEL_DIRECTORY = "data/LevelData.xml";
         /// <summary>
         /// get a dict mapping sprite names to spritedata. 
@@ -64,7 +65,7 @@ namespace SpaceGame.utility
                            }).ToDictionary(t => t.Name);
         }
 
-        public static Dictionary<string, ParticleEffectData> LoadParticleEffectData(string pathToXML)
+        public static Dictionary<string, ParticleEffectData> LoadParticleEffectData(string pathToXML, ContentManager content)
         {
             return (from sd in XElement.Load(pathToXML).Descendants("ParticleEffectData")
                            select new ParticleEffectData
@@ -83,7 +84,8 @@ namespace SpaceGame.utility
                                ParticleLifeVariance = (float)sd.Attribute("ParticleLifeVariance"),
                                Reversed = (bool)sd.Attribute("Reversed"),
                                StartColor = parseColor((string)sd.Attribute("StartColor")),
-                               EndColor = parseColor((string)sd.Attribute("EndColor"))
+                               EndColor = parseColor((string)sd.Attribute("EndColor")),
+                               UniqueParticle = ((string)sd.Attribute("UniqueParticle") == null ? null : content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + (string)sd.Attribute("UniqueParticle")))
                            }).ToDictionary(t => t.Name);
         }
 

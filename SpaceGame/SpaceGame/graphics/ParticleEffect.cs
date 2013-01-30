@@ -30,6 +30,7 @@ namespace SpaceGame.graphics
                 textureCenter = new Vector2(value.Width / 2.0f, value.Height / 2.0f);
             }
         }
+
         //center of particle texture with Scale = 1.0f
         static Vector2 textureCenter;
 
@@ -58,6 +59,9 @@ namespace SpaceGame.graphics
         //starting color, andchange in color per second, represented as 4-vectors
         Color _startColor, _endColor;
         List<Particle> _particles;
+
+        Vector2 _textureCenter;
+        Texture2D _particleTexture;
         #endregion
 
         #region properties
@@ -100,6 +104,8 @@ namespace SpaceGame.graphics
                 _endColor = data.EndColor;
                 Reversed = false;
             }
+
+            _particleTexture = (data.UniqueParticle == null) ? particleTexture : data.UniqueParticle; 
             _spawnRate = data.SpawnRate;
             _tillNextParticleSpawn = TimeSpan.FromSeconds(1.0f / (float)_spawnRate);
             _particles = new List<Particle>();
@@ -210,7 +216,7 @@ namespace SpaceGame.graphics
                 else
                     drawColor = Color.Lerp(_startColor, _endColor, (float)p.TimeAlive.TotalSeconds / (float)p.LifeTime.TotalSeconds);
 
-                sb.Draw(ParticleTexture, p.Position, null, drawColor, p.Angle, textureCenter, p.Scale, SpriteEffects.None, 0 );
+                sb.Draw(_particleTexture, p.Position, null, drawColor, p.Angle, textureCenter, p.Scale, SpriteEffects.None, 0 );
             }
         }
 

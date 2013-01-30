@@ -53,11 +53,6 @@ namespace SpaceGame
         /// </summary>
         protected override void Initialize()
         {
-            //load data from xml
-            Sprite.Data = DataLoader.LoadSpriteData("data/SpriteData.xml", Content);
-            PhysicalUnit.Data = DataLoader.LoadPhysicalData("data/PhysicalData.xml");
-            ParticleEffect.Data = DataLoader.LoadParticleEffectData("data/ParticleEffectData.xml");
-            ProjectileWeapon.ProjectileWeaponData = DataLoader.LoadProjectileWeaponData("data/WeaponData.xml");
 
             _inputManager = new InputManager();
 
@@ -66,7 +61,6 @@ namespace SpaceGame
             PhysicalUnit.ScreenHeight = graphics.GraphicsDevice.Viewport.Height;
             Weapon.ScreenBounds = graphics.GraphicsDevice.Viewport.Bounds;
 
-            _stateStack.Add(new Level(1));
 
             base.Initialize();
         }
@@ -87,6 +81,13 @@ namespace SpaceGame
             XnaHelper.PixelTexture = new Texture2D(GraphicsDevice, 1, 1);
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});
 
+            //load data from xml
+            Sprite.Data = DataLoader.LoadSpriteData("data/SpriteData.xml", Content);
+            ParticleEffect.Data = DataLoader.LoadParticleEffectData("data/ParticleEffectData.xml", Content);
+            PhysicalUnit.Data = DataLoader.LoadPhysicalData("data/PhysicalData.xml");
+            ProjectileWeapon.ProjectileWeaponData = DataLoader.LoadProjectileWeaponData("data/WeaponData.xml");
+
+            _stateStack.Add(new Level(1));
         }
 
         /// <summary>
