@@ -20,19 +20,16 @@ namespace SpaceGame.graphics
         public static Dictionary<string, ParticleEffectData> Data;
 
         static Texture2D particleTexture;
-        //base texture to draw all particles with. Hardcoded single pixel assigned in Game.LoadContent
+        //default texture to draw particles with. Hardcoded single pixel assigned in Game.LoadContent
         public static Texture2D ParticleTexture
         {
             get { return particleTexture; }
             set
             { 
                 particleTexture = value;
-                textureCenter = new Vector2(value.Width / 2.0f, value.Height / 2.0f);
             }
         }
 
-        //center of particle texture with Scale = 1.0f
-        static Vector2 textureCenter;
 
         static Random rand = new Random();
         #endregion
@@ -62,6 +59,8 @@ namespace SpaceGame.graphics
 
         Vector2 _textureCenter;
         Texture2D _particleTexture;
+
+        bool _centralRotation;
         #endregion
 
         #region properties
@@ -85,9 +84,13 @@ namespace SpaceGame.graphics
             _particleSpeed = data.Speed;
             _speedVariance = data.SpeedVariance;
             _particleDecelerationFactor = data.DecelerationFactor;
-            _particleScale = data.StartScale;
+
+            _particleTexture = (data.UniqueParticle == null) ? particleTexture : data.UniqueParticle;
+            _textureCenter = new Vector2(_particleTexture.Width / 2.0f, particleTexture.Height / 2.0f); 
+
+            _particleScale = data.StartScale / _particleTexture.Width;
             _scaleVariance = data.ScaleVariance;
-            _scaleRate = (data.EndScale - data.StartScale) / ((float)data.ParticleLife.TotalSeconds);
+            _scaleRate = ((data.EndScale / _particleTexture.Width) - _particleScale) / ((float)data.ParticleLife.TotalSeconds);
             _arc = data.SpawnArc;
             _particleLife = data.ParticleLife;
             _particleLifeVariance = data.ParticleLifeVariance;
@@ -105,7 +108,6 @@ namespace SpaceGame.graphics
                 Reversed = false;
             }
 
-            _particleTexture = (data.UniqueParticle == null) ? particleTexture : data.UniqueParticle; 
             _spawnRate = data.SpawnRate;
             _tillNextParticleSpawn = TimeSpan.FromSeconds(1.0f / (float)_spawnRate);
             _particles = new List<Particle>();
@@ -205,9 +207,9 @@ namespace SpaceGame.graphics
             return baseFloat + baseFloat * variance * (1.0f - 2 * (float)rand.NextDouble());
         }
 
-
         public void Draw(SpriteBatch sb)
         {
+
             foreach (Particle p in _particles)
             {
                 Color drawColor;
@@ -216,7 +218,22 @@ namespace SpaceGame.graphics
                 else
                     drawColor = Color.Lerp(_startColor, _endColor, (float)p.TimeAlive.TotalSeconds / (float)p.LifeTime.TotalSeconds);
 
-                sb.Draw(_particleTexture, p.Position, null, drawColor, p.Angle, textureCenter, p.Scale, SpriteEffects.None, 0 );
+                sb.Draw(_particleTexture, p.Position, null, drawColor, p.Angle, _textureCenter, p.Scale, SpriteEffects.None, 0 );
+            }
+        }
+
+        public void Draw(SpriteBatch sb, Vector2 origin)
+        {
+
+            foreach (Particle p in _particles)
+            {
+                Color drawColor;
+                if (Reversed)
+                    drawColor = Color.Lerp(_endColor, _startColor, (float)p.TimeAlive.TotalSeconds / (float)p.LifeTime.TotalSeconds);
+                else
+                    drawColor = Color.Lerp(_startColor, _endColor, (float)p.TimeAlive.TotalSeconds / (float)p.LifeTime.TotalSeconds);
+
+                sb.Draw(_particleTexture, p.Position, null, drawColor, p.Angle, origin - p.Position + _textureCenter, p.Scale, SpriteEffects.None, 0 );
             }
         }
 

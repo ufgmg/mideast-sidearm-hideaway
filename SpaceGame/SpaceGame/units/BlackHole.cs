@@ -24,7 +24,7 @@ namespace SpaceGame.units
         float _radius;
         float _capacityLeft;
         
-        ParticleEffect _particleEffect;
+        ParticleEffect[] _particleEffects;
         #endregion
 
         #region constructors
@@ -39,15 +39,20 @@ namespace SpaceGame.units
             Position = position;
             Gravity = new Gravity(position, gravMagnitude);
             _radius = radius;
-            _particleEffect = new ParticleEffect("BlackHoleEffect");
+            _particleEffects = new ParticleEffect[] {
+                new ParticleEffect("BlackHoleEffect1"),
+                new ParticleEffect("BlackHoleEffect2")};
         }
         #endregion
 
         #region methods
         public void Update(GameTime gameTime)
         {
-            _particleEffect.Update(gameTime);
-            _particleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+            foreach (ParticleEffect p in _particleEffects)
+            {
+                p.Update(gameTime);
+                p.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+            }
         }
 
         /// <summary>
@@ -68,7 +73,8 @@ namespace SpaceGame.units
 
         public void Draw(SpriteBatch sb)
         {
-            _particleEffect.Draw(sb);
+            foreach (ParticleEffect p in _particleEffects)
+                p.Draw(sb, Position);
         }
         #endregion
     }

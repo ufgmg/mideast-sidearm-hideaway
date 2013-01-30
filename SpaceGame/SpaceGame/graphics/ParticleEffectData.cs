@@ -52,6 +52,10 @@ namespace SpaceGame.graphics
         /// </summary>
         public int SpawnRate;
 
+        /// <summary>
+        /// Reference to unique particle texture stored in Content/particles
+        /// If ommitted, uses blank pixel
+        /// </summary>
         public Texture2D UniqueParticle;
     }
 }
