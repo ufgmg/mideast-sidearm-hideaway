@@ -144,13 +144,19 @@ namespace SpaceGame.units
                 _sprite.Flash(Color.Orange, TimeSpan.FromSeconds(0.1), 3);
         }
 
-        public void EatByBlackHole()
+        /// <summary>
+        /// Attempt to absorb unit into black hole. 
+        /// </summary>
+        /// <returns>Whether unit was successfully eaten</returns>
+        public bool EatByBlackHole()
         {
             if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed)
             {
                 _lifeState = LifeState.BeingEaten;
                 _angularVelocity = 4 * MathHelper.TwoPi;
+                return true;
             }
+            return false;
         }
 
         #region Update Logic

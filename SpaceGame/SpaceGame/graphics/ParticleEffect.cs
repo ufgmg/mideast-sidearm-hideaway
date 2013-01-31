@@ -60,11 +60,26 @@ namespace SpaceGame.graphics
         Vector2 _textureCenter;
         Texture2D _particleTexture;
 
-        bool _centralRotation;
+        ParticleEffectData _particleEffectData;
+
+        float _speedFactor;
         #endregion
 
         #region properties
         public bool Reversed { get; set; }
+        public float SpeedFactor 
+        {
+            get { return _speedFactor; }
+            set
+            {
+                _speedFactor = value;
+                _particleSpeed = _particleEffectData.Speed * SpeedFactor;
+                _particleLife = TimeSpan.FromSeconds((float)_particleEffectData.ParticleLife.TotalSeconds / SpeedFactor);
+                _scaleRate =
+                    (((_particleEffectData.EndScale - _particleEffectData.StartScale) / _particleTexture.Width)
+                    / ((float)_particleLife.TotalSeconds));
+            }
+        }
         #endregion
 
         class Particle
@@ -80,37 +95,41 @@ namespace SpaceGame.graphics
         /// <param name="effectKey">string identifier used to fetch parameters. Must match Name attribute in XML</param>
         public ParticleEffect(string effectKey)
         {
-            ParticleEffectData data = Data[effectKey];
-            _particleSpeed = data.Speed;
-            _speedVariance = data.SpeedVariance;
-            _particleDecelerationFactor = data.DecelerationFactor;
+            _particleEffectData = Data[effectKey];
+            _particleSpeed = _particleEffectData.Speed;
+            _speedVariance = _particleEffectData.SpeedVariance;
+            _particleDecelerationFactor = _particleEffectData.DecelerationFactor;
 
-            _particleTexture = (data.UniqueParticle == null) ? particleTexture : data.UniqueParticle;
+            _particleTexture = (_particleEffectData.UniqueParticle == null) ? particleTexture : _particleEffectData.UniqueParticle;
             _textureCenter = new Vector2(_particleTexture.Width / 2.0f, particleTexture.Height / 2.0f); 
 
-            _particleScale = data.StartScale / _particleTexture.Width;
-            _scaleVariance = data.ScaleVariance;
-            _scaleRate = ((data.EndScale / _particleTexture.Width) - _particleScale) / ((float)data.ParticleLife.TotalSeconds);
-            _arc = data.SpawnArc;
-            _particleLife = data.ParticleLife;
-            _particleLifeVariance = data.ParticleLifeVariance;
-            _particleRotationSpeed = MathHelper.ToRadians(data.ParticleRotation / (float)data.ParticleLife.TotalSeconds);
-            if (data.Reversed)
+            _particleScale = _particleEffectData.StartScale / _particleTexture.Width;
+            _scaleRate = 
+                (((_particleEffectData.EndScale - _particleEffectData.StartScale) / _particleTexture.Width) 
+                / ((float)_particleEffectData.ParticleLife.TotalSeconds));
+            _scaleVariance = _particleEffectData.ScaleVariance;
+            _arc = _particleEffectData.SpawnArc;
+            _particleLife = _particleEffectData.ParticleLife;
+            _particleLifeVariance = _particleEffectData.ParticleLifeVariance;
+            _particleRotationSpeed = MathHelper.ToRadians(
+                _particleEffectData.ParticleRotation / (float)_particleEffectData.ParticleLife.TotalSeconds);
+            if (_particleEffectData.Reversed)
             {
-                _startColor = data.EndColor;
-                _endColor = data.StartColor;
+                _startColor = _particleEffectData.EndColor;
+                _endColor = _particleEffectData.StartColor;
                 Reversed = true;
             }
             else
             {
-                _startColor = data.StartColor;
-                _endColor = data.EndColor;
+                _startColor = _particleEffectData.StartColor;
+                _endColor = _particleEffectData.EndColor;
                 Reversed = false;
             }
 
-            _spawnRate = data.SpawnRate;
+            _spawnRate = _particleEffectData.SpawnRate;
             _tillNextParticleSpawn = TimeSpan.FromSeconds(1.0f / (float)_spawnRate);
             _particles = new List<Particle>();
+            SpeedFactor = 1.0f;
         }
 
         public void Update(GameTime gameTime)

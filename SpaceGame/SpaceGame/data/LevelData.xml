@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Levels>
-  <Level LevelNumber="1">
+  <Level LevelNumber="0">
     <Player X="100" Y="100"/>
-    <BlackHole X="200" Y="700" Gravity="18000" Radius="100"/>
+    <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="50"/>
     <Waves>
       <Wave>
       </Wave> 
@@ -13,9 +13,9 @@
     </Waves>
   </Level>
 
-  <Level LevelNumber="2">
+  <Level LevelNumber="1">
     <Player X="100" Y="100"/>
-    <BlackHole X="200" Y="700" Gravity="18000" Radius="100"/>
+    <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="50"/>
     <Waves>
       <Wave>
         <Enemy Name="Goblin" X="800" Y="400"/>

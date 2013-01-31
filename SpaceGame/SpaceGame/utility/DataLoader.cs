@@ -150,7 +150,8 @@ namespace SpaceGame.utility
         private static BlackHole parseBlackHole(XElement e)
         {
             return new BlackHole(parseVector(e),
-                (float)e.Attribute("Gravity"), (float)e.Attribute("Radius"));
+                (float)e.Attribute("Gravity"), (float)e.Attribute("Radius"),
+                (float)e.Attribute("Capacity"));
         }
 
         private static Vector2 parseVector(XElement e)

@@ -22,7 +22,8 @@ namespace SpaceGame.units
         public Gravity Gravity { get; private set; }
 
         float _radius;
-        float _capacityLeft;
+        float _capacityUsed;
+        float _totalCapacity;
         
         ParticleEffect[] _particleEffects;
         #endregion
@@ -34,7 +35,7 @@ namespace SpaceGame.units
         /// <param name="position">location of black hole center</param>
         /// <param name="gravMagnitude">strength of gravitational force</param>
         /// <param name="radius">max distance that black hole will consume units</param>
-        public BlackHole(Vector2 position, float gravMagnitude, float radius)
+        public BlackHole(Vector2 position, float gravMagnitude, float radius, float capacity)
         {
             Position = position;
             Gravity = new Gravity(position, gravMagnitude);
@@ -42,6 +43,8 @@ namespace SpaceGame.units
             _particleEffects = new ParticleEffect[] {
                 new ParticleEffect("BlackHoleEffect1"),
                 new ParticleEffect("BlackHoleEffect2")};
+            _totalCapacity = capacity;
+            _capacityUsed = 0.0f;
         }
         #endregion
 
@@ -64,9 +67,16 @@ namespace SpaceGame.units
         {
             unit.ApplyGravity(Gravity, gameTime);
             if ((Position - unit.Center).Length() <= _radius)
-            {
-                _capacityLeft -= unit.Mass;
-                unit.EatByBlackHole();
+            {   //try to eat unit
+                if (unit.EatByBlackHole())
+                {
+                    _capacityUsed += unit.Mass;
+                    foreach (ParticleEffect p in _particleEffects)
+                    {
+                        p.SpeedFactor = 1 + _capacityUsed / _totalCapacity;
+                    }
+                    Gravity.MagnitudeFactor = (1 + _capacityUsed / _totalCapacity);
+                }
             }
 
         }

@@ -12,7 +12,8 @@ namespace SpaceGame.utility
     class Gravity
     {
         Vector2 _position;
-        readonly float _magnitude;
+        float _magnitude;
+        readonly float _baseMagnitude;
 
         public Vector2 Position
         {
@@ -24,9 +25,16 @@ namespace SpaceGame.utility
             get { return _magnitude; }
         }
 
+        public float MagnitudeFactor
+        {
+            get { return _magnitude / _baseMagnitude; }
+            set { _magnitude = _baseMagnitude * value; }
+        }
+
         public Gravity(Vector2 position, float magnitude)
         {
             _position = position;
+            _baseMagnitude = magnitude;
             _magnitude = magnitude;
         }
 
