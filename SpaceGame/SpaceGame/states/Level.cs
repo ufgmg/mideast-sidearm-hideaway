@@ -111,7 +111,7 @@ namespace SpaceGame.states
             {
                 _primaryGadget.Trigger();
             }
-            
+
         }
 
         public override void Draw(SpriteBatch spriteBatch)

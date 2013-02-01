@@ -54,7 +54,9 @@ namespace SpaceGame.units
             foreach (ParticleEffect p in _particleEffects)
             {
                 p.Update(gameTime);
-                p.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+                //spawn rate increases as capacity fills
+                p.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero, 
+                    1 + _capacityUsed / _totalCapacity);
             }
         }
 
@@ -86,6 +88,7 @@ namespace SpaceGame.units
             foreach (ParticleEffect p in _particleEffects)
                 p.Draw(sb, Position);
         }
+
         #endregion
     }
 }

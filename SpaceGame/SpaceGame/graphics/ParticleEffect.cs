@@ -205,8 +205,21 @@ namespace SpaceGame.graphics
         /// <param name="time"></param>
         public void Spawn(Vector2 position, float angle, TimeSpan time, Vector2 sourceVelocity)
         {
+            Spawn(position, angle, time, sourceVelocity, 1.0f);
+        }
+
+        /// <summary>
+        /// Spawn new particles
+        /// </summary>
+        /// <param name="position">Location at which to spawn particles</param>
+        /// <param name="angle">direction at which to spawn particles (degrees)</param>
+        /// <param name="sourceVeloctiy">Velocity of particle source, added to all particles</param>
+        /// <param name="time"></param>
+        /// <param name="multiplier">Multiplier to apply to default spawn rate </param>
+        public void Spawn(Vector2 position, float angle, TimeSpan time, Vector2 sourceVelocity, float multiplier)
+        {
             //fractional number of particles to spawn
-            float particlesToSpawn = (float)(_spawnRate * (float)time.TotalSeconds);            
+            float particlesToSpawn = multiplier * (float)(_spawnRate * (float)time.TotalSeconds);            
             //spawn integer number of particles
             for(int i = 0 ; i < (int)particlesToSpawn ; i++)
             {

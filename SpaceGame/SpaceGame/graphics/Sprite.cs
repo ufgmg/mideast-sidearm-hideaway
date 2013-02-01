@@ -65,6 +65,11 @@ namespace SpaceGame.graphics
             }
         }
 
+        public Vector2 TextureCenter
+        {
+            get { return _textureCenter; }
+        }
+
         //scale relative to default scale
         public float ScaleFactor
         {
@@ -205,7 +210,9 @@ namespace SpaceGame.graphics
         {
             batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, Scale, SpriteEffects.None, _zLayer);
         }
+
         #endregion
+
     }
 
 }

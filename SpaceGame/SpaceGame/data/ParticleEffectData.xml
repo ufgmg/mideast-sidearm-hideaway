@@ -26,11 +26,11 @@
                       Reversed="True" />
 
   <ParticleEffectData Name="BlackHoleEffect2" 
-                      Speed="10.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="-100.0" 
+                      Speed="40.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="-100.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
                       SpawnArc="360.0" SpawnRate="200" ParticleLife="1.5" ParticleLifeVariance="0.5"
                       StartColor="100,0,0,0" EndColor ="200,148,0,211"
-                      UniqueParticle="HollowSquare"
+                      UniqueParticle="HollowSquare2"
                       Reversed="True" />
 
   <ParticleEffectData Name="RocketBooster" 
