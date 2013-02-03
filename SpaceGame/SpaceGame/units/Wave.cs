@@ -64,7 +64,7 @@ namespace SpaceGame.units
                 _enemies[i].CheckAndApplyUnitCollision(player);
 
                 _enemies[i].Update(gameTime, player.Position, Vector2.Zero);
-                blackHole.PullUnit(_enemies[i], gameTime);
+                blackHole.ApplyToUnit(_enemies[i], gameTime);
                 weapon1.CheckAndApplyCollision(_enemies[i]);
                 weapon2.CheckAndApplyCollision(_enemies[i]);
             }
