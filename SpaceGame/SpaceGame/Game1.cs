@@ -33,8 +33,24 @@ namespace SpaceGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager _inputManager = new InputManager();
-
+        SpriteFont menuFont;
         List<Gamestate> _stateStack = new List<Gamestate>();
+        GameStateDrawMenu gamemenu;
+        //will use input manager instead
+        KeyboardState currKeyState;
+        KeyboardState oldKeyState;
+        GameStateDrawMenu gameMenu;
+
+        bool isMenu;
+
+        public static GameStates gamestate;
+
+        public enum GameStates
+        {
+            Menu,
+            Running,
+            GameOver
+        }
 
         public Game1()
         {
@@ -45,8 +61,11 @@ namespace SpaceGame
             graphics.PreferredBackBufferWidth = SCREENWIDTH;
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;
 
+            isMenu = true;
             //TODO: replace with custom cursor
             this.IsMouseVisible = true;
+
+            gameMenu = new GameStateDrawMenu();
 
         }
 
@@ -60,6 +79,13 @@ namespace SpaceGame
         {
 
             _inputManager = new InputManager();
+
+            //Set so units stay in screen bounds
+            PhysicalUnit.ScreenWidth = graphics.GraphicsDevice.Viewport.Width;
+            PhysicalUnit.ScreenHeight = graphics.GraphicsDevice.Viewport.Height;
+            Weapon.ScreenBounds = graphics.GraphicsDevice.Viewport.Bounds;
+
+            gamestate = GameStates.Menu;
 
             base.Initialize();
         }
@@ -92,7 +118,11 @@ namespace SpaceGame
             Spaceman.AstronautData = DataLoader.LoadAstronautData();
             Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
 
-            _stateStack.Add(new Level(1));
+            menuFont = Content.Load<SpriteFont>("MenuFont");
+
+            //ADD IF LOGIC TO EXECUTE
+            if(!isMenu)
+                _stateStack.Add(new Level(1));
         }
 
         /// <summary>
@@ -102,6 +132,7 @@ namespace SpaceGame
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -111,12 +142,78 @@ namespace SpaceGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (_inputManager.Exit)
+            if (!isMenu)
+            {
+                if (_inputManager.Exit)
+                    this.Exit();
+
+                _inputManager.Update();
+
+                _stateStack.Last().Update(gameTime, _inputManager);
+            }
+
+            currKeyState = Keyboard.GetState();
+
+            // Allows the game to exit
+            if (currKeyState.IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            _inputManager.Update();
+            if (gamestate == GameStates.Running)
+            {
+                // win logic goes here, call method to run game
+            }
 
-            _stateStack.Last().Update(gameTime, _inputManager);
+            else if (gamestate == GameStates.Menu)
+            {
+                if (currKeyState.IsKeyDown(Keys.Up))
+                {
+                    if ((!oldKeyState.IsKeyDown(Keys.Up)))
+                        gameMenu.Iterator--;
+                }
+
+                else if (currKeyState.IsKeyDown(Keys.Down))
+                {
+                    if ((!oldKeyState.IsKeyDown(Keys.Down)))
+                        gameMenu.Iterator++;
+                }
+
+                if (currKeyState.IsKeyDown(Keys.Enter))
+                {
+                    if (gameMenu.Iterator == 0)
+                    {
+                        gamestate = GameStates.Running;
+                        //call method to load screen to choose game type
+                        isMenu = false;
+                        this.LoadContent();
+                      
+                    }
+                    else if (gameMenu.Iterator == 1)
+                    {
+                        gamestate = GameStates.Running;
+                        //call method to load settings 
+                    }
+
+                    else if (gameMenu.Iterator == 2)
+                    {
+                        this.Exit();
+                        //quit game
+                    }
+
+                    //Add more select menu logic here as menu items increase
+
+                    gameMenu.Iterator = 0;
+                }
+
+                oldKeyState = currKeyState;
+            }
+            else if (gamestate == GameStates.GameOver)
+            {
+                if (currKeyState.IsKeyDown(Keys.Enter))
+                {
+                    gamestate = GameStates.Menu;
+                }
+            }
+
 
             base.Update(gameTime);
         }
@@ -129,7 +226,13 @@ namespace SpaceGame
         {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
-            _stateStack.Last().Draw(spriteBatch);
+            if (!isMenu)
+            {
+                _stateStack.Last().Draw(spriteBatch);
+            }
+            else
+                gameMenu.DrawMenu(spriteBatch, GraphicsDevice.Viewport.Width, menuFont);
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
