@@ -95,33 +95,58 @@ attack that can dangerously launch other enemies at you.
 
 ## How to work on code for the game
 
-1.  Fork this repository (click the Fork button on Github).
+### Initial setup
 
-2.  Clone your forked repository to your computer.
+You have two options for contributing:
 
-3.  Set up a remote for this (kalgynirae's) repository (you have to do
-    this from Git Bash):
+*   Push your branches directly to this repository.
+*   Push your branches to your own fork.
 
-        $ git remote add kalgynirae git://github.com/kalgynirae/mideast-sidearm-hideaway.git
+I'll explain the case where you push directly to this repository:
 
-4.  Download any changes from your remotes
+1.  Be a contributor for this repository. Send me a message; I'll add
+    you.
 
-        $ git fetch --all
+2.  Clone this repository. This will automatically set you up with a
+    remote called `origin` that points here.
 
-5.  Start a new branch based on kalgynirae/master.
+3.  Delete your local `master` branch, so that you won't accidentally
+    push to master:
 
-        $ git checkout -b newbranchname kalgynirae/master
+        $ git checkout origin/master
+        $ git branch -d master
 
-6.  Start coding! Commit often!
+### Working on a feature
 
-7.  Push your commits to your Github repository so others can look at them.
+1.  Make sure your remote tracking branches (branches named `origin/*`) are
+    up to date:
+
+        $ git fetch origin
+
+2.  Start a new feature branch based on `origin/master`.
+
+        $ git checkout -b newbranchname origin/master
+
+3.  Start coding! Commit often! Don't worry about making too many
+    commits; we can combine them into fewer commits later.
+
+4.  If there are new commits on the repository that you want to
+    incorporate into your feature branch, fetch and then rebase:
+
+        $ git fetch origin
+        $ git rebase origin/master
+
+5.  Push your commits to the repository:
 
         $ git push origin branchname
 
 ### Other useful Git commands
 
-    # BEST COMMAND EVER
+    # Display useful status about the current state of your branch
     $ git status
+
+    # Display the commit log for your branch
+    $ git log
 
     # Stage changed files
     $ git add <file>
@@ -135,20 +160,14 @@ attack that can dangerously launch other enemies at you.
     # Check out a branch
     $ git checkout
 
-    # Make a new branch based on the currently-checked-out branch
-    $ git checkout -b <new branch name>
-
-    # Display the commit log
-    $ git log
-
-    # Add a named remote repository
-    $ git remote add <remote name> <remote url>
+    # Make a new branch
+    $ git checkout -b <new branch name> <base branch name>
 
     # Download updates from a remote repository
     $ git fetch <remote name>
 
     # Rebase your current branch on top of another branch
     # This is most likely what you should do if you have made some commits
-    # but there are new commits in the master repository that you want to
-    # include.
+    # on your branch but there are new commits in the master repository that
+    # you want to include.
     $ git rebase <branch name>
