@@ -80,9 +80,7 @@ namespace SpaceGame
 
             //load hud textures
             //SpaceGame.graphics.hud.RadialBar.BarPipTexture = Content.Load<Texture2D>("hud/radial_bar_pip");
-            SpaceGame.graphics.hud.RadialBar.BarPipTexture = new Texture2D(GraphicsDevice, 1, 5);
-            SpaceGame.graphics.hud.RadialBar.BarPipTexture.SetData<Color>(
-                new Color[] {Color.White, Color.White, Color.White, Color.White, Color.White});
+            SpaceGame.graphics.hud.RadialBar.GameGraphicsDevice = GraphicsDevice;
 
             XnaHelper.PixelTexture = new Texture2D(GraphicsDevice, 1, 1);
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});

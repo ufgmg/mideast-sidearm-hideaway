@@ -84,6 +84,12 @@ namespace SpaceGame.utility
         {
             get { return currentKeyboardState.IsKeyDown(Keys.Escape); }
         }
+
+        //the magical all-purpose dubugging key. Who knows what surprises it holds?
+        public bool DebugKey    
+        {
+            get { return currentKeyboardState.IsKeyDown(Keys.B); }
+        }
         #endregion
         #endregion
 

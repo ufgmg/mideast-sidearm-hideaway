@@ -16,12 +16,8 @@ namespace SpaceGame.graphics.hud
         //lower value -> higher granularity -> smoother appearance
         float DRAW_FREQUENCY = 0.01f;
 
-        //single small rect with transparent background
-        //rotated to form radial arc
-        public static Texture2D BarPipTexture;
-        //centerpoint of arc on texture (center of circle formed by arc)
-        //BarPipTexture is rotated around this point to draw
-        public static Vector2 PipTextureOrigin = new Vector2(96,105);   //TODO--don't hardcode
+        public static GraphicsDevice GameGraphicsDevice;
+
         public enum DecrementSide
         {
             Right,
@@ -31,24 +27,37 @@ namespace SpaceGame.graphics.hud
         #endregion
 
         #region fields
+        //single small white rect rotated and colored to form bar
+        Texture2D _barPipTexture;
+        //centerpoint of arc on texture (center of circle formed by arc)
+        //BarPipTexture is rotated around this point to draw
+        Vector2 _origin;
         //angle at which to start drawing of arc (radians, 0 is straight up)
         float _arcStart;
         //angle to which to draw when arc is full (radians)
         float _arcEnd;
         //color to draw bar with
         Color _barColor;
-        //where center of drawn arc should be on screen
+        //where top of pip texture should be drawn on screen (for angle 0)
         Vector2 _drawPoint;
         #endregion
 
         #region constructor
-        public RadialBar(Vector2 arcCenter, float arcStart, float arcEnd, Color barColor)
+        public RadialBar(Vector2 arcCenter, float radius, int thickness, float arcStart, float arcEnd, Color barColor)
         {
             _arcStart = arcStart;
             _arcEnd = arcEnd;
             _barColor = barColor;
-            //get the top left point of the image
-            _drawPoint = arcCenter - PipTextureOrigin;
+
+            _drawPoint = new Vector2(arcCenter.X, arcCenter.Y - radius);
+            _origin = new Vector2(0, radius);
+            _barPipTexture = new Texture2D(GameGraphicsDevice, 1, thickness);
+            Color[] colorData = new Color[1 * thickness];
+            for (int i = 0; i < colorData.Length; i++)
+            {
+                colorData[i] = Color.White;
+            }
+            _barPipTexture.SetData<Color>(colorData);
         }
         #endregion
 
@@ -60,11 +69,8 @@ namespace SpaceGame.graphics.hud
             //increment through angle, drawing pip along way
             for (float angle = _arcStart; angle < stopAngle; angle += DRAW_FREQUENCY)
             {
-                sb.Draw(BarPipTexture, _drawPoint, null, _barColor, angle, PipTextureOrigin, 1.0f, SpriteEffects.None, 0);
+                sb.Draw(_barPipTexture, _drawPoint, null, _barColor, angle, _origin, 1.0f, SpriteEffects.None, 0);
             }
-            //DEBUG
-            SpaceGame.utility.XnaHelper.DrawRect(Color.Green,
-                new Rectangle((int)(_drawPoint.X + PipTextureOrigin.X - 2), (int)(_drawPoint.Y + PipTextureOrigin.Y - 2), 2, 2), sb);
         }
         #endregion
     }

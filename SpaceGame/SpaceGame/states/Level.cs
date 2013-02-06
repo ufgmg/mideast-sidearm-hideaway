@@ -32,7 +32,9 @@ namespace SpaceGame.states
         Gadget _primaryGadget, _secondaryGadget;
         Wave[] _waves;
         int _waveNumber;
+        //debug
         RadialBar _radialBar;
+        float temp = 10;
         #endregion
 
         #region constructor
@@ -55,7 +57,7 @@ namespace SpaceGame.states
                 _waves[i] = new Wave(enemies);
             }
 
-            _radialBar = new RadialBar(new Vector2(500, 500), -MathHelper.PiOver2, MathHelper.PiOver2, Color.Red);
+            _radialBar = new RadialBar(new Vector2(500, 500), 100, 20, -MathHelper.PiOver2, MathHelper.PiOver2, Color.Red);
             _primaryWeapon = new ProjectileWeapon("Rocket", _player);
             _secondaryWeapon = new ProjectileWeapon("Swarmer", _player);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
@@ -116,6 +118,11 @@ namespace SpaceGame.states
                 _primaryGadget.Trigger();
             }
 
+            if (input.DebugKey)
+            {
+                temp -= 0.08f;
+            }
+
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -125,7 +132,7 @@ namespace SpaceGame.states
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
             _waves[_waveNumber].DrawEnemies(spriteBatch);
-            _radialBar.Draw(spriteBatch, 10, 10);
+            _radialBar.Draw(spriteBatch, temp, 10);
         }
         #endregion
     }
