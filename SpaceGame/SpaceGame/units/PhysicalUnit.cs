@@ -28,7 +28,8 @@ namespace SpaceGame.units
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
         #endregion
-        #region physical properties
+        #region fields
+        string _unitName;
         //Physical properties--------------------
         public Vector2 Position;
         Vector2 _velocity;
@@ -42,8 +43,6 @@ namespace SpaceGame.units
         float _moveForce;
         //fractional speed reduction each frame
         float _decelerationFactor;
-        //status effects and recovery rates (per second)
-        float _stunEffect, _stunRecovery;
         #endregion
 
         #region properties
@@ -95,6 +94,7 @@ namespace SpaceGame.units
         /// <param name="unitName">key to find SpriteData and PhysicalData</param>
         public PhysicalUnit(string unitName)
         {
+            _unitName = unitName;
             _sprite = new Sprite(unitName);
             PhysicalData pd = Data[unitName];
 
@@ -232,34 +232,6 @@ namespace SpaceGame.units
             }
         }
 
-        /*
-        //original static version of stayInBounds
-        private void stayInBounds(float screenWidth, float screenHeight)
-        {
-            if (Position.X < 0)
-            {
-                Position.X = 0;
-                _acceleration.X = 0;
-            }
-            else if (Position.X + _sprite.Width >= screenWidth)
-            {
-                Position.X = screenWidth - _sprite.Width;
-                _acceleration.X = 0;
-            }
-
-            if (Position.Y < 0)
-            {
-                Position.Y = 0;
-                _acceleration.Y = 0;
-            }
-            else if (Position.Y + _sprite.Height >= screenHeight)
-            {
-                Position.Y = screenHeight - _sprite.Height;
-                _acceleration.Y = 0;
-            }
-        }
-        */
-
         /// <summary>
         /// Move the sprite in the given direction based on its moveForce property
         /// </summary>
@@ -280,10 +252,18 @@ namespace SpaceGame.units
             _acceleration += gravity.Magnitude * direction * (float)theGameTime.ElapsedGameTime.TotalSeconds;
         }
 
+        public void Reset(Vector2 newPosition)
+        {
+            Position = newPosition;
+            Reset();
+        }
+
         public void Reset()
         {
             _velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
+            _health = Data[_unitName].Health;
+            _additionalMass = 0;
             _sprite.Reset();
         }
 

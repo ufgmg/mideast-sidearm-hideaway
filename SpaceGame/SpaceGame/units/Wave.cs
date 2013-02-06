@@ -30,7 +30,13 @@ namespace SpaceGame.units
         #endregion
 
         #region fields
+        int _numEnemies;
+        int _spawnedSoFar;
         Enemy[] _enemies;
+        //enemy spawning info
+        TimeSpan _tillNextSpawn;    //how long till spawning a new enemy
+        TimeSpan _spawnInterval;    //how long between enemy spawns
+        int _enemiesToSpawn;        //how many enemies to spawn this update cycle
         #endregion
 
         #region properties
