@@ -43,6 +43,15 @@ namespace SpaceGame.graphics.hud
         #endregion
 
         #region constructor
+        /// <summary>
+        /// Progress bar that displays information radially
+        /// </summary>
+        /// <param name="arcCenter">Origin of the circle</param>
+        /// <param name="radius">distance from origin to outside of bar</param>
+        /// <param name="thickness">number of pixels in bar thickness</param>
+        /// <param name="arcStart">angle (radians) which forms bar base (0 is vertical upward)</param>
+        /// <param name="arcEnd">angle (radians) which forms bar endpoint when full (0 is vertical upward)</param>
+        /// <param name="barColor">color with which to draw bar</param>
         public RadialBar(Vector2 arcCenter, float radius, int thickness, float arcStart, float arcEnd, Color barColor)
         {
             _arcStart = arcStart;
@@ -62,6 +71,12 @@ namespace SpaceGame.graphics.hud
         #endregion
 
         #region methods
+        /// <summary>
+        /// Draw the radial bar to the screen
+        /// </summary>
+        /// <param name="sb">Sprite batch to use for drawing</param>
+        /// <param name="currentVal">Current value of the value being displayed</param>
+        /// <param name="maxVal">Current value of the value being displayed</param>
         public void Draw(SpriteBatch sb, float currentVal, float maxVal)
         {
             //angle of rotation to currently draw bar pip at
