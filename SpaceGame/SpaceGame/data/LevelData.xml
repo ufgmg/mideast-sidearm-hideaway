@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Levels>
-  <Level LevelNumber="0">
+  <Level LevelNumber="1">
     <Player X="100" Y="100"/>
     <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="50"/>
     <Waves>
@@ -13,7 +13,7 @@
     </Waves>
   </Level>
 
-  <Level LevelNumber="1">
+  <Level LevelNumber="0">
     <Player X="100" Y="100"/>
     <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="36"/>
     <Waves>
