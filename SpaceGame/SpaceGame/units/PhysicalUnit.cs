@@ -77,6 +77,7 @@ namespace SpaceGame.units
 
         public enum LifeState
         {
+            Dormant,        //never been spawned
             Living,
             Stunned,
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
@@ -107,7 +108,7 @@ namespace SpaceGame.units
             _health = pd.Health;
             _decelerationFactor = pd.DecelerationFactor;
 
-            _lifeState = LifeState.Living;
+            _lifeState = LifeState.Dormant;     //not yet spawned
             _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
 
             MoveDirection = Vector2.Zero;
@@ -180,14 +181,14 @@ namespace SpaceGame.units
                     }
                 case LifeState.BeingEaten:
                     {
-                        _sprite.ScaleFactor -= 0.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        _sprite.ScaleFactor -= 1.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
                         if (_sprite.ScaleFactor <= 0)
                             _lifeState = LifeState.Destroyed;
                         break;
                     }
-                case LifeState.Destroyed:
+                default:
                     {
-                        return;
+                        return;     //don't update anything
                     }
             }
 
@@ -252,9 +253,10 @@ namespace SpaceGame.units
             _acceleration += gravity.Magnitude * direction * (float)theGameTime.ElapsedGameTime.TotalSeconds;
         }
 
-        public void Reset(Vector2 newPosition)
+        public void Respawn(Vector2 newPosition)
         {
             Position = newPosition;
+            _lifeState = LifeState.Living;
             Reset();
         }
 
@@ -264,6 +266,7 @@ namespace SpaceGame.units
             _acceleration = Vector2.Zero;
             _health = Data[_unitName].Health;
             _additionalMass = 0;
+            _angularVelocity = 0;
             _sprite.Reset();
         }
 
@@ -310,8 +313,8 @@ namespace SpaceGame.units
         #region Draw Logic
         public void Draw(SpriteBatch sb)
         {
-            if (_lifeState == LifeState.Destroyed)
-                return;     //dont draw destroyed sprites
+            if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
+                return;     //dont draw destroyed or not yet spawned sprites
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);

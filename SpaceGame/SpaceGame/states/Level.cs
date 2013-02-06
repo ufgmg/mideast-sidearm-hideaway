@@ -52,7 +52,7 @@ namespace SpaceGame.states
                 {
                     enemies[j] = new Enemy(enemyData[j].Name, enemyData[j].Position);
                 }
-                _waves[i] = new Wave(enemies);
+                _waves[i] = new Wave(enemies, TimeSpan.FromSeconds(1), true);
             }
 
             _primaryWeapon = new ProjectileWeapon("Rocket", _player);
@@ -80,9 +80,10 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
+            _waves[_waveNumber].Spawn(gameTime, new Vector2(800,0));
             _waves[_waveNumber].UpdateEnemies(gameTime, _player,
                 _blackHole, _primaryWeapon, _secondaryWeapon);
-            if (_waves[_waveNumber].AllDestroyed)
+            if (_waves[_waveNumber].WaveComplete)
             {
                 if (_waveNumber >= _waves.Length - 1)
                 { 

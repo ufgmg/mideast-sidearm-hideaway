@@ -97,17 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="gui\" />
+    <Folder Include="hud\" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="hud\radial_bar_pip.png">
-      <Name>radial_bar_pip</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="gui\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
