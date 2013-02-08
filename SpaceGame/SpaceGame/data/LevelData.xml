@@ -6,13 +6,21 @@
     <Waves>
       <TrickleWave SpawnInterval="1" StartTime="100">
         <Enemy Name="Goblin" X="800" Y="400"/>
-        <Enemy Name="Goblin" X="800" Y="100"/>
-        <Enemy Name="Goblin" X="900" Y="300"/>
       </TrickleWave> 
       <BurstWave SpawnInterval="0.25" StartTime="0" PortalEffect="SpawnPortal1">
         <Enemy Name="Goblin" X="800" Y="400"/>
-        <Enemy Name="Goblin" X="800" Y="100"/>
-        <Enemy Name="Goblin" X="900" Y="300"/>
+      </BurstWave> 
+      <BurstWave SpawnInterval="0.25" StartTime="0" PortalEffect="SpawnPortal1">
+        <Enemy Name="Goblin" X="800" Y="400"/>
+      </BurstWave> 
+      <BurstWave SpawnInterval="0.25" StartTime="0" PortalEffect="SpawnPortal1">
+        <Enemy Name="Goblin" X="800" Y="400"/>
+      </BurstWave> 
+      <BurstWave SpawnInterval="0.25" StartTime="0" PortalEffect="SpawnPortal1">
+        <Enemy Name="Goblin" X="800" Y="400"/>
+      </BurstWave> 
+      <BurstWave SpawnInterval="0.25" StartTime="0" PortalEffect="SpawnPortal1">
+        <Enemy Name="Goblin" X="800" Y="400"/>
       </BurstWave> 
     </Waves>
   </Level>

@@ -81,10 +81,14 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
-            _trickleWaves[_waveNumber].Update(gameTime, _player,
-                _blackHole, _primaryWeapon, _secondaryWeapon);
-            _burstWaves[_waveNumber].Update(gameTime, _player,
-                _blackHole, _primaryWeapon, _secondaryWeapon);
+            foreach (Wave wave in _burstWaves)
+            {
+                wave.Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
+            }
+            foreach (Wave wave in _trickleWaves)
+            {
+                wave.Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
+            }
         }
 
         private void handleInput(InputManager input)
@@ -114,11 +118,17 @@ namespace SpaceGame.states
         public override void Draw(SpriteBatch spriteBatch)
         {
             _blackHole.Draw(spriteBatch);
+            foreach (Wave wave in _burstWaves)
+            {
+                wave.Draw(spriteBatch);
+            }
+            foreach (Wave wave in _trickleWaves)
+            {
+                wave.Draw(spriteBatch);
+            }
             _player.Draw(spriteBatch);
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
-            _trickleWaves[0].Draw(spriteBatch);
-            _burstWaves[0].Draw(spriteBatch);
         }
         #endregion
     }

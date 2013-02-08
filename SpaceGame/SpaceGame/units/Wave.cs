@@ -19,10 +19,15 @@ namespace SpaceGame.units
     class Wave
     {
         #region constant
+        //how far out of bounds trickle waves can spawn enemies
         const int OUT_OF_BOUNDS_SPAWN_BUFFER = 30;
+        //how long between starting to show effect and spawning enemies
         const float ACTIVATION_DELAY_SECONDS = 5;
+        //how fast portal effect rotates (degrees/sec)
         const float PORTAL_ROTATION_RATE = 720;
         const string PORTAL_EFFECT_NAME1 = "SpawnPortal1";
+        //minimum distance allowable between spawn location and black hole
+        const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200; 
         #endregion
 
         #region classes
@@ -222,7 +227,10 @@ namespace SpaceGame.units
             }
 
             XnaHelper.RandomizeVector(ref _spawnLocation, minX, maxX, minY, maxY);
-            Debug.WriteLine("Set spawn location to: " + _spawnLocation.X + "," + _spawnLocation.Y);
+
+            //if spawned too close to black hole, try again
+            if ((_spawnLocation - blackHolePosition).Length() < MIN_BLACKHOLE_SPAWN_DISTANCE)
+                setPosition(blackHolePosition);
         }
 
         public void Draw(SpriteBatch sb)
