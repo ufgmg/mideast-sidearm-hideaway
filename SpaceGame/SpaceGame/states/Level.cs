@@ -81,11 +81,9 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
-            _trickleWaves[_waveNumber].Spawn(gameTime, new Vector2(800,0));
-            _trickleWaves[_waveNumber].UpdateEnemies(gameTime, _player,
+            _trickleWaves[_waveNumber].Update(gameTime, _player,
                 _blackHole, _primaryWeapon, _secondaryWeapon);
-            _burstWaves[_waveNumber].Spawn(gameTime, new Vector2(100,0));
-            _burstWaves[_waveNumber].UpdateEnemies(gameTime, _player,
+            _burstWaves[_waveNumber].Update(gameTime, _player,
                 _blackHole, _primaryWeapon, _secondaryWeapon);
         }
 

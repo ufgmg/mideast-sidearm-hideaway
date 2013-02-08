@@ -4,12 +4,12 @@
     <Player X="100" Y="100"/>
     <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="50"/>
     <Waves>
-      <TrickleWave SpawnInterval="1">
+      <TrickleWave SpawnInterval="1" StartTime="0">
         <Enemy Name="Goblin" X="800" Y="400"/>
         <Enemy Name="Goblin" X="800" Y="100"/>
         <Enemy Name="Goblin" X="900" Y="300"/>
       </TrickleWave> 
-      <BurstWave SpawnInterval="0.25">
+      <BurstWave SpawnInterval="0.25" StartTime="5">
         <Enemy Name="Goblin" X="800" Y="400"/>
         <Enemy Name="Goblin" X="800" Y="100"/>
         <Enemy Name="Goblin" X="900" Y="300"/>

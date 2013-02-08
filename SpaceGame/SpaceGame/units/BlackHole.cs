@@ -136,7 +136,6 @@ namespace SpaceGame.units
             foreach (ParticleEffect p in _particleEffects)
                 p.Draw(sb, Position);
         }
-
         #endregion
     }
 }

@@ -143,7 +143,8 @@ namespace SpaceGame.utility
                                                        Position = parseVector(enemy),
                                                        Name = (string)enemy.Attribute("Name")
                                                    }).ToArray<Wave.EnemyData>(),
-                                        SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval"))
+                                        SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval")),
+                                        StartTime = TimeSpan.FromSeconds((float)wave.Attribute("StartTime"))
                                     }).ToArray<Wave.WaveData>(),
                         BurstWaveData = (from wave in level.Descendants("BurstWave")
                                     select new Wave.WaveData
@@ -154,7 +155,8 @@ namespace SpaceGame.utility
                                                        Position = parseVector(enemy),
                                                        Name = (string)enemy.Attribute("Name")
                                                    }).ToArray<Wave.EnemyData>(),
-                                        SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval"))
+                                        SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval")),
+                                        StartTime = TimeSpan.FromSeconds((float)wave.Attribute("StartTime"))
                                     }).ToArray<Wave.WaveData>()
                     }).Single<Level.LevelData>();
         }
