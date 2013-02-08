@@ -117,8 +117,8 @@ namespace SpaceGame.states
             _player.Draw(spriteBatch);
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
-            _trickleWaves[0].DrawEnemies(spriteBatch);
-            _burstWaves[0].DrawEnemies(spriteBatch);
+            _trickleWaves[0].Draw(spriteBatch);
+            _burstWaves[0].Draw(spriteBatch);
         }
         #endregion
     }

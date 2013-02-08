@@ -82,7 +82,7 @@ namespace SpaceGame.utility
             return centerAngle + arc * (0.5f - (float)rand.NextDouble());
         }
 
-        public static void RadomizeVector(Vector2 refVector, float minX, float maxX, float minY, float maxY)
+        public static void RandomizeVector(ref Vector2 refVector, float minX, float maxX, float minY, float maxY)
         {
             refVector.X = minX + (float)rand.NextDouble() * (maxX - minX);
             refVector.Y = minY + (float)rand.NextDouble() * (maxY - minY);

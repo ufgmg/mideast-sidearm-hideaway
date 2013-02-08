@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using SpaceGame.equipment;
+using SpaceGame.graphics;
 using SpaceGame.utility;
 
 namespace SpaceGame.units
@@ -18,7 +19,8 @@ namespace SpaceGame.units
     class Wave
     {
         #region constant
-        int OUT_OF_BOUNDS_SPAWN_BUFFER = 100;
+        int OUT_OF_BOUNDS_SPAWN_BUFFER = 30;
+        const string PORTAL_EFFECT_NAME1 = "SpawnPortal1";
         #endregion
 
         #region classes
@@ -27,6 +29,7 @@ namespace SpaceGame.units
             public EnemyData[] Enemies;
             public TimeSpan SpawnInterval;
             public TimeSpan StartTime;
+            public TimeSpan StartDelay;
         }
 
         public class EnemyData
@@ -46,6 +49,10 @@ namespace SpaceGame.units
         bool _isTrickleWave;        //constant trickle of enemies through level
         Vector2 _spawnLocation;     //where in level to spawn enemies
         TimeSpan _startTimer;       //when to start spawning enemies
+
+        //these two should only apply to burst waves
+        TimeSpan _activationDelay;  //how long to wait after activation before spawning
+        ParticleEffect _portalEffect;   //particle effect to play once spawning begins
         #endregion
 
         #region properties
@@ -54,7 +61,7 @@ namespace SpaceGame.units
         public bool Active { get; private set; }
         #endregion
 
-        #region contructor
+        #region constructor
         public Wave(WaveData data, bool trickleWave)
         {
             EnemyData[] enemyData = data.Enemies;
@@ -70,6 +77,9 @@ namespace SpaceGame.units
             _startTimer = data.StartTime;
             _isTrickleWave = trickleWave;
             _spawnLocation = Vector2.Zero;
+            _activationDelay = data.StartDelay;
+            //assign a portal particle effect if it is a burst wave
+            _portalEffect = (trickleWave) ? null : new ParticleEffect(PORTAL_EFFECT_NAME1);
         }
         #endregion
 
@@ -103,15 +113,33 @@ namespace SpaceGame.units
         public void Update(GameTime gameTime, Spaceman player, 
             BlackHole blackHole, Weapon weapon1, Weapon weapon2)
         {
-            if (_startTimer > TimeSpan.Zero)        //not started yet
+            if (_startTimer >= TimeSpan.Zero)        //not started yet
             {
                 _startTimer -= gameTime.ElapsedGameTime;
-                Active = _startTimer <= TimeSpan.Zero;      //activate if start timer complete
-                setPosition(blackHole.Position);        //set first spawn position
+                if (_startTimer < TimeSpan.Zero)
+                {
+                    Active = true;      //activate if start timer complete
+                    setPosition(blackHole.Position);        //set first spawn position
+                }
             }
 
             if (!Active)
                 return;     //don't update if not active
+
+            //play particle effect if existant and not all enemies spawned yet
+            if (_portalEffect != null && _spawnedSoFar <= _numEnemies)
+            {
+                _portalEffect.Spawn(_spawnLocation, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+                _portalEffect.Update(gameTime);
+            }
+
+            //only start spawning if activation delay is elapsed. 
+            //Otherwise, just start particleeffect and don't spawn enemies yet
+            if (_activationDelay > TimeSpan.Zero)
+            {
+                _activationDelay -= gameTime.ElapsedGameTime;
+                return;
+            }
 
             //run spawning logic
             spawn(gameTime, _spawnLocation, blackHole.Position);
@@ -181,11 +209,15 @@ namespace SpaceGame.units
                 }
             }
 
-            XnaHelper.RadomizeVector(_spawnLocation, minX, maxX, minY, maxY);
+            XnaHelper.RandomizeVector(ref _spawnLocation, minX, maxX, minY, maxY);
+            Debug.WriteLine("Set spawn location to: " + _spawnLocation.X + "," + _spawnLocation.Y);
         }
 
-        public void DrawEnemies(SpriteBatch sb)
+        public void Draw(SpriteBatch sb)
         {
+            if (_portalEffect != null)
+                _portalEffect.Draw(sb);
+
             foreach (Enemy e in _enemies)
             {
                 e.Draw(sb);
