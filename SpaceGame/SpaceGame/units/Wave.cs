@@ -19,7 +19,9 @@ namespace SpaceGame.units
     class Wave
     {
         #region constant
-        int OUT_OF_BOUNDS_SPAWN_BUFFER = 30;
+        const int OUT_OF_BOUNDS_SPAWN_BUFFER = 30;
+        const float ACTIVATION_DELAY_SECONDS = 5;
+        const float PORTAL_ROTATION_RATE = 720;
         const string PORTAL_EFFECT_NAME1 = "SpawnPortal1";
         #endregion
 
@@ -29,7 +31,6 @@ namespace SpaceGame.units
             public EnemyData[] Enemies;
             public TimeSpan SpawnInterval;
             public TimeSpan StartTime;
-            public TimeSpan StartDelay;
         }
 
         public class EnemyData
@@ -53,6 +54,7 @@ namespace SpaceGame.units
         //these two should only apply to burst waves
         TimeSpan _activationDelay;  //how long to wait after activation before spawning
         ParticleEffect _portalEffect;   //particle effect to play once spawning begins
+        float _portalAngle;         //so portal effect can rotate
         #endregion
 
         #region properties
@@ -77,7 +79,7 @@ namespace SpaceGame.units
             _startTimer = data.StartTime;
             _isTrickleWave = trickleWave;
             _spawnLocation = Vector2.Zero;
-            _activationDelay = data.StartDelay;
+            _activationDelay = TimeSpan.FromSeconds((double)ACTIVATION_DELAY_SECONDS);
             //assign a portal particle effect if it is a burst wave
             _portalEffect = (trickleWave) ? null : new ParticleEffect(PORTAL_EFFECT_NAME1);
         }
@@ -126,11 +128,21 @@ namespace SpaceGame.units
             if (!Active)
                 return;     //don't update if not active
 
-            //play particle effect if existant and not all enemies spawned yet
-            if (_portalEffect != null && _spawnedSoFar <= _numEnemies)
+            //play particle effect if existant 
+            if (_portalEffect != null)
             {
-                _portalEffect.Spawn(_spawnLocation, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+                //spawn particles if still spawning enemies
+                if (_spawnedSoFar < _numEnemies)
+                {
+                    _portalEffect.Spawn(_spawnLocation, 90.0f + _portalAngle, gameTime.ElapsedGameTime, Vector2.Zero);
+                    _portalEffect.Spawn(_spawnLocation, -90.0f + _portalAngle, gameTime.ElapsedGameTime, Vector2.Zero);
+                }
+                _portalAngle += (float)gameTime.ElapsedGameTime.TotalSeconds * PORTAL_ROTATION_RATE;
                 _portalEffect.Update(gameTime);
+                if (_activationDelay >= TimeSpan.Zero)      //gradually increase particle intensity
+                {
+                    _portalEffect.IntensityFactor = 1.0f - (float)_activationDelay.TotalSeconds / ACTIVATION_DELAY_SECONDS;
+                }
             }
 
             //only start spawning if activation delay is elapsed. 

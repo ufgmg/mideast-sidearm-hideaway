@@ -118,7 +118,7 @@ namespace SpaceGame.units
                     _capacityUsed += unit.Mass;
                     foreach (ParticleEffect p in _particleEffects)
                     {
-                        p.SpeedFactor = 1.0f + _capacityUsed / _totalCapacity;
+                        p.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
                     }
                     Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
                     if (_capacityUsed > _totalCapacity)
