@@ -4,7 +4,7 @@
     <Player X="100" Y="100"/>
     <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="50"/>
     <Waves>
-      <Wave>
+      <Wave SpawnInterval="1">
         <Enemy Name="Goblin" X="800" Y="400"/>
         <Enemy Name="Goblin" X="800" Y="100"/>
         <Enemy Name="Goblin" X="900" Y="300"/>

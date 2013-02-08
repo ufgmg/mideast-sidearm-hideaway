@@ -21,6 +21,7 @@ namespace SpaceGame.units
         public class WaveData
         {
             public EnemyData[] Enemies;
+            public TimeSpan SpawnInterval;
         }
 
         public class EnemyData
@@ -48,19 +49,28 @@ namespace SpaceGame.units
         #endregion
 
         #region contructor
-        public Wave(Enemy[] enemies, TimeSpan spawnInterval, bool trickleWave)
+        public Wave(WaveData data, bool trickleWave)
         {
-            _enemies = enemies;
-            _numEnemies = enemies.Length;
+            EnemyData[] enemyData = data.Enemies;
+            _enemies = new Enemy[enemyData.Length];
+            for (int j = 0; j < _enemies.Length; j++)
+            {
+                _enemies[j] = new Enemy(enemyData[j].Name, enemyData[j].Position);
+            }
+            _numEnemies = _enemies.Length;
             _spawnedSoFar = 0;
-            _tillNextSpawn = spawnInterval;
-            _spawnInterval = spawnInterval;
+            _tillNextSpawn = data.SpawnInterval;
+            _spawnInterval = data.SpawnInterval;
+            _isTrickleWave = trickleWave;
         }
         #endregion
 
         #region methods
         public void Spawn(GameTime gameTime, Vector2 position)
         {
+            if (_spawnedSoFar == _numEnemies && !_isTrickleWave)
+                return;     //non-trickle waves should not respawn enemies
+
             _tillNextSpawn -= gameTime.ElapsedGameTime;
             if (_tillNextSpawn <= TimeSpan.Zero && !WaveComplete)
             {

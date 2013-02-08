@@ -142,7 +142,8 @@ namespace SpaceGame.utility
                                                    {
                                                        Position = parseVector(enemy),
                                                        Name = (string)enemy.Attribute("Name")
-                                                   }).ToArray<Wave.EnemyData>()
+                                                   }).ToArray<Wave.EnemyData>(),
+                                        SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval"))
                                     }).ToArray<Wave.WaveData>()
                     }).Single<Level.LevelData>();
         }

@@ -46,13 +46,7 @@ namespace SpaceGame.states
             _waves = new Wave[data.WaveData.Length];
             for (int i = 0; i < _waves.Length; i++)
             { 
-                Wave.EnemyData[] enemyData = data.WaveData[i].Enemies;
-                Enemy[] enemies = new Enemy[enemyData.Length];
-                for (int j = 0; j < enemies.Length; j++)
-                {
-                    enemies[j] = new Enemy(enemyData[j].Name, enemyData[j].Position);
-                }
-                _waves[i] = new Wave(enemies, TimeSpan.FromSeconds(1), true);
+                _waves[i] = new Wave(data.WaveData[i], false);
             }
 
             _primaryWeapon = new ProjectileWeapon("Rocket", _player);
