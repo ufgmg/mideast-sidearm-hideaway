@@ -19,7 +19,8 @@ namespace SpaceGame.states
         #region classes
         public struct LevelData
         {
-            public Wave.WaveData[] WaveData;
+            public Wave.WaveData[] TrickleWaveData;
+            public Wave.WaveData[] BurstWaveData;
             public BlackHole BlackHole;
             public Vector2 PlayerStartLocation;
         }
@@ -30,7 +31,8 @@ namespace SpaceGame.states
         BlackHole _blackHole;
         Weapon _primaryWeapon, _secondaryWeapon;
         Gadget _primaryGadget, _secondaryGadget;
-        Wave[] _waves;
+        Wave[] _trickleWaves;
+        Wave[] _burstWaves;
         int _waveNumber;
         //debug
         #endregion
@@ -43,10 +45,15 @@ namespace SpaceGame.states
             _player = new Spaceman(data.PlayerStartLocation);
             _blackHole = data.BlackHole;
             //construct waves
-            _waves = new Wave[data.WaveData.Length];
-            for (int i = 0; i < _waves.Length; i++)
+            _trickleWaves = new Wave[data.TrickleWaveData.Length];
+            for (int i = 0; i < _trickleWaves.Length; i++)
             { 
-                _waves[i] = new Wave(data.WaveData[i], false);
+                _trickleWaves[i] = new Wave(data.TrickleWaveData[i], true);
+            }
+            _burstWaves = new Wave[data.BurstWaveData.Length];
+            for (int i = 0; i < _burstWaves.Length; i++)
+            { 
+                _burstWaves[i] = new Wave(data.BurstWaveData[i], false);
             }
 
             _primaryWeapon = new ProjectileWeapon("Rocket", _player);
@@ -74,18 +81,12 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
-            _waves[_waveNumber].Spawn(gameTime, new Vector2(800,0));
-            _waves[_waveNumber].UpdateEnemies(gameTime, _player,
+            _trickleWaves[_waveNumber].Spawn(gameTime, new Vector2(800,0));
+            _trickleWaves[_waveNumber].UpdateEnemies(gameTime, _player,
                 _blackHole, _primaryWeapon, _secondaryWeapon);
-            if (_waves[_waveNumber].WaveComplete)
-            {
-                if (_waveNumber >= _waves.Length - 1)
-                { 
-                    //end level
-                }
-                else
-                    _waveNumber++;
-            }
+            _burstWaves[_waveNumber].Spawn(gameTime, new Vector2(100,0));
+            _burstWaves[_waveNumber].UpdateEnemies(gameTime, _player,
+                _blackHole, _primaryWeapon, _secondaryWeapon);
         }
 
         private void handleInput(InputManager input)
@@ -118,7 +119,8 @@ namespace SpaceGame.states
             _player.Draw(spriteBatch);
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
-            _waves[_waveNumber].DrawEnemies(spriteBatch);
+            _trickleWaves[0].DrawEnemies(spriteBatch);
+            _burstWaves[0].DrawEnemies(spriteBatch);
         }
         #endregion
     }
