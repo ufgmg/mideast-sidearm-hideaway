@@ -304,6 +304,7 @@ namespace SpaceGame.units
             Vector2 temp = other._velocity;
             if (XnaHelper.RectsCollide(HitRect, other.HitRect))
             {
+
                 other._velocity = this._velocity * other.Mass / this.Mass;
                 this._velocity = temp * other.Mass / this.Mass;
             }
