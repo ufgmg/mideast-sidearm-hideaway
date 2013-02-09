@@ -17,21 +17,33 @@ namespace SpaceGame.units
     class PhysicalUnit
     {
         #region static members
-        //store data for all physical units
-        public static Dictionary<string, PhysicalData> Data;
-        //store screen dimensions for keeping sprites in bounds
-        public static int ScreenWidth, ScreenHeight;
-
         //factor of force applied based on distance out of bounds
         const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
         const float BOUND_BUFFER = 20;
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
+
+        //store data for all physical units
+        public static Dictionary<string, PhysicalData> Data;
+        //store screen dimensions for keeping sprites in bounds
+        public static int ScreenWidth, ScreenHeight;
+        //reusable Vector2 for calculations
+        static Vector2 temp;
         #endregion
         #region fields
         string _unitName;
+        Vector2 _position;
         //Physical properties--------------------
-        public Vector2 Position;
+        public Vector2 Position
+        {
+            get { return _position; }
+            set
+            {
+                _position = value;
+                _hitRect.X = (int)value.X;
+                _hitRect.Y = (int)value.Y;
+            }
+        }
         Vector2 _velocity;
         Vector2 _acceleration;
         float _angularVelocity = 0;
@@ -48,12 +60,59 @@ namespace SpaceGame.units
         #region properties
         public float Mass { get { return _mass + _additionalMass; } }
         Rectangle _hitRect;
-        public Vector2 Center {get {return new Vector2(_hitRect.Center.X, _hitRect.Center.Y);}}
-        public float Bottom { get { return Position.Y + _hitRect.Height; } }
-        public float Top { get { return Position.Y; } }
-        public float Left { get { return Position.X; } }
+
         public Rectangle HitRect { get { return _hitRect; } }
-        public float Right { get { return Position.X + _hitRect.Width; } }
+
+        public Vector2 Center 
+        {
+            get {return new Vector2(_hitRect.Center.X, _hitRect.Center.Y);}
+            set
+            {
+                _position.X = value.X - HitRect.Width / 2.0f;
+                _position.Y = value.Y - HitRect.Height / 2.0f;
+            }
+        }
+
+        public int Bottom 
+        {
+            get { return HitRect.Bottom; }
+            set
+            {
+                _position.Y = value - HitRect.Height;
+                _hitRect.Y = (int)_position.Y;
+            }
+        }
+
+        public int Top 
+        {
+            get { return HitRect.Top; }
+            set
+            {
+                _position.Y = value;
+                _hitRect.Y = (int)_position.Y;
+            }
+        }
+
+        public int Left 
+        {
+            get { return HitRect.Left; }
+            set
+            {
+                _position.X = value;
+                _hitRect.X = (int)_position.X;
+            }
+        }
+
+        public int Right 
+        {
+            get { return HitRect.Right; }
+            set
+            {
+                _position.X = value - HitRect.Width;
+                _hitRect.X = (int)_position.X;
+            }
+        }
+
         public LifeState UnitLifeState { get { return _lifeState; } }
 
         //determine behavior for next update
@@ -301,12 +360,14 @@ namespace SpaceGame.units
 
         public void CheckAndApplyUnitCollision(PhysicalUnit other)
         {
-            Vector2 temp = other._velocity;
             if (XnaHelper.RectsCollide(HitRect, other.HitRect))
             {
+                temp = other._velocity; //temp is a static reusable vector
 
-                other._velocity = this._velocity * other.Mass / this.Mass;
-                this._velocity = temp * other.Mass / this.Mass;
+                other._velocity = (other._velocity * (other.Mass - this.Mass) + 2 * this.Mass * this._velocity) /
+                                    (this.Mass + other.Mass);
+                this._velocity = (this._velocity * (this.Mass - other.Mass) + 2 * other.Mass * temp) /
+                                    (this.Mass + other.Mass);
             }
         }
         #endregion

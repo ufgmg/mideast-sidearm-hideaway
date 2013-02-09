@@ -33,8 +33,6 @@ namespace SpaceGame.states
         Gadget _primaryGadget, _secondaryGadget;
         Wave[] _trickleWaves;
         Wave[] _burstWaves;
-        int _waveNumber;
-        //debug
         #endregion
 
         #region constructor
@@ -59,8 +57,6 @@ namespace SpaceGame.states
             _primaryWeapon = new ProjectileWeapon("Rocket", _player);
             _secondaryWeapon = new ProjectileWeapon("Swarmer", _player);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
-            _waveNumber = 0;
-
         }
 
         #endregion
@@ -118,6 +114,9 @@ namespace SpaceGame.states
         public override void Draw(SpriteBatch spriteBatch)
         {
             _blackHole.Draw(spriteBatch);
+            _player.Draw(spriteBatch);
+            _primaryWeapon.Draw(spriteBatch);
+            _secondaryWeapon.Draw(spriteBatch);
             foreach (Wave wave in _burstWaves)
             {
                 wave.Draw(spriteBatch);
@@ -126,9 +125,6 @@ namespace SpaceGame.states
             {
                 wave.Draw(spriteBatch);
             }
-            _player.Draw(spriteBatch);
-            _primaryWeapon.Draw(spriteBatch);
-            _secondaryWeapon.Draw(spriteBatch);
         }
         #endregion
     }
