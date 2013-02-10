@@ -17,20 +17,33 @@ namespace SpaceGame.units
     class PhysicalUnit
     {
         #region static members
-        //store data for all physical units
-        public static Dictionary<string, PhysicalData> Data;
-        //store screen dimensions for keeping sprites in bounds
-        public static int ScreenWidth, ScreenHeight;
-
         //factor of force applied based on distance out of bounds
         const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
         const float BOUND_BUFFER = 20;
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
+
+        //store data for all physical units
+        public static Dictionary<string, PhysicalData> Data;
+        //store screen dimensions for keeping sprites in bounds
+        public static int ScreenWidth, ScreenHeight;
+        //reusable Vector2 for calculations
+        static Vector2 temp;
         #endregion
-        #region physical properties
+        #region fields
+        string _unitName;
+        Vector2 _position;
         //Physical properties--------------------
-        public Vector2 Position;
+        public Vector2 Position
+        {
+            get { return _position; }
+            set
+            {
+                _position = value;
+                _hitRect.X = (int)value.X;
+                _hitRect.Y = (int)value.Y;
+            }
+        }
         Vector2 _velocity;
         Vector2 _acceleration;
         float _angularVelocity = 0;
@@ -42,19 +55,64 @@ namespace SpaceGame.units
         float _moveForce;
         //fractional speed reduction each frame
         float _decelerationFactor;
-        //status effects and recovery rates (per second)
-        float _stunEffect, _stunRecovery;
         #endregion
 
         #region properties
         public float Mass { get { return _mass + _additionalMass; } }
         Rectangle _hitRect;
-        public Vector2 Center {get {return new Vector2(_hitRect.Center.X, _hitRect.Center.Y);}}
-        public float Bottom { get { return Position.Y + _hitRect.Height; } }
-        public float Top { get { return Position.Y; } }
-        public float Left { get { return Position.X; } }
+
         public Rectangle HitRect { get { return _hitRect; } }
-        public float Right { get { return Position.X + _hitRect.Width; } }
+
+        public Vector2 Center 
+        {
+            get {return new Vector2(_hitRect.Center.X, _hitRect.Center.Y);}
+            set
+            {
+                _position.X = value.X - HitRect.Width / 2.0f;
+                _position.Y = value.Y - HitRect.Height / 2.0f;
+            }
+        }
+
+        public int Bottom 
+        {
+            get { return HitRect.Bottom; }
+            set
+            {
+                _position.Y = value - HitRect.Height;
+                _hitRect.Y = (int)_position.Y;
+            }
+        }
+
+        public int Top 
+        {
+            get { return HitRect.Top; }
+            set
+            {
+                _position.Y = value;
+                _hitRect.Y = (int)_position.Y;
+            }
+        }
+
+        public int Left 
+        {
+            get { return HitRect.Left; }
+            set
+            {
+                _position.X = value;
+                _hitRect.X = (int)_position.X;
+            }
+        }
+
+        public int Right 
+        {
+            get { return HitRect.Right; }
+            set
+            {
+                _position.X = value - HitRect.Width;
+                _hitRect.X = (int)_position.X;
+            }
+        }
+
         public LifeState UnitLifeState { get { return _lifeState; } }
 
         //determine behavior for next update
@@ -78,6 +136,7 @@ namespace SpaceGame.units
 
         public enum LifeState
         {
+            Dormant,        //never been spawned
             Living,
             Stunned,
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
@@ -95,6 +154,7 @@ namespace SpaceGame.units
         /// <param name="unitName">key to find SpriteData and PhysicalData</param>
         public PhysicalUnit(string unitName)
         {
+            _unitName = unitName;
             _sprite = new Sprite(unitName);
             PhysicalData pd = Data[unitName];
 
@@ -107,7 +167,7 @@ namespace SpaceGame.units
             _health = pd.Health;
             _decelerationFactor = pd.DecelerationFactor;
 
-            _lifeState = LifeState.Living;
+            _lifeState = LifeState.Dormant;     //not yet spawned
             _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
 
             MoveDirection = Vector2.Zero;
@@ -180,14 +240,14 @@ namespace SpaceGame.units
                     }
                 case LifeState.BeingEaten:
                     {
-                        _sprite.ScaleFactor -= 0.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        _sprite.ScaleFactor -= 1.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
                         if (_sprite.ScaleFactor <= 0)
                             _lifeState = LifeState.Destroyed;
                         break;
                     }
-                case LifeState.Destroyed:
+                default:
                     {
-                        return;
+                        return;     //don't update anything
                     }
             }
 
@@ -232,34 +292,6 @@ namespace SpaceGame.units
             }
         }
 
-        /*
-        //original static version of stayInBounds
-        private void stayInBounds(float screenWidth, float screenHeight)
-        {
-            if (Position.X < 0)
-            {
-                Position.X = 0;
-                _acceleration.X = 0;
-            }
-            else if (Position.X + _sprite.Width >= screenWidth)
-            {
-                Position.X = screenWidth - _sprite.Width;
-                _acceleration.X = 0;
-            }
-
-            if (Position.Y < 0)
-            {
-                Position.Y = 0;
-                _acceleration.Y = 0;
-            }
-            else if (Position.Y + _sprite.Height >= screenHeight)
-            {
-                Position.Y = screenHeight - _sprite.Height;
-                _acceleration.Y = 0;
-            }
-        }
-        */
-
         /// <summary>
         /// Move the sprite in the given direction based on its moveForce property
         /// </summary>
@@ -280,10 +312,20 @@ namespace SpaceGame.units
             _acceleration += gravity.Magnitude * direction * (float)theGameTime.ElapsedGameTime.TotalSeconds;
         }
 
+        public void Respawn(Vector2 newPosition)
+        {
+            Position = newPosition;
+            _lifeState = LifeState.Living;
+            Reset();
+        }
+
         public void Reset()
         {
             _velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
+            _health = Data[_unitName].Health;
+            _additionalMass = 0;
+            _angularVelocity = 0;
             _sprite.Reset();
         }
 
@@ -318,11 +360,14 @@ namespace SpaceGame.units
 
         public void CheckAndApplyUnitCollision(PhysicalUnit other)
         {
-            Vector2 temp = other._velocity;
             if (XnaHelper.RectsCollide(HitRect, other.HitRect))
             {
-                other._velocity = this._velocity * other.Mass / this.Mass;
-                this._velocity = temp * other.Mass / this.Mass;
+                temp = other._velocity; //temp is a static reusable vector
+
+                other._velocity = (other._velocity * (other.Mass - this.Mass) + 2 * this.Mass * this._velocity) /
+                                    (this.Mass + other.Mass);
+                this._velocity = (this._velocity * (this.Mass - other.Mass) + 2 * other.Mass * temp) /
+                                    (this.Mass + other.Mass);
             }
         }
         #endregion
@@ -330,8 +375,8 @@ namespace SpaceGame.units
         #region Draw Logic
         public void Draw(SpriteBatch sb)
         {
-            if (_lifeState == LifeState.Destroyed)
-                return;     //dont draw destroyed sprites
+            if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
+                return;     //dont draw destroyed or not yet spawned sprites
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);

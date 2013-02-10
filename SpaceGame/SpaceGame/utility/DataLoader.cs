@@ -134,15 +134,21 @@ namespace SpaceGame.utility
                     {
                         PlayerStartLocation = parseVector(level.Element("Player")),
                         BlackHole = parseBlackHole(level.Element("BlackHole")),
-                        WaveData = (from wave in level.Descendants("Wave")
+                        TrickleWaveData = (from wave in level.Descendants("TrickleWave")
                                     select new Wave.WaveData
                                     {
-                                        Enemies = (from enemy in wave.Descendants("Enemy")
-                                                   select new Wave.EnemyData
-                                                   {
-                                                       Position = parseVector(enemy),
-                                                       Name = (string)enemy.Attribute("Name")
-                                                   }).ToArray<Wave.EnemyData>()
+                                        EnemyNames = (from enemy in wave.Descendants("Enemy")
+                                                   select (string)enemy.Attribute("Name")).ToArray<string>(),
+                                        SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval")),
+                                        StartTime = TimeSpan.FromSeconds((float)wave.Attribute("StartTime")),
+                                    }).ToArray<Wave.WaveData>(),
+                        BurstWaveData = (from wave in level.Descendants("BurstWave")
+                                    select new Wave.WaveData
+                                    {
+                                        EnemyNames = (from enemy in wave.Descendants("Enemy")
+                                                   select (string)enemy.Attribute("Name")).ToArray<string>(),
+                                        SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval")),
+                                        StartTime = TimeSpan.FromSeconds((float)wave.Attribute("StartTime")),
                                     }).ToArray<Wave.WaveData>()
                     }).Single<Level.LevelData>();
         }

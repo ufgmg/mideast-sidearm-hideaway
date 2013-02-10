@@ -11,6 +11,11 @@ namespace SpaceGame.units
 {
     class Enemy : PhysicalUnit
     {
+        public Enemy(string unitName)
+            :base(unitName)
+        {
+        }
+
         public Enemy(string unitName, Vector2 startPosition)
             :base(unitName, startPosition)
         {

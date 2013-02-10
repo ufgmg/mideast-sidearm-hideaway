@@ -25,6 +25,11 @@ namespace SpaceGame
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        #region const
+        public const int SCREENWIDTH = 1280;
+        public const int SCREENHEIGHT = 720;
+        #endregion
+        
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager _inputManager = new InputManager();
@@ -37,8 +42,8 @@ namespace SpaceGame
             Content.RootDirectory = "Content";
 
             //set resolution        TODO: Move this to an XML Configuration File
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = SCREENWIDTH;
+            graphics.PreferredBackBufferHeight = SCREENHEIGHT;
 
             //TODO: replace with custom cursor
             this.IsMouseVisible = true;
@@ -77,6 +82,10 @@ namespace SpaceGame
             //Initialize blank particle texture as a single pixel
             ParticleEffect.ParticleTexture = new Texture2D(GraphicsDevice, 1, 1);
             ParticleEffect.ParticleTexture.SetData<Color>(new Color[] {Color.White});
+
+            //load hud textures
+            //SpaceGame.graphics.hud.RadialBar.BarPipTexture = Content.Load<Texture2D>("hud/radial_bar_pip");
+            SpaceGame.graphics.hud.RadialBar.GameGraphicsDevice = GraphicsDevice;
 
             XnaHelper.PixelTexture = new Texture2D(GraphicsDevice, 1, 1);
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});

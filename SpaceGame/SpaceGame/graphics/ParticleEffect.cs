@@ -67,17 +67,18 @@ namespace SpaceGame.graphics
 
         #region properties
         public bool Reversed { get; set; }
-        public float SpeedFactor 
+        public float IntensityFactor 
         {
             get { return _speedFactor; }
             set
             {
                 _speedFactor = value;
-                _particleSpeed = _particleEffectData.Speed * SpeedFactor;
-                _particleLife = TimeSpan.FromSeconds((float)_particleEffectData.ParticleLife.TotalSeconds / SpeedFactor);
+                _particleSpeed = _particleEffectData.Speed * IntensityFactor;
+                //_particleLife = TimeSpan.FromSeconds((float)_particleEffectData.ParticleLife.TotalSeconds / IntensityFactor);
                 _scaleRate =
                     (((_particleEffectData.EndScale - _particleEffectData.StartScale) / _particleTexture.Width)
                     / ((float)_particleLife.TotalSeconds));
+                _spawnRate = (int)((float)_particleEffectData.SpawnRate * IntensityFactor);
             }
         }
         #endregion
@@ -129,7 +130,7 @@ namespace SpaceGame.graphics
             _spawnRate = _particleEffectData.SpawnRate;
             _tillNextParticleSpawn = TimeSpan.FromSeconds(1.0f / (float)_spawnRate);
             _particles = new List<Particle>();
-            SpeedFactor = 1.0f;
+            IntensityFactor = 1.0f;
         }
 
         public void Update(GameTime gameTime)

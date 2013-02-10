@@ -82,6 +82,17 @@ namespace SpaceGame.utility
             return centerAngle + arc * (0.5f - (float)rand.NextDouble());
         }
 
+        public static void RandomizeVector(ref Vector2 refVector, float minX, float maxX, float minY, float maxY)
+        {
+            refVector.X = minX + (float)rand.NextDouble() * (maxX - minX);
+            refVector.Y = minY + (float)rand.NextDouble() * (maxY - minY);
+        }
+
+        public static int RandomInt(int min, int max)
+        {
+            return rand.Next(min, max);
+        }
+
         public static void DrawRect(Color color, Rectangle rect, SpriteBatch sb)
         {
             sb.Draw(PixelTexture, rect, color);

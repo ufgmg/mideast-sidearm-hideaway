@@ -77,7 +77,7 @@ namespace SpaceGame.units
                 if (_state == BlackHoleState.Pulling || _state == BlackHoleState.Explosion)
                 {
                     p.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero,
-                        1 + _capacityUsed / _totalCapacity);   //spawn rate increases as capacity fills 
+                        1.0f + _capacityUsed / _totalCapacity);   //spawn rate increases as capacity fills 
                 }
             }
             if (_state == BlackHoleState.PreExplosion || _state == BlackHoleState.Explosion)
@@ -88,7 +88,7 @@ namespace SpaceGame.units
                     if (_state == BlackHoleState.PreExplosion)
                     {
                         _state = BlackHoleState.Explosion;  //start exploding
-                        Gravity.MagnitudeFactor = -1;   //go from suck to blow 
+                        Gravity.MagnitudeFactor = -3;   //go from suck to blow 
                         foreach (ParticleEffect p in _particleEffects)
                             p.Reversed = false;     //cause particle effects to push out
                         _explosionTimer = TimeSpan.FromSeconds(SECONDS_DURING_EXPLODE);
@@ -118,9 +118,9 @@ namespace SpaceGame.units
                     _capacityUsed += unit.Mass;
                     foreach (ParticleEffect p in _particleEffects)
                     {
-                        p.SpeedFactor = 1 + _capacityUsed / _totalCapacity;
+                        p.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
                     }
-                    Gravity.MagnitudeFactor = (1 + _capacityUsed / _totalCapacity);
+                    Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
                     if (_capacityUsed > _totalCapacity)
                     {
                         _state = BlackHoleState.PreExplosion;
@@ -136,7 +136,6 @@ namespace SpaceGame.units
             foreach (ParticleEffect p in _particleEffects)
                 p.Draw(sb, Position);
         }
-
         #endregion
     }
 }

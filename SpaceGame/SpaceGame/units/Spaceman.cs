@@ -25,6 +25,7 @@ namespace SpaceGame.units
             :base(SPACEMAN_NAME, startPosition)
         {
             thrusterParticleEffect = new ParticleEffect(THRUSTER_EFFECT_NAME);
+            _lifeState = LifeState.Living;      //astronaut starts pre-spawned
         }
 
     }

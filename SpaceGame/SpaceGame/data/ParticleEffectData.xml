@@ -11,27 +11,13 @@
 <!-- Colors are defined as "A,R,G,B"-->
 
 <ParticleEffectDatas>
+
   <ParticleEffectData Name="SpacemanThruster" 
                       Speed="250.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="720.0" 
                       StartScale ="5.0" ScaleVariance="0.3" EndScale="40.0" 
                       SpawnArc="30.0" SpawnRate="50" ParticleLife="0.3" ParticleLifeVariance="0.5"
                       StartColor="255,255,0,0" EndColor ="0,50,50,50"
                       Reversed="False" />
-
-  <ParticleEffectData Name="BlackHoleEffect1" 
-                      Speed="5.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="360.0" 
-                      StartScale ="3.0" ScaleVariance="0.3" EndScale="30.0" 
-                      SpawnArc="360.0" SpawnRate="100" ParticleLife="0.8" ParticleLifeVariance="0.5"
-                      StartColor="100,0,0,0" EndColor ="200,148,0,211"
-                      Reversed="True" />
-
-  <ParticleEffectData Name="BlackHoleEffect2" 
-                      Speed="40.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="-100.0" 
-                      StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
-                      SpawnArc="360.0" SpawnRate="200" ParticleLife="1.5" ParticleLifeVariance="0.5"
-                      StartColor="100,0,0,0" EndColor ="200,148,0,211"
-                      UniqueParticle="HollowSquare2"
-                      Reversed="True" />
 
   <ParticleEffectData Name="RocketBooster" 
                       Speed="100.0" SpeedVariance="0.3" DecelerationFactor="3.0" ParticleRotation="360.0" 
@@ -46,4 +32,30 @@
                       SpawnArc="360.0" SpawnRate="600" ParticleLife="0.2" ParticleLifeVariance="0.3"
                       StartColor="255,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
+
+  <!-- The following are special particle effects references directly by classes (rather than being specified by other xml files.
+       The names cannot be changed without modifying the references in the associated classes-->
+
+  <ParticleEffectData Name="BlackHoleEffect1" 
+                      Speed="5.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="360.0" 
+                      StartScale ="3.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="360.0" SpawnRate="100" ParticleLife="0.6" ParticleLifeVariance="0.5"
+                      StartColor="100,0,0,0" EndColor ="200,148,0,211"
+                      Reversed="True" />
+
+  <ParticleEffectData Name="BlackHoleEffect2" 
+                      Speed="30.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="-100.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
+                      SpawnArc="360.0" SpawnRate="200" ParticleLife="1.2" ParticleLifeVariance="0.5"
+                      StartColor="100,0,0,0" EndColor ="200,148,0,211"
+                      UniqueParticle="HollowSquare2"
+                      Reversed="True" />
+
+  <ParticleEffectData Name="SpawnPortal1" 
+                      Speed="600.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="90.0" 
+                      StartScale ="5.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="90.0" SpawnRate="200" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,0,255,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
 </ParticleEffectDatas>

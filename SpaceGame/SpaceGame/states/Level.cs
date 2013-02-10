@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using SpaceGame.graphics;
+using SpaceGame.graphics.hud;
 using SpaceGame.utility;
 using SpaceGame.units;
 using SpaceGame.equipment;
@@ -18,7 +19,8 @@ namespace SpaceGame.states
         #region classes
         public struct LevelData
         {
-            public Wave.WaveData[] WaveData;
+            public Wave.WaveData[] TrickleWaveData;
+            public Wave.WaveData[] BurstWaveData;
             public BlackHole BlackHole;
             public Vector2 PlayerStartLocation;
         }
@@ -30,7 +32,6 @@ namespace SpaceGame.states
         Weapon _primaryWeapon, _secondaryWeapon;
         Gadget _primaryGadget, _secondaryGadget;
         Wave[] _waves;
-        int _waveNumber;
         #endregion
 
         #region constructor
@@ -40,23 +41,20 @@ namespace SpaceGame.states
             LevelData data = DataLoader.LoadLevel(levelNumber);
             _player = new Spaceman(data.PlayerStartLocation);
             _blackHole = data.BlackHole;
-            _waves = new Wave[data.WaveData.Length];
-            for (int i = 0; i < _waves.Length; i++)
+            _waves = new Wave[data.TrickleWaveData.Length + data.BurstWaveData.Length];
+            //construct waves
+            for (int i = 0; i < data.TrickleWaveData.Length; i++)
             { 
-                Wave.EnemyData[] enemyData = data.WaveData[i].Enemies;
-                Enemy[] enemies = new Enemy[enemyData.Length];
-                for (int j = 0; j < enemies.Length; j++)
-                {
-                    enemies[j] = new Enemy(enemyData[j].Name, enemyData[j].Position);
-                }
-                _waves[i] = new Wave(enemies);
+                _waves[i] = new Wave(data.TrickleWaveData[i], true);
+            }
+            for (int i = 0; i < data.BurstWaveData.Length; i++)
+            {
+                _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false);
             }
 
             _primaryWeapon = new ProjectileWeapon("Rocket", _player);
             _secondaryWeapon = new ProjectileWeapon("Swarmer", _player);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
-            _waveNumber = 0;
-
         }
 
         #endregion
@@ -77,16 +75,9 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
-            _waves[_waveNumber].UpdateEnemies(gameTime, _player,
-                _blackHole, _primaryWeapon, _secondaryWeapon);
-            if (_waves[_waveNumber].AllDestroyed)
+            foreach (Wave wave in _waves)
             {
-                if (_waveNumber >= _waves.Length - 1)
-                { 
-                    //end level
-                }
-                else
-                    _waveNumber++;
+                wave.Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
             }
         }
 
@@ -120,7 +111,10 @@ namespace SpaceGame.states
             _player.Draw(spriteBatch);
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
-            _waves[_waveNumber].DrawEnemies(spriteBatch);
+            foreach (Wave wave in _waves)
+            {
+                wave.Draw(spriteBatch);
+            }
         }
         #endregion
     }
