@@ -33,15 +33,9 @@ namespace SpaceGame.units
         #region classes
         public class WaveData
         {
-            public EnemyData[] Enemies;
+            public string[] EnemyNames;
             public TimeSpan SpawnInterval;
             public TimeSpan StartTime;
-        }
-
-        public class EnemyData
-        {
-            public Vector2 Position;
-            public string Name;
         }
         #endregion
 
@@ -71,11 +65,11 @@ namespace SpaceGame.units
         #region constructor
         public Wave(WaveData data, bool trickleWave)
         {
-            EnemyData[] enemyData = data.Enemies;
-            _enemies = new Enemy[enemyData.Length];
+            string[] enemyNames = data.EnemyNames;
+            _enemies = new Enemy[enemyNames.Length];
             for (int j = 0; j < _enemies.Length; j++)
             {
-                _enemies[j] = new Enemy(enemyData[j].Name, enemyData[j].Position);
+                _enemies[j] = new Enemy(enemyNames[j]);
             }
             _numEnemies = _enemies.Length;
             _spawnedSoFar = 0;
@@ -84,7 +78,8 @@ namespace SpaceGame.units
             _startTimer = data.StartTime;
             _isTrickleWave = trickleWave;
             _spawnLocation = Vector2.Zero;
-            _activationDelay = TimeSpan.FromSeconds((double)ACTIVATION_DELAY_SECONDS);
+            //activation delay is zero for trickle waves
+            _activationDelay = _isTrickleWave ? TimeSpan.Zero : TimeSpan.FromSeconds((double)ACTIVATION_DELAY_SECONDS);
             //assign a portal particle effect if it is a burst wave
             _portalEffect = (trickleWave) ? null : new ParticleEffect(PORTAL_EFFECT_NAME1);
         }

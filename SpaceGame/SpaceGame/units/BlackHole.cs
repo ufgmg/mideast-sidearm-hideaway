@@ -88,7 +88,7 @@ namespace SpaceGame.units
                     if (_state == BlackHoleState.PreExplosion)
                     {
                         _state = BlackHoleState.Explosion;  //start exploding
-                        Gravity.MagnitudeFactor = -5;   //go from suck to blow 
+                        Gravity.MagnitudeFactor = -3;   //go from suck to blow 
                         foreach (ParticleEffect p in _particleEffects)
                             p.Reversed = false;     //cause particle effects to push out
                         _explosionTimer = TimeSpan.FromSeconds(SECONDS_DURING_EXPLODE);

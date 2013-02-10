@@ -31,8 +31,7 @@ namespace SpaceGame.states
         BlackHole _blackHole;
         Weapon _primaryWeapon, _secondaryWeapon;
         Gadget _primaryGadget, _secondaryGadget;
-        Wave[] _trickleWaves;
-        Wave[] _burstWaves;
+        Wave[] _waves;
         #endregion
 
         #region constructor
@@ -42,16 +41,15 @@ namespace SpaceGame.states
             LevelData data = DataLoader.LoadLevel(levelNumber);
             _player = new Spaceman(data.PlayerStartLocation);
             _blackHole = data.BlackHole;
+            _waves = new Wave[data.TrickleWaveData.Length + data.BurstWaveData.Length];
             //construct waves
-            _trickleWaves = new Wave[data.TrickleWaveData.Length];
-            for (int i = 0; i < _trickleWaves.Length; i++)
+            for (int i = 0; i < data.TrickleWaveData.Length; i++)
             { 
-                _trickleWaves[i] = new Wave(data.TrickleWaveData[i], true);
+                _waves[i] = new Wave(data.TrickleWaveData[i], true);
             }
-            _burstWaves = new Wave[data.BurstWaveData.Length];
-            for (int i = 0; i < _burstWaves.Length; i++)
-            { 
-                _burstWaves[i] = new Wave(data.BurstWaveData[i], false);
+            for (int i = 0; i < data.BurstWaveData.Length; i++)
+            {
+                _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false);
             }
 
             _primaryWeapon = new ProjectileWeapon("Rocket", _player);
@@ -77,11 +75,7 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
-            foreach (Wave wave in _burstWaves)
-            {
-                wave.Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
-            }
-            foreach (Wave wave in _trickleWaves)
+            foreach (Wave wave in _waves)
             {
                 wave.Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
             }
@@ -117,11 +111,7 @@ namespace SpaceGame.states
             _player.Draw(spriteBatch);
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
-            foreach (Wave wave in _burstWaves)
-            {
-                wave.Draw(spriteBatch);
-            }
-            foreach (Wave wave in _trickleWaves)
+            foreach (Wave wave in _waves)
             {
                 wave.Draw(spriteBatch);
             }
