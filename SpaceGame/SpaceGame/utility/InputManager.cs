@@ -18,6 +18,7 @@ namespace SpaceGame.utility
         #endregion
 
         #region properties
+
         //Input Requests
         public bool MoveLeft
         {
@@ -34,6 +35,55 @@ namespace SpaceGame.utility
         public bool MoveUp 
         { 
             get {return currentKeyboardState.IsKeyDown(Keys.W);}
+        }
+
+        /// <summary>
+        /// Request to move selector left (use for menus)
+        /// </summary>
+        public bool SelectLeft
+        {
+            get { return keyTapped(Keys.A) || keyTapped(Keys.Left)
+                || keyTapped(Keys.H); }
+        }
+        /// <summary>
+        /// Request to move selector right (use for menus)
+        /// </summary>
+        public bool SelectRight 
+        { 
+            get { return keyTapped(Keys.D) || keyTapped(Keys.Right)
+                || keyTapped(Keys.L); }
+        }
+        /// <summary>
+        /// Request to move selector down (use for menus)
+        /// </summary>
+        public bool SelectDown 
+        { 
+            get { return keyTapped(Keys.S) || keyTapped(Keys.Down)
+                || keyTapped(Keys.J); }
+        }
+        /// <summary>
+        /// Request to move selector up (use for menus)
+        /// </summary>
+        public bool SelectUp 
+        { 
+            get { return keyTapped(Keys.W) || keyTapped(Keys.Up)
+                || keyTapped(Keys.K); }
+        }
+
+        /// <summary>
+        /// Confirmation button pressed (use for menus)
+        /// </summary>
+        public bool Confirm 
+        {
+            get { return keyTapped(Keys.Enter) || keyTapped(Keys.Space)
+                || keyTapped(Keys.I); }
+        }
+        /// <summary>
+        /// Cancellation/back button pressed (use for menus)
+        /// </summary>
+        public bool Cancel 
+        {
+            get { return keyTapped(Keys.Escape) || keyTapped(Keys.Back); }
         }
         /// <summary>
         /// Get requested direction based on movement keys (normalized)
@@ -103,6 +153,12 @@ namespace SpaceGame.utility
             currentKeyboardState = Keyboard.GetState();
             previousMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
+        }
+
+        private bool keyTapped(Keys key)
+        {
+            return currentKeyboardState.IsKeyDown(key)
+                && previousKeyboardState.IsKeyUp(key);
         }
         #endregion
     }
