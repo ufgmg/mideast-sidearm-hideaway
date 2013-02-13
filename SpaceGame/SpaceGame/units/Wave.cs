@@ -112,6 +112,15 @@ namespace SpaceGame.units
             }
         }
 
+        /// <summary>
+        /// Update wave, updating behavior of all enemies.
+        /// Check collisions against player and self, but not other waves
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="player"></param>
+        /// <param name="blackHole"></param>
+        /// <param name="weapon1"></param>
+        /// <param name="weapon2"></param>
         public void Update(GameTime gameTime, Spaceman player, 
             BlackHole blackHole, Weapon weapon1, Weapon weapon2)
         {
@@ -178,6 +187,21 @@ namespace SpaceGame.units
             }
             //stay active unless it is not a trickle wave and all enemies are destroyed
             Active = Active && (_isTrickleWave || !allDestroyed);
+        }
+
+        public void CheckAndApplyCollisions(Wave otherWave)
+        {
+            for (int i = 0; i < _enemies.Length; i++)
+            {
+                if (!_enemies[i].Collides)
+                    continue;   //don't check enemies that shouldn't collide
+
+                for (int j = 0; j < otherWave._enemies.Length; j++)
+                {
+                    //check collision against other enemies 
+                    _enemies[i].CheckAndApplyUnitCollision(otherWave._enemies[j]);
+                }
+            }
         }
 
         private void setPosition(Vector2 blackHolePosition)

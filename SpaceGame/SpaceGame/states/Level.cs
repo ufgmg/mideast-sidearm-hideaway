@@ -75,9 +75,17 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
-            foreach (Wave wave in _waves)
+            for (int i = 0; i < _waves.Length; i++)
             {
-                wave.Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
+                _waves[i].Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
+                //check cross-wave collisions
+                if (_waves[i].Active)
+                {
+                    for (int j = i + 1; j < _waves.Length; j++)
+                    {
+                        _waves[i].CheckAndApplyCollisions(_waves[j]);
+                    }
+                }
             }
         }
 
