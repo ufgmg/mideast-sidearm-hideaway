@@ -118,6 +118,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="states\Gamemenu.cs" />
     <Compile Include="states\Gamestate.cs" />
     <Compile Include="states\Level.cs" />
     <Compile Include="units\BlackHole.cs" />
