@@ -118,6 +118,12 @@ namespace SpaceGame.units
         //determine behavior for next update
         public Vector2 MoveDirection { get; set; }
         public Vector2 LookDirection { get; set; }
+
+        //behavioral properties
+        public bool Collides
+        {
+            get { return _lifeState == LifeState.Living || _lifeState == LifeState.Disabled; }
+        }
         #endregion
 
         #region other members
@@ -360,6 +366,9 @@ namespace SpaceGame.units
 
         public void CheckAndApplyUnitCollision(PhysicalUnit other)
         {
+            if (!Collides)
+                return;     //don't check collision if unit shouldn't collide
+
             if (XnaHelper.RectsCollide(HitRect, other.HitRect))
             {
                 temp = other._velocity; //temp is a static reusable vector
