@@ -52,8 +52,8 @@ namespace SpaceGame.states
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false);
             }
 
-            _primaryWeapon = new ProjectileWeapon("Rocket", _player);
-            _secondaryWeapon = new ProjectileWeapon("Swarmer", _player);
+            _primaryWeapon = new MeleeWeapon("Gravity Gauntlet", _player);
+            _secondaryWeapon = new HookShot(_player);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
         }
 
@@ -70,8 +70,6 @@ namespace SpaceGame.states
             
             _blackHole.ApplyToUnit(_player, gameTime);
             _player.Update(gameTime);
-            _primaryWeapon.Update(gameTime);
-            _secondaryWeapon.Update(gameTime);
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
@@ -87,6 +85,9 @@ namespace SpaceGame.states
                     }
                 }
             }
+
+            _primaryWeapon.Update(gameTime);
+            _secondaryWeapon.Update(gameTime);
         }
 
         private void handleInput(InputManager input)

@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 using SpaceGame.graphics;
 using SpaceGame.units;
+using SpaceGame.utility;
 
 namespace SpaceGame.equipment
 {
@@ -37,6 +41,7 @@ namespace SpaceGame.equipment
         float _hitArc;  //in radians
         ParticleEffect _attackParticleEffect;
         ParticleEffect _hitParticleEffect;
+        Vector2 _tempVector;
         #endregion
 
         #region properties
@@ -57,6 +62,7 @@ namespace SpaceGame.equipment
             _force = data.Force;
             _recoil = data.Force;
             _hitArc = data.HitArc;
+            _range = data.Range;
             _attackParticleEffect = (data.AttackParticleEffect == null) ?
                 null : new ParticleEffect(data.AttackParticleEffect);
             _hitParticleEffect = (data.HitParticleEffect == null) ?
@@ -65,6 +71,37 @@ namespace SpaceGame.equipment
         #endregion
 
         #region methods
+        public override void CheckAndApplyCollision(PhysicalUnit unit)
+        {
+            if (!_firing)
+                return;     //don't check collisions if not firing
+
+            _tempVector = _owner.Center - unit.Center;
+            float temp = XnaHelper.AngleBetween(_tempVector, _fireDirection);
+
+            if (_tempVector.Length() <= _range 
+                && XnaHelper.AngleBetween(_tempVector, _fireDirection) <= _hitArc / 2.0f
+                )
+            { 
+                _tempVector.Normalize();
+                unit.ApplyForce(_force * _tempVector);
+                unit.ApplyDamage(_damage);
+            }
+        }
+        protected override void UpdateWeapon(GameTime gameTime)
+        {
+            if (_firing)
+            {
+                _attackParticleEffect.Spawn(_owner.Center, XnaHelper.DegreesFromVector(_fireDirection),
+                    gameTime.ElapsedGameTime, _owner.Velocity);
+            }
+
+            _attackParticleEffect.Update(gameTime);
+        }
+        public override void Draw(SpriteBatch sb)
+        {
+            _attackParticleEffect.Draw(sb);
+        }
         #endregion
     }
 }

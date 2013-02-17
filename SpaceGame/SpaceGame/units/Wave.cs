@@ -22,7 +22,7 @@ namespace SpaceGame.units
         //how far out of bounds trickle waves can spawn enemies
         const int OUT_OF_BOUNDS_SPAWN_BUFFER = 30;
         //how long between starting to show effect and spawning enemies
-        const float ACTIVATION_DELAY_SECONDS = 5;
+        const float ACTIVATION_DELAY_SECONDS = 3;
         //how fast portal effect rotates (degrees/sec)
         const float PORTAL_ROTATION_RATE = 720;
         const string PORTAL_EFFECT_NAME1 = "SpawnPortal1";
@@ -134,6 +134,9 @@ namespace SpaceGame.units
                 }
             }
 
+            if (_portalEffect != null)
+                _portalEffect.Update(gameTime);
+
             if (!Active)
                 return;     //don't update if not active
 
@@ -147,7 +150,6 @@ namespace SpaceGame.units
                     _portalEffect.Spawn(_spawnLocation, -90.0f + _portalAngle, gameTime.ElapsedGameTime, Vector2.Zero);
                 }
                 _portalAngle += (float)gameTime.ElapsedGameTime.TotalSeconds * PORTAL_ROTATION_RATE;
-                _portalEffect.Update(gameTime);
                 if (_activationDelay >= TimeSpan.Zero)      //gradually increase particle intensity
                 {
                     _portalEffect.IntensityFactor = 1.0f - (float)_activationDelay.TotalSeconds / ACTIVATION_DELAY_SECONDS;
@@ -170,9 +172,13 @@ namespace SpaceGame.units
             for (int i = _enemies.Length - 1; i >= 0; i--)
             {
                 if (_enemies[i].UnitLifeState == PhysicalUnit.LifeState.Destroyed)
-                    continue;   //don't update destroyed units
+                    continue;   //don't update units that shouldn't be updated
 
                 allDestroyed = false;       //found one that isn't destroyed
+
+                if (!_enemies[i].Updates)
+                    continue;   //don't update units that shouldn't be updated
+
                 for (int j = i - 1; j >= 0; j--)
                 {
                     //check collision against other enemies 

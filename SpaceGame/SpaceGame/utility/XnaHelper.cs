@@ -60,6 +60,19 @@ namespace SpaceGame.utility
             return Vector2.Transform(-Vector2.UnitY, rotMatrix);
         }
 
+        /// <summary>
+        /// Get the absolute value of the inner angle (radians) between the two vectors
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <returns></returns>
+        public static float AngleBetween(Vector2 v1, Vector2 v2)
+        {
+            return Math.Min(
+                Math.Abs(RadiansFromVector(v1) - RadiansFromVector(v2)),
+                Math.Abs(RadiansFromVector(v2) - RadiansFromVector(v1)));
+        }
+
         public static bool RectsCollide(Rectangle rect1, Rectangle rect2)
         {
             return (rect1.Right > rect2.Left && rect1.Left < rect2.Right &&
@@ -97,6 +110,5 @@ namespace SpaceGame.utility
         {
             sb.Draw(PixelTexture, rect, color);
         }
-
     }
 }

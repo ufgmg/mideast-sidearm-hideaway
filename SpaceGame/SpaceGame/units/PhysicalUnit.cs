@@ -45,6 +45,7 @@ namespace SpaceGame.units
             }
         }
         Vector2 _velocity;
+        public Vector2 Velocity { get { return _velocity; } }
         Vector2 _acceleration;
         float _angularVelocity = 0;
         float _mass;
@@ -123,6 +124,10 @@ namespace SpaceGame.units
         public bool Collides
         {
             get { return _lifeState == LifeState.Living || _lifeState == LifeState.Disabled; }
+        }
+        public bool Updates
+        {
+            get { return !(_lifeState == LifeState.Dormant || _lifeState == LifeState.Destroyed); }
         }
         #endregion
 

@@ -19,6 +19,13 @@
                       StartColor="255,255,0,0" EndColor ="0,50,50,50"
                       Reversed="False" />
 
+  <ParticleEffectData Name="PunchWave" 
+                      Speed="1400.0" SpeedVariance="0.1" DecelerationFactor="3.0" ParticleRotation="0.0" 
+                      StartScale ="1.0" ScaleVariance="0.1" EndScale="20.0" 
+                      SpawnArc="90.0" SpawnRate="1800" ParticleLife="0.05" ParticleLifeVariance="0.0"
+                      StartColor="255,0,0,255" EndColor ="0,0,0,255"
+                      Reversed="False" />
+
   <ParticleEffectData Name="RocketBooster" 
                       Speed="100.0" SpeedVariance="0.3" DecelerationFactor="3.0" ParticleRotation="360.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="30.0" 

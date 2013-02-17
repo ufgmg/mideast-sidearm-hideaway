@@ -126,6 +126,25 @@ namespace SpaceGame.utility
                     }).ToDictionary(t => t.Name);
         }
 
+        public static Dictionary<string, MeleeWeapon.MeleeWeaponData> LoadMeleeWeaponData(string pathToXML)
+        {
+            return (from wd in XElement.Load(pathToXML).Descendants("MeleeWeapon")
+                    select new MeleeWeapon.MeleeWeaponData
+                    {
+                        Name = (string)wd.Attribute("Name"),
+                        FireRate = (float)wd.Attribute("FireRate"),
+                        Range = (float)wd.Attribute("Range"),
+                        Recoil = (float)wd.Attribute("Recoil"),
+                        HitArc = MathHelper.ToRadians((float)wd.Attribute("HitArc")),
+                        MaxAmmo = (int)wd.Attribute("MaxAmmo"),
+                        AmmoConsumption = (int)wd.Attribute("AmmoConsumption"),
+                        Damage = (int)wd.Attribute("Damage"),
+                        Force = (int)wd.Attribute("Force"),
+                        AttackParticleEffect = (string)wd.Attribute("AttackParticleEffect"),
+                        HitParticleEffect = (string)wd.Attribute("HitParticleEffect")
+                    }).ToDictionary(t => t.Name);
+        }
+
         public static Level.LevelData LoadLevel(int levelNumber)
         {
             return (from level in XElement.Load(LEVEL_DIRECTORY).Descendants("Level")
