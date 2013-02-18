@@ -1,3 +1,5 @@
+![Mideast Sidearm Hideaway](http://lumeh.org/files/public/mideast_sidearm_hideaway.png)
+
 ## Game description
 
 ### Backstory
