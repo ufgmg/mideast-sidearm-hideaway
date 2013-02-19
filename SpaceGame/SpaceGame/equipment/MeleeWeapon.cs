@@ -76,13 +76,10 @@ namespace SpaceGame.equipment
             if (!_firing)
                 return;     //don't check collisions if not firing
 
-            _tempVector = unit.Center - _owner.Center;
-            float temp = XnaHelper.AngleBetween(_tempVector, _fireDirection);
-
-            if (_tempVector.Length() <= _range 
-                && XnaHelper.AngleBetween(_tempVector, _fireDirection) <= _hitArc / 2.0f
-                )
+            float fireAngle = XnaHelper.RadiansFromVector(_fireDirection);
+            if (XnaHelper.RectangleIntersectsArc(unit.HitRect, _owner.Center, _range, fireAngle, _hitArc))
             { 
+                _tempVector = unit.Center - _owner.Center;
                 _tempVector.Normalize();
                 unit.ApplyImpact(_force * _tempVector, 1);
                 unit.ApplyDamage(_damage);
