@@ -76,7 +76,7 @@ namespace SpaceGame.equipment
             if (!_firing)
                 return;     //don't check collisions if not firing
 
-            _tempVector = _owner.Center - unit.Center;
+            _tempVector = unit.Center - _owner.Center;
             float temp = XnaHelper.AngleBetween(_tempVector, _fireDirection);
 
             if (_tempVector.Length() <= _range 
@@ -84,7 +84,7 @@ namespace SpaceGame.equipment
                 )
             { 
                 _tempVector.Normalize();
-                unit.ApplyForce(_force * _tempVector);
+                unit.ApplyImpact(_force * _tempVector, 1);
                 unit.ApplyDamage(_damage);
             }
         }

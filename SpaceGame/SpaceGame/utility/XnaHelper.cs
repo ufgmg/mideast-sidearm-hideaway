@@ -68,9 +68,14 @@ namespace SpaceGame.utility
         /// <returns></returns>
         public static float AngleBetween(Vector2 v1, Vector2 v2)
         {
+            float a = Math.Abs(RadiansFromVector(v1) - RadiansFromVector(v2));
+            float b = MathHelper.TwoPi - Math.Abs(RadiansFromVector(v1) - RadiansFromVector(v2));
+            return Math.Min(a, b);
+            /*
             return Math.Min(
                 Math.Abs(RadiansFromVector(v1) - RadiansFromVector(v2)),
-                Math.Abs(RadiansFromVector(v2) - RadiansFromVector(v1)));
+                MathHelper.TwoPi - Math.Abs(RadiansFromVector(v1) - RadiansFromVector(v2)));
+            */
         }
 
         public static bool RectsCollide(Rectangle rect1, Rectangle rect2)

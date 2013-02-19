@@ -199,6 +199,18 @@ namespace SpaceGame.units
             _acceleration += theForce / Mass;
         }
 
+        /// <summary>
+        /// apply the effect of an object impacting this unit.
+        /// Useful for single time impacts, like a melee weapon hit
+        /// </summary>
+        /// <param name="objectVelocity">Velocity of object hitting the unit</param>
+        /// <param name="objectMass">mass of object hitting the unit</param>
+        public void ApplyImpact(Vector2 objectVelocity, int objectMass)
+        {
+            _velocity = (_velocity * (this.Mass - objectMass) + 2 * objectMass * objectVelocity) /
+                                (this.Mass + objectMass);
+        }
+
         public void ApplyDamage(int Damage)
         {
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)

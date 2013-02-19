@@ -139,7 +139,7 @@ namespace SpaceGame.utility
                         MaxAmmo = (int)wd.Attribute("MaxAmmo"),
                         AmmoConsumption = (int)wd.Attribute("AmmoConsumption"),
                         Damage = (int)wd.Attribute("Damage"),
-                        Force = (int)wd.Attribute("Force"),
+                        Force = (int)wd.Attribute("Impact"),
                         AttackParticleEffect = (string)wd.Attribute("AttackParticleEffect"),
                         HitParticleEffect = (string)wd.Attribute("HitParticleEffect")
                     }).ToDictionary(t => t.Name);
