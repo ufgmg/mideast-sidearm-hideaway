@@ -160,14 +160,13 @@ namespace SpaceGame.units
 
         #region constructor
         /// <summary>
-        /// Create a new physical sprite
+        /// Create a new physical sprite from data
         /// </summary>
-        /// <param name="unitName">key to find SpriteData and PhysicalData</param>
-        public PhysicalUnit(string unitName)
+        /// <param name="pd">data from which to construct unit</param>
+        protected PhysicalUnit(PhysicalData pd)
         {
-            _unitName = unitName;
-            _sprite = new Sprite(unitName);
-            PhysicalData pd = Data[unitName];
+            _unitName = pd.Name;
+            _sprite = new Sprite(_unitName);
 
             if (pd.MovementParticleEffectName != null)
                 _movementParticleEffect = new ParticleEffect(pd.MovementParticleEffectName);
@@ -181,14 +180,9 @@ namespace SpaceGame.units
             _lifeState = LifeState.Dormant;     //not yet spawned
             _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
 
+            Position = Vector2.Zero;
             MoveDirection = Vector2.Zero;
             LookDirection = Vector2.Zero;
-        }
-
-        public PhysicalUnit(string unitName, Vector2 startPosition)
-            :this(unitName)
-        {
-            Position = startPosition;
         }
 
         #endregion

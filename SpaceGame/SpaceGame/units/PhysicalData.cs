@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpaceGame.units
 {
-    struct PhysicalData
+    public struct PhysicalData
     {
         public String Name;
         public String MovementParticleEffectName;

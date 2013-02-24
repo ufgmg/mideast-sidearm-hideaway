@@ -17,15 +17,20 @@ namespace SpaceGame.units
         const string THRUSTER_EFFECT_NAME = "SpacemanThruster";
         #endregion
 
+        #region static
+        public static PhysicalData AstronautData;
+        #endregion
+
         #region members
         ParticleEffect thrusterParticleEffect;
         #endregion
 
         public Spaceman(Vector2 startPosition)
-            :base(SPACEMAN_NAME, startPosition)
+            :base(AstronautData)
         {
             thrusterParticleEffect = new ParticleEffect(THRUSTER_EFFECT_NAME);
             _lifeState = LifeState.Living;      //astronaut starts pre-spawned
+            Position = startPosition;
         }
 
     }

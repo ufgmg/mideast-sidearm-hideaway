@@ -9,16 +9,25 @@ using SpaceGame.utility;
 
 namespace SpaceGame.units
 {
+    public class EnemyData
+    {
+        public string Name;
+        public string MeleeWeaponName;
+        public PhysicalData PhysicalData;
+    }
+
     class Enemy : PhysicalUnit
     {
+        public static Dictionary<string, EnemyData> EnemyDataDict;
+
         public Enemy(string unitName)
-            :base(unitName)
+            :this(EnemyDataDict[unitName])
         {
         }
 
-        public Enemy(string unitName, Vector2 startPosition)
-            :base(unitName, startPosition)
-        {
+        protected Enemy(EnemyData data)
+            : base(data.PhysicalData)
+        { 
         }
 
         public virtual void Update(GameTime gameTime, Vector2 playerPosition, Vector2 blackHolePosition)
