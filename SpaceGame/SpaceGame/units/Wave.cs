@@ -115,6 +115,7 @@ namespace SpaceGame.units
         /// <summary>
         /// Update wave, updating behavior of all enemies.
         /// Check collisions against player and self, but not other waves
+        /// Check weapon collisions against player
         /// </summary>
         /// <param name="gameTime"></param>
         /// <param name="player"></param>
@@ -185,6 +186,7 @@ namespace SpaceGame.units
                     _enemies[i].CheckAndApplyUnitCollision(_enemies[j]);
                 }
                 _enemies[i].CheckAndApplyUnitCollision(player);
+                _enemies[i].CheckAndApplyWeaponCollision(player);
 
                 _enemies[i].Update(gameTime, player.Position, Vector2.Zero);
                 blackHole.ApplyToUnit(_enemies[i], gameTime);

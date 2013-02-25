@@ -78,7 +78,7 @@ namespace SpaceGame.utility
                            {
                                Name = (string)enemy.Attribute("Name"),
                                PhysicalData = LoadPhysicalData(enemy),
-                               MeleeWeaponName = (string)enemy.Attribute("MeleeWeaponName")
+                               MeleeWeaponName = (string)enemy.Attribute("MeleeWeapon")
                            }).ToDictionary(t => t.Name);
         }
 

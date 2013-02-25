@@ -45,6 +45,7 @@ namespace SpaceGame.equipment
         #endregion
 
         #region properties
+        public float Range { get { return _range; } }
         #endregion
 
         #region constructor
@@ -60,7 +61,7 @@ namespace SpaceGame.equipment
         {
             _damage = data.Damage;
             _force = data.Force;
-            _recoil = data.Force;
+            _recoil = data.Recoil;
             _hitArc = data.HitArc;
             _range = data.Range;
             _attackParticleEffect = (data.AttackParticleEffect == null) ?
@@ -91,6 +92,8 @@ namespace SpaceGame.equipment
             {
                 _attackParticleEffect.Spawn(_owner.Center, XnaHelper.DegreesFromVector(_fireDirection),
                     gameTime.ElapsedGameTime, _owner.Velocity);
+                //recoil
+                _owner.ApplyImpact(-_recoil * _fireDirection, 1);
             }
 
             _attackParticleEffect.Update(gameTime);

@@ -23,8 +23,6 @@ namespace SpaceGame.units
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
 
-        //store data for all physical units
-        public static Dictionary<string, PhysicalData> Data;
         //store screen dimensions for keeping sprites in bounds
         public static int ScreenWidth, ScreenHeight;
         //reusable Vector2 for calculations
@@ -50,7 +48,7 @@ namespace SpaceGame.units
         float _angularVelocity = 0;
         float _mass;
         float _additionalMass;
-        float _health;
+        float _health, _maxHealth;
         float _maxSpeed;
         //force applied for movement
         float _moveForce;
@@ -174,7 +172,8 @@ namespace SpaceGame.units
             _mass = pd.Mass;
             _moveForce = pd.MoveForce;
             _maxSpeed = pd.MaxSpeed;
-            _health = pd.Health;
+            _maxHealth = pd.Health;
+            _health = _maxHealth;
             _decelerationFactor = pd.DecelerationFactor;
 
             _lifeState = LifeState.Dormant;     //not yet spawned
@@ -340,7 +339,7 @@ namespace SpaceGame.units
         {
             _velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
-            _health = Data[_unitName].Health;
+            _health = _maxHealth;
             _additionalMass = 0;
             _angularVelocity = 0;
             _sprite.Reset();
@@ -393,7 +392,7 @@ namespace SpaceGame.units
         #endregion
 
         #region Draw Logic
-        public void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb)
         {
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
                 return;     //dont draw destroyed or not yet spawned sprites
