@@ -29,6 +29,16 @@
                     SplashDamage="0" SplashRadius="0" SplashForce="0"
                     MaxProjectiles="5" ProjectileLife="1" />
 
+  <ProjectileWeapon Name="Flamethrower" ProjectileSpriteName="Flame"
+                    FireRate ="300" MaxAmmo="1" AmmoConsumption="0"
+                    ProjectilesPerFire="1" Damage="1" ProjectileForce="300"
+                    Recoil="450" ProjectileSpeed="300" ProjectileAcceleration="30"
+                    ProjectileSpread="45" DissipateOnHit="false"
+                    SplashDamage="0" SplashRadius="0" SplashForce="0"
+                    MaxProjectiles="100" ProjectileLife="0.4" 
+                    FireParticleEffect="Flamethrower"/>
+                    
+
   <ProjectileWeapon Name="Rocket" ProjectileSpriteName="Rocket"
                     FireRate ="3" MaxAmmo="30" AmmoConsumption="1"
                     ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"

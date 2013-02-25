@@ -52,7 +52,7 @@ namespace SpaceGame.states
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false);
             }
 
-            _primaryWeapon = new MeleeWeapon("Gravity Gauntlet", _player);
+            _primaryWeapon = new ProjectileWeapon("Flamethrower", _player);
             _secondaryWeapon = new HookShot(_player);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
         }
