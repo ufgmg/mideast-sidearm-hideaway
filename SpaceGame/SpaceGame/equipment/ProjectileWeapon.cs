@@ -219,7 +219,7 @@ namespace SpaceGame.equipment
                         p.Angle = XnaHelper.RandomAngle(p.Angle, _projectileSpread);
                         p.LifeLeft = _projectileLife;
                         p.Position = _owner.Center;
-                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed;
+                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed + _owner.Velocity;
                         projectilesToSpawn -= 1;
                         _owner.ApplyForce(-_recoilForce * _fireDirection);
                         if (_hasProjectileSprite)
@@ -251,13 +251,6 @@ namespace SpaceGame.equipment
 
         public override void Draw(SpriteBatch sb)
         {
-            if (_fireParticleEffect != null)
-                _fireParticleEffect.Draw(sb);
-            if (_movementParticleEffect != null)
-                _movementParticleEffect.Draw(sb);
-            if (_splashParticleEffect != null)
-                _splashParticleEffect.Draw(sb);
-
             foreach (Projectile p in _projectiles)
             {
                 if (p.Active || p.Splashing)
@@ -266,6 +259,14 @@ namespace SpaceGame.equipment
                         p.ProjectileSprite.Draw(sb, p.Position, p.Angle);
                 }
             }
+            //draw particle effects
+            if (_fireParticleEffect != null)
+                _fireParticleEffect.Draw(sb);
+            if (_movementParticleEffect != null)
+                _movementParticleEffect.Draw(sb);
+            if (_splashParticleEffect != null)
+                _splashParticleEffect.Draw(sb);
+
         }
         #endregion
     }
