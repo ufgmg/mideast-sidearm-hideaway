@@ -93,8 +93,10 @@ namespace SpaceGame
             //load data from xml
             Sprite.Data = DataLoader.LoadSpriteData("data/SpriteData.xml", Content);
             ParticleEffect.Data = DataLoader.LoadParticleEffectData("data/ParticleEffectData.xml", Content);
-            PhysicalUnit.Data = DataLoader.LoadPhysicalData("data/PhysicalData.xml");
             ProjectileWeapon.ProjectileWeaponData = DataLoader.LoadProjectileWeaponData("data/WeaponData.xml");
+            MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData("data/WeaponData.xml");
+            Spaceman.AstronautData = DataLoader.LoadAstronautData();
+            Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
 
             _stateStack.Add(new Level(1));
         }

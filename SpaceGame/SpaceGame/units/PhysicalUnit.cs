@@ -23,8 +23,6 @@ namespace SpaceGame.units
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
 
-        //store data for all physical units
-        public static Dictionary<string, PhysicalData> Data;
         //store screen dimensions for keeping sprites in bounds
         public static int ScreenWidth, ScreenHeight;
         //reusable Vector2 for calculations
@@ -45,11 +43,12 @@ namespace SpaceGame.units
             }
         }
         Vector2 _velocity;
+        public Vector2 Velocity { get { return _velocity; } }
         Vector2 _acceleration;
         float _angularVelocity = 0;
         float _mass;
         float _additionalMass;
-        float _health;
+        float _health, _maxHealth;
         float _maxSpeed;
         //force applied for movement
         float _moveForce;
@@ -124,6 +123,10 @@ namespace SpaceGame.units
         {
             get { return _lifeState == LifeState.Living || _lifeState == LifeState.Disabled; }
         }
+        public bool Updates
+        {
+            get { return !(_lifeState == LifeState.Dormant || _lifeState == LifeState.Destroyed); }
+        }
         #endregion
 
         #region other members
@@ -155,14 +158,13 @@ namespace SpaceGame.units
 
         #region constructor
         /// <summary>
-        /// Create a new physical sprite
+        /// Create a new physical sprite from data
         /// </summary>
-        /// <param name="unitName">key to find SpriteData and PhysicalData</param>
-        public PhysicalUnit(string unitName)
+        /// <param name="pd">data from which to construct unit</param>
+        protected PhysicalUnit(PhysicalData pd)
         {
-            _unitName = unitName;
-            _sprite = new Sprite(unitName);
-            PhysicalData pd = Data[unitName];
+            _unitName = pd.Name;
+            _sprite = new Sprite(_unitName);
 
             if (pd.MovementParticleEffectName != null)
                 _movementParticleEffect = new ParticleEffect(pd.MovementParticleEffectName);
@@ -170,20 +172,16 @@ namespace SpaceGame.units
             _mass = pd.Mass;
             _moveForce = pd.MoveForce;
             _maxSpeed = pd.MaxSpeed;
-            _health = pd.Health;
+            _maxHealth = pd.Health;
+            _health = _maxHealth;
             _decelerationFactor = pd.DecelerationFactor;
 
             _lifeState = LifeState.Dormant;     //not yet spawned
             _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
 
+            Position = Vector2.Zero;
             MoveDirection = Vector2.Zero;
             LookDirection = Vector2.Zero;
-        }
-
-        public PhysicalUnit(string unitName, Vector2 startPosition)
-            :this(unitName)
-        {
-            Position = startPosition;
         }
 
         #endregion
@@ -192,6 +190,18 @@ namespace SpaceGame.units
         public void ApplyForce(Vector2 theForce)
         {
             _acceleration += theForce / Mass;
+        }
+
+        /// <summary>
+        /// apply the effect of an object impacting this unit.
+        /// Useful for single time impacts, like a melee weapon hit
+        /// </summary>
+        /// <param name="objectVelocity">Velocity of object hitting the unit</param>
+        /// <param name="objectMass">mass of object hitting the unit</param>
+        public void ApplyImpact(Vector2 objectVelocity, int objectMass)
+        {
+            _velocity = (_velocity * (this.Mass - objectMass) + 2 * objectMass * objectVelocity) /
+                                (this.Mass + objectMass);
         }
 
         public void ApplyDamage(int Damage)
@@ -329,7 +339,7 @@ namespace SpaceGame.units
         {
             _velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
-            _health = Data[_unitName].Health;
+            _health = _maxHealth;
             _additionalMass = 0;
             _angularVelocity = 0;
             _sprite.Reset();
@@ -382,7 +392,7 @@ namespace SpaceGame.units
         #endregion
 
         #region Draw Logic
-        public void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb)
         {
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
                 return;     //dont draw destroyed or not yet spawned sprites

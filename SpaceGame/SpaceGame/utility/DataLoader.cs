@@ -24,6 +24,7 @@ namespace SpaceGame.utility
     static class DataLoader
     {
         const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
+        const string UNIT_DATA_PATH = "data/UnitData.xml";
         const string LEVEL_DIRECTORY = "data/LevelData.xml";
         /// <summary>
         /// get a dict mapping sprite names to spritedata. 
@@ -50,18 +51,34 @@ namespace SpaceGame.utility
                            }).ToDictionary(t => t.Name);
         }
 
-        public static Dictionary<string, PhysicalData> LoadPhysicalData(string pathToXML)
+        public static PhysicalData LoadPhysicalData(XElement unitElement)
         {
-            return (from sd in XElement.Load(pathToXML).Descendants("PhysicalData")
-                           select new PhysicalData
+                   return new PhysicalData
                            {
-                               Name = (string)sd.Attribute("Name"),
-                               MovementParticleEffectName = (string)sd.Attribute("MovementParticleEffect"),
-                               Mass = (float)sd.Attribute("Mass"),
-                               MoveForce = (float)sd.Attribute("MoveForce"),
-                               MaxSpeed = (float)sd.Attribute("MaxSpeed"),
-                               DecelerationFactor = (float)sd.Attribute("DecelerationFactor"),
-                               Health = (int)sd.Attribute("Health")
+                               Name = (string)unitElement.Attribute("Name"),
+                               MovementParticleEffectName = (string)unitElement.Attribute("MovementParticleEffect"),
+                               Mass = (float)unitElement.Attribute("Mass"),
+                               MoveForce = (float)unitElement.Attribute("MoveForce"),
+                               MaxSpeed = (float)unitElement.Attribute("MaxSpeed"),
+                               DecelerationFactor = (float)unitElement.Attribute("DecelerationFactor"),
+                               Health = (int)unitElement.Attribute("Health")
+                           };
+        }
+
+        public static PhysicalData LoadAstronautData()
+        {
+            XElement element = XElement.Load(UNIT_DATA_PATH).Descendants("AstronautData").Single();
+            return LoadPhysicalData(element);
+        }
+
+        public static Dictionary<string, EnemyData> LoadEnemyData()
+        {
+            return (from enemy in XElement.Load(UNIT_DATA_PATH).Descendants("EnemyData")
+                           select new EnemyData
+                           {
+                               Name = (string)enemy.Attribute("Name"),
+                               PhysicalData = LoadPhysicalData(enemy),
+                               MeleeWeaponName = (string)enemy.Attribute("MeleeWeapon")
                            }).ToDictionary(t => t.Name);
         }
 
@@ -123,6 +140,25 @@ namespace SpaceGame.utility
 
                         MovementParticleEffect = (string)wd.Attribute("MovementParticleEffect"),
                         SplashParticleEffect = (string)wd.Attribute("SplashParticleEffect")
+                    }).ToDictionary(t => t.Name);
+        }
+
+        public static Dictionary<string, MeleeWeapon.MeleeWeaponData> LoadMeleeWeaponData(string pathToXML)
+        {
+            return (from wd in XElement.Load(pathToXML).Descendants("MeleeWeapon")
+                    select new MeleeWeapon.MeleeWeaponData
+                    {
+                        Name = (string)wd.Attribute("Name"),
+                        FireRate = (float)wd.Attribute("FireRate"),
+                        Range = (float)wd.Attribute("Range"),
+                        Recoil = (float)wd.Attribute("Recoil"),
+                        HitArc = MathHelper.ToRadians((float)wd.Attribute("HitArc")),
+                        MaxAmmo = (int)wd.Attribute("MaxAmmo"),
+                        AmmoConsumption = (int)wd.Attribute("AmmoConsumption"),
+                        Damage = (int)wd.Attribute("Damage"),
+                        Force = (int)wd.Attribute("Impact"),
+                        AttackParticleEffect = (string)wd.Attribute("AttackParticleEffect"),
+                        HitParticleEffect = (string)wd.Attribute("HitParticleEffect")
                     }).ToDictionary(t => t.Name);
         }
 

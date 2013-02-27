@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="equipment\Gadget.cs" />
+    <Compile Include="equipment\MeleeWeapon.cs" />
     <Compile Include="graphics\hud\RadialBar.cs" />
     <Compile Include="graphics\ParticleEffect.cs" />
     <Compile Include="graphics\ParticleEffectData.cs" />
@@ -138,7 +139,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="data\PhysicalData.xml">
+    <None Include="data\UnitData.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
