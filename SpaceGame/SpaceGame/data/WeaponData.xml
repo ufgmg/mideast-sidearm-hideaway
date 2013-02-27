@@ -29,6 +29,15 @@
                     SplashDamage="0" SplashRadius="0" SplashForce="0"
                     MaxProjectiles="5" ProjectileLife="1" />
 
+  <ProjectileWeapon Name="Flamethrower" ProjectileSpriteName="Flame"
+                    FireRate ="300" MaxAmmo="1" AmmoConsumption="0"
+                    ProjectilesPerFire="3" Damage="1" ProjectileForce="300"
+                    Recoil="450" ProjectileSpeed="800" ProjectileAcceleration="-12"
+                    ProjectileSpread="20" DissipateOnHit="false"
+                    SplashDamage="0" SplashRadius="0" SplashForce="0"
+                    MaxProjectiles="100" ProjectileLife="0.4" 
+                    FireParticleEffect="Flamethrower"/>
+
   <ProjectileWeapon Name="Rocket" ProjectileSpriteName="Rocket"
                     FireRate ="3" MaxAmmo="30" AmmoConsumption="1"
                     ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"
@@ -52,6 +61,6 @@
   <MeleeWeapon Name="Gravity Gauntlet" 
                     FireRate ="1" MaxAmmo="60" AmmoConsumption="0"
                     Damage="20" Impact="6000" Recoil="1500" 
-                    HitArc="30" Range="150"
+                    HitArc="30" Range="100"
                     AttackParticleEffect="PunchWave"/>
 </Weapons>

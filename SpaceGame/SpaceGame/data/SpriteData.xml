@@ -6,4 +6,5 @@
   <SpriteData Name="HookClaw" AssetName="HookClaw" FrameWidth="32" FrameHeight="32" NumFrames="1" NumStates="1" DefaultScale ="0.5" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="HookChain" AssetName="HookChain" FrameWidth="32" FrameHeight="32" NumFrames="1" NumStates="1" DefaultScale ="0.5" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="Rocket" AssetName="Rocket" FrameWidth="32" FrameHeight="32" NumFrames="4" NumStates="2" DefaultScale ="1.0" SecondsPerAnimation="0.03" ZLayer="0" />
+  <SpriteData Name="Flame" AssetName="Flame" FrameWidth="4" FrameHeight="4" NumFrames="1" NumStates="1" DefaultScale ="1.0" SecondsPerAnimation="0.03" ZLayer="0" />
 </SpriteDatas>

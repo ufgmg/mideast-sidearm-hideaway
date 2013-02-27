@@ -27,6 +27,7 @@ namespace SpaceGame.equipment
         public int SplashDamage;  //damage per second while splashing
         public float SplashForce;
 
+        public string FireParticleEffect;
         public string MovementParticleEffect;
         public string SplashParticleEffect;
     }

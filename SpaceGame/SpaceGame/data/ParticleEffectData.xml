@@ -40,6 +40,13 @@
                       StartColor="255,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
+  <ParticleEffectData Name="Flamethrower" 
+                      Speed="600.0" SpeedVariance="0.1" DecelerationFactor="0.1" ParticleRotation="720.0" 
+                      StartScale ="3.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="20.0" SpawnRate="600" ParticleLife="0.3" ParticleLifeVariance="0.5"
+                      StartColor="100,0,0,100" EndColor ="00,100,0,0"
+                      Reversed="False" />
+
   <!-- The following are special particle effects references directly by classes (rather than being specified by other xml files.
        The names cannot be changed without modifying the references in the associated classes-->
 
@@ -47,14 +54,14 @@
                       Speed="5.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="360.0" 
                       StartScale ="3.0" ScaleVariance="0.3" EndScale="30.0" 
                       SpawnArc="360.0" SpawnRate="100" ParticleLife="0.6" ParticleLifeVariance="0.5"
-                      StartColor="100,0,0,0" EndColor ="200,148,0,211"
+                      StartColor="00,0,0,0" EndColor ="100,148,0,211"
                       Reversed="True" />
 
   <ParticleEffectData Name="BlackHoleEffect2" 
                       Speed="30.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="-100.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
                       SpawnArc="360.0" SpawnRate="200" ParticleLife="1.2" ParticleLifeVariance="0.5"
-                      StartColor="100,0,0,0" EndColor ="200,148,0,211"
+                      StartColor="00,0,0,0" EndColor ="100,148,0,211"
                       UniqueParticle="HollowSquare2"
                       Reversed="True" />
 

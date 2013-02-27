@@ -57,8 +57,10 @@ namespace SpaceGame.equipment
         Rectangle _hitDetectionRect;    //width and height based on texture, x and y change
         Rectangle _splashDetectionRect;    //width and height based on _splashRadius, x and y change
 
+        ParticleEffect _fireParticleEffect;
         ParticleEffect _movementParticleEffect;
         ParticleEffect _splashParticleEffect;
+        bool _hasProjectileSprite;
         #endregion
 
         #region constructor
@@ -72,12 +74,14 @@ namespace SpaceGame.equipment
                   data.AmmoConsumption,
                   owner)
         {
+            _hasProjectileSprite = (data.ProjectileSpriteName != null);
             _maxProjectiles = data.MaxProjectiles;
             _projectiles = new Projectile[_maxProjectiles];
             for (int i = 0; i < _maxProjectiles; i++)
             {
                 _projectiles[i] = new Projectile();
-                _projectiles[i].ProjectileSprite = new Sprite(data.ProjectileSpriteName);
+                _projectiles[i].ProjectileSprite = _hasProjectileSprite ? 
+                    new Sprite(data.ProjectileSpriteName) : null;
             }
             _projectileDamage = data.Damage;
             _projectileForce = data.ProjectileForce;
@@ -95,15 +99,19 @@ namespace SpaceGame.equipment
 
             Sprite projectileSprite = _projectiles[0].ProjectileSprite;
 
-            if (projectileSprite.Width <= _splashRadius * 2)
+            if (_hasProjectileSprite && projectileSprite.Width <= _splashRadius * 2)
             {
                 _splashScaleRate = (projectileSprite.Width / _splashRadius);
                 _splashScaleRate /= (float)projectileSprite.FullAnimationTime.TotalSeconds;
             }
 
-            _hitDetectionRect = new Rectangle(0,0, 
-               (int)(projectileSprite.Width), (int)projectileSprite.Height);
+            _hitDetectionRect = (_hasProjectileSprite) ? 
+                new Rectangle(0,0, (int)(projectileSprite.Width), (int)projectileSprite.Height)
+                : new Rectangle(0,0,1,1);
+               
 
+            if (data.FireParticleEffect != null)
+                _fireParticleEffect = new ParticleEffect(data.FireParticleEffect);
             if (data.MovementParticleEffect != null)
                 _movementParticleEffect = new ParticleEffect(data.MovementParticleEffect);
             if (data.SplashParticleEffect != null)
@@ -154,7 +162,8 @@ namespace SpaceGame.equipment
             {
                 p.ReadyToSplash = true;
                 p.Velocity = Vector2.Zero;
-                p.ProjectileSprite.PlayAnimation(1);
+                if (_hasProjectileSprite)
+                    p.ProjectileSprite.PlayAnimation(1);
             }
         }
 
@@ -181,7 +190,8 @@ namespace SpaceGame.equipment
                     }
                     p.Position += p.Velocity * (float)time.TotalSeconds;
                     p.LifeLeft -= time;
-                    p.ProjectileSprite.Update(gameTime);
+                    if (_hasProjectileSprite)
+                        p.ProjectileSprite.Update(gameTime);
                     if (_movementParticleEffect != null)
                         _movementParticleEffect.Spawn(p.Position, MathHelper.ToDegrees(MathHelper.Pi + p.Angle), gameTime.ElapsedGameTime, Vector2.Zero);
                     if (p.LifeLeft <= TimeSpan.Zero || !(XnaHelper.PointInRect(p.Position, ScreenBounds)))
@@ -209,15 +219,20 @@ namespace SpaceGame.equipment
                         p.Angle = XnaHelper.RandomAngle(p.Angle, _projectileSpread);
                         p.LifeLeft = _projectileLife;
                         p.Position = _owner.Center;
-                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed;
+                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed + _owner.Velocity;
                         projectilesToSpawn -= 1;
-                        p.ProjectileSprite.Reset();
                         _owner.ApplyForce(-_recoilForce * _fireDirection);
+                        if (_hasProjectileSprite)
+                            p.ProjectileSprite.Reset();
+                        if (_fireParticleEffect != null)
+                            _fireParticleEffect.Spawn(p.Position, MathHelper.ToDegrees(p.Angle), gameTime.ElapsedGameTime, _owner.Velocity);
                     }
                 }
 
             }
 
+            if (_fireParticleEffect != null)
+                _fireParticleEffect.Update(gameTime);
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Update(gameTime);
             if (_splashParticleEffect != null)
@@ -236,18 +251,22 @@ namespace SpaceGame.equipment
 
         public override void Draw(SpriteBatch sb)
         {
+            foreach (Projectile p in _projectiles)
+            {
+                if (p.Active || p.Splashing)
+                {
+                    if (_hasProjectileSprite)
+                        p.ProjectileSprite.Draw(sb, p.Position, p.Angle);
+                }
+            }
+            //draw particle effects
+            if (_fireParticleEffect != null)
+                _fireParticleEffect.Draw(sb);
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);
             if (_splashParticleEffect != null)
                 _splashParticleEffect.Draw(sb);
 
-            foreach (Projectile p in _projectiles)
-            {
-                if (p.Active || p.Splashing)
-                {
-                    p.ProjectileSprite.Draw(sb, p.Position, p.Angle);
-                }
-            }
         }
         #endregion
     }

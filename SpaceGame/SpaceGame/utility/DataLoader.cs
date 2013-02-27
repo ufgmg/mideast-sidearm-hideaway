@@ -138,6 +138,7 @@ namespace SpaceGame.utility
                         SplashRadius = (float)wd.Attribute("SplashRadius"),
                         SplashForce = (float)wd.Attribute("SplashForce"),
 
+                        FireParticleEffect = (string)wd.Attribute("FireParticleEffect"),
                         MovementParticleEffect = (string)wd.Attribute("MovementParticleEffect"),
                         SplashParticleEffect = (string)wd.Attribute("SplashParticleEffect")
                     }).ToDictionary(t => t.Name);
