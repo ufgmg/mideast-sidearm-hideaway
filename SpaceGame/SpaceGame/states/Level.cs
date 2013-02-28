@@ -55,8 +55,9 @@ namespace SpaceGame.states
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false, _levelBounds);
             }
 
-            _primaryWeapon = new ProjectileWeapon("Flamethrower", _player, _levelBounds);
-            _secondaryWeapon = new HookShot(_player, _levelBounds);
+            _primaryWeapon = new ProjectileWeapon("Rocket", _player, _levelBounds);
+            _secondaryWeapon = new ProjectileWeapon("Flamethrower", _player, _levelBounds);
+            //_secondaryWeapon = new HookShot(_player, _levelBounds);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
         }
 
@@ -114,6 +115,11 @@ namespace SpaceGame.states
             {
                 _primaryGadget.Trigger();
             }
+
+            if (input.ScrollUp)
+                _primaryWeapon.Trigger(_player.Position, input.MouseLocation);
+            if (input.ScrollDown)
+                _secondaryWeapon.Trigger(_player.Position, input.MouseLocation);
 
         }
 

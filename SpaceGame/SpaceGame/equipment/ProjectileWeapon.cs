@@ -217,7 +217,8 @@ namespace SpaceGame.equipment
                         p.Angle = XnaHelper.RandomAngle(p.Angle, _projectileSpread);
                         p.LifeLeft = _projectileLife;
                         p.Position = _owner.Center;
-                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed + _owner.Velocity;
+//                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed + _owner.Velocity;
+                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed ;
                         projectilesToSpawn -= 1;
                         _owner.ApplyForce(-_recoilForce * _fireDirection);
                         if (_hasProjectileSprite)
