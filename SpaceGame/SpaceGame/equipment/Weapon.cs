@@ -16,7 +16,6 @@ namespace SpaceGame.equipment
     abstract class Weapon
     {
         #region static
-        public static Rectangle ScreenBounds;
         #endregion
 
         #region fields
@@ -32,6 +31,8 @@ namespace SpaceGame.equipment
         protected Vector2 _fireDirection;
 
         protected PhysicalUnit _owner;
+
+        protected Rectangle _levelBounds;
         #endregion
 
         #region constructor
@@ -41,13 +42,16 @@ namespace SpaceGame.equipment
         /// <param name="fireDelay">Time between successive shots</param>
         /// <param name="maxAmmo">Total ammo capacity. Set to 1 for infinite ammo.</param>
         /// <param name="ammoConsumption">Ammo used per shot. Set to 0 for infinite ammo.</param>
-        public Weapon(TimeSpan fireDelay, int maxAmmo, int ammoConsumption, PhysicalUnit owner)
+        /// <param name="levelWidth">Width of the level in which this weapon is instantiated.</param>
+        /// <param name="levelHeight">Height of the level in which this weapon is instantiated.</param>
+        public Weapon(TimeSpan fireDelay, int maxAmmo, int ammoConsumption, PhysicalUnit owner, Rectangle levelBounds)
         {
             _fireDelay = fireDelay;
             _maxAmmo = maxAmmo;
             _currentAmmo = maxAmmo;
             _ammoConsumption = ammoConsumption;
             _owner = owner;
+            _levelBounds = levelBounds;
         }
         #endregion
 

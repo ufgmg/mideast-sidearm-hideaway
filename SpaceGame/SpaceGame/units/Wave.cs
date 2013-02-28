@@ -50,10 +50,12 @@ namespace SpaceGame.units
         Vector2 _spawnLocation;     //where in level to spawn enemies
         TimeSpan _startTimer;       //when to start spawning enemies
 
-        //these two should only apply to burst waves
+        //these three should only apply to burst waves
         TimeSpan _activationDelay;  //how long to wait after activation before spawning
         ParticleEffect _portalEffect;   //particle effect to play once spawning begins
         float _portalAngle;         //so portal effect can rotate
+
+        Rectangle _levelBounds;
         #endregion
 
         #region properties
@@ -63,13 +65,13 @@ namespace SpaceGame.units
         #endregion
 
         #region constructor
-        public Wave(WaveData data, bool trickleWave)
+        public Wave(WaveData data, bool trickleWave, Rectangle levelBounds)
         {
             string[] enemyNames = data.EnemyNames;
             _enemies = new Enemy[enemyNames.Length];
             for (int j = 0; j < _enemies.Length; j++)
             {
-                _enemies[j] = new Enemy(enemyNames[j]);
+                _enemies[j] = new Enemy(enemyNames[j], levelBounds);
             }
             _numEnemies = _enemies.Length;
             _spawnedSoFar = 0;
@@ -82,6 +84,8 @@ namespace SpaceGame.units
             _activationDelay = _isTrickleWave ? TimeSpan.Zero : TimeSpan.FromSeconds((double)ACTIVATION_DELAY_SECONDS);
             //assign a portal particle effect if it is a burst wave
             _portalEffect = (trickleWave) ? null : new ParticleEffect(PORTAL_EFFECT_NAME1);
+
+            _levelBounds = levelBounds;
         }
         #endregion
 
@@ -105,7 +109,7 @@ namespace SpaceGame.units
                     //note: this is inside this block so it only runs when an enemy is Sucessfully spawned
                     //if the enemy in the current slot is already alive, it will not reposition
                     if (_isTrickleWave)
-                        setPosition(blackHolePosition);     
+                        setPosition(blackHolePosition, _levelBounds.Width, _levelBounds.Height);     
                 }
                 //if slot not ready to be respawned, cycle through slots each update
                 _spawnedSoFar++;    
@@ -131,7 +135,7 @@ namespace SpaceGame.units
                 if (_startTimer < TimeSpan.Zero)
                 {
                     Active = true;      //activate if start timer complete
-                    setPosition(blackHole.Position);        //set first spawn position
+                    setPosition(blackHole.Position, _levelBounds.Width, _levelBounds.Height);        //set first spawn position
                 }
             }
 
@@ -188,7 +192,7 @@ namespace SpaceGame.units
                 _enemies[i].CheckAndApplyUnitCollision(player);
                 _enemies[i].CheckAndApplyWeaponCollision(player);
 
-                _enemies[i].Update(gameTime, player.Position, Vector2.Zero);
+                _enemies[i].Update(gameTime, player.Position, Vector2.Zero, _levelBounds);
                 blackHole.ApplyToUnit(_enemies[i], gameTime);
                 weapon1.CheckAndApplyCollision(_enemies[i]);
                 weapon2.CheckAndApplyCollision(_enemies[i]);
@@ -212,15 +216,15 @@ namespace SpaceGame.units
             }
         }
 
-        private void setPosition(Vector2 blackHolePosition)
+        private void setPosition(Vector2 blackHolePosition, int levelWidth, int levelHeight)
         {   //set bounds on new spawn location
             int minX, maxX, minY, maxY;
 
             //spawn in bounds -- default for burst wave
             minX = 0;
-            maxX = Game1.SCREENWIDTH;
+            maxX = levelWidth;
             minY = 0;
-            maxY = Game1.SCREENHEIGHT;
+            maxY = levelHeight;
 
             if (_isTrickleWave)     //spawn out of bounds
             { 
@@ -228,27 +232,27 @@ namespace SpaceGame.units
                 {
                     case 0:     //top
                         minX = -OUT_OF_BOUNDS_SPAWN_BUFFER;
-                        maxX = Game1.SCREENWIDTH + OUT_OF_BOUNDS_SPAWN_BUFFER;
+                        maxX = levelWidth + OUT_OF_BOUNDS_SPAWN_BUFFER;
                         minY = -OUT_OF_BOUNDS_SPAWN_BUFFER;
                         maxY = 0;
                         break;
                     case 1:     //right
-                        minX = Game1.SCREENWIDTH;
-                        maxX = Game1.SCREENWIDTH + OUT_OF_BOUNDS_SPAWN_BUFFER;
+                        minX = levelWidth;
+                        maxX = levelWidth + OUT_OF_BOUNDS_SPAWN_BUFFER;
                         minY = -OUT_OF_BOUNDS_SPAWN_BUFFER;
-                        maxY = Game1.SCREENHEIGHT + OUT_OF_BOUNDS_SPAWN_BUFFER;
+                        maxY = levelHeight + OUT_OF_BOUNDS_SPAWN_BUFFER;
                         break;
                     case 2:     //bottom
                         minX = -OUT_OF_BOUNDS_SPAWN_BUFFER;
-                        maxX = Game1.SCREENWIDTH + OUT_OF_BOUNDS_SPAWN_BUFFER;
-                        minY = Game1.SCREENHEIGHT;
-                        maxY = Game1.SCREENHEIGHT + OUT_OF_BOUNDS_SPAWN_BUFFER;
+                        maxX = levelWidth + OUT_OF_BOUNDS_SPAWN_BUFFER;
+                        minY = levelHeight;
+                        maxY = levelHeight + OUT_OF_BOUNDS_SPAWN_BUFFER;
                         break;
                     case 3:     //left
                         minX = -OUT_OF_BOUNDS_SPAWN_BUFFER;
                         maxX = 0;
                         minY = -OUT_OF_BOUNDS_SPAWN_BUFFER;
-                        maxY = Game1.SCREENHEIGHT + OUT_OF_BOUNDS_SPAWN_BUFFER;
+                        maxY = levelHeight + OUT_OF_BOUNDS_SPAWN_BUFFER;
                         break;
                 }
             }
@@ -257,7 +261,7 @@ namespace SpaceGame.units
 
             //if spawned too close to black hole, try again
             if ((_spawnLocation - blackHolePosition).Length() < MIN_BLACKHOLE_SPAWN_DISTANCE)
-                setPosition(blackHolePosition);
+                setPosition(blackHolePosition, _levelBounds.Width, _levelBounds.Height);
         }
 
         public void Draw(SpriteBatch sb)

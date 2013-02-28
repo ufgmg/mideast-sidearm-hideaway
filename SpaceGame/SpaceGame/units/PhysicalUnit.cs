@@ -23,8 +23,6 @@ namespace SpaceGame.units
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
 
-        //store screen dimensions for keeping sprites in bounds
-        public static int ScreenWidth, ScreenHeight;
         //reusable Vector2 for calculations
         static Vector2 temp;
         #endregion
@@ -236,7 +234,7 @@ namespace SpaceGame.units
         }
 
         #region Update Logic
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime, Rectangle levelBounds)
         {
 
             switch(_lifeState)
@@ -267,7 +265,7 @@ namespace SpaceGame.units
                     }
             }
 
-            stayInBounds(ScreenWidth, ScreenHeight);
+            stayInBounds(levelBounds.Width, levelBounds.Height);
             _velocity += _acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             controlVelocity(_maxSpeed, gameTime.ElapsedGameTime);
@@ -286,15 +284,15 @@ namespace SpaceGame.units
         }
 
         //more dynamic stayInBounds
-        private void stayInBounds(float screenWidth, float screenHeight)
+        private void stayInBounds(float levelWidth, float levelHeight)
         {
             if (Position.X < BOUND_BUFFER)
             {
                 _acceleration.X += OUT_OF_BOUNDS_ACCEL_FACTOR * (BOUND_BUFFER - Position.X);
             }
-            else if (Position.X + _sprite.Width >= screenWidth - BOUND_BUFFER)
+            else if (Position.X + _sprite.Width >= levelWidth - BOUND_BUFFER)
             {
-                _acceleration.X += OUT_OF_BOUNDS_ACCEL_FACTOR * (screenWidth - BOUND_BUFFER - Position.X - _hitRect.Width);
+                _acceleration.X += OUT_OF_BOUNDS_ACCEL_FACTOR * (levelWidth - BOUND_BUFFER - Position.X - _hitRect.Width);
             }
 
             if (Position.Y < 0)
@@ -302,9 +300,9 @@ namespace SpaceGame.units
                 _acceleration.Y += OUT_OF_BOUNDS_ACCEL_FACTOR * (BOUND_BUFFER - Position.Y);
             }
 
-            else if (Position.Y + _sprite.Height >= screenHeight)
+            else if (Position.Y + _sprite.Height >= levelHeight)
             {
-                _acceleration.Y += OUT_OF_BOUNDS_ACCEL_FACTOR * (screenHeight - BOUND_BUFFER - Position.Y - _hitRect.Height);
+                _acceleration.Y += OUT_OF_BOUNDS_ACCEL_FACTOR * (levelHeight - BOUND_BUFFER - Position.Y - _hitRect.Height);
             }
         }
 

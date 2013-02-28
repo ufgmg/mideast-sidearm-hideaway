@@ -64,15 +64,13 @@ namespace SpaceGame.equipment
         #endregion
 
         #region constructor
-        public ProjectileWeapon(string weaponName, PhysicalUnit owner)
-            : this(ProjectileWeaponData[weaponName], owner)
+        public ProjectileWeapon(string weaponName, PhysicalUnit owner, Rectangle levelBounds)
+            : this(ProjectileWeaponData[weaponName], owner, levelBounds)
         { }
 
-        protected ProjectileWeapon(ProjectileWeaponData data, PhysicalUnit owner)
-            :base(TimeSpan.FromSeconds(1.0 / data.FireRate), 
-                  data.MaxAmmo,
-                  data.AmmoConsumption,
-                  owner)
+        protected ProjectileWeapon(ProjectileWeaponData data, PhysicalUnit owner, Rectangle levelBounds)
+            :base(TimeSpan.FromSeconds(1.0 / data.FireRate), data.MaxAmmo,
+                  data.AmmoConsumption, owner, levelBounds)
         {
             _hasProjectileSprite = (data.ProjectileSpriteName != null);
             _maxProjectiles = data.MaxProjectiles;
@@ -194,7 +192,7 @@ namespace SpaceGame.equipment
                         p.ProjectileSprite.Update(gameTime);
                     if (_movementParticleEffect != null)
                         _movementParticleEffect.Spawn(p.Position, MathHelper.ToDegrees(MathHelper.Pi + p.Angle), gameTime.ElapsedGameTime, Vector2.Zero);
-                    if (p.LifeLeft <= TimeSpan.Zero || !(XnaHelper.PointInRect(p.Position, ScreenBounds)))
+                    if (p.LifeLeft <= TimeSpan.Zero || !(XnaHelper.PointInRect(p.Position, _levelBounds)))
                         p.Active = false;
                 }
 

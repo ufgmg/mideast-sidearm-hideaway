@@ -29,22 +29,22 @@ namespace SpaceGame.units
         #endregion
 
         #region constructor
-        public Enemy(string unitName)
-            :this(EnemyDataDict[unitName])
+        public Enemy(string unitName, Rectangle levelBounds)
+            :this(EnemyDataDict[unitName], levelBounds)
         {
         }
 
 
-        protected Enemy(EnemyData data)
+        protected Enemy(EnemyData data, Rectangle levelBounds)
             : base(data.PhysicalData)
         {
             if (data.MeleeWeaponName != null)
-                _meleeWeapon = new MeleeWeapon(data.MeleeWeaponName, this);
+                _meleeWeapon = new MeleeWeapon(data.MeleeWeaponName, this, levelBounds);
         }
         #endregion
 
         #region methods
-        public virtual void Update(GameTime gameTime, Vector2 playerPosition, Vector2 blackHolePosition)
+        public virtual void Update(GameTime gameTime, Vector2 playerPosition, Vector2 blackHolePosition, Rectangle levelBounds)
         {
             Vector2 directionToPlayer = XnaHelper.DirectionBetween(Position, playerPosition);
             MoveDirection = directionToPlayer;
@@ -56,7 +56,7 @@ namespace SpaceGame.units
                 if ((playerPosition - Position).Length() <= _meleeWeapon.Range && _lifeState == LifeState.Living)
                     _meleeWeapon.Trigger(Center, playerPosition);
             }
-            base.Update(gameTime);
+            base.Update(gameTime, levelBounds);
         }
 
         public void CheckAndApplyWeaponCollision(PhysicalUnit unit)

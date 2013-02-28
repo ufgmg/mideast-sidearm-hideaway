@@ -41,7 +41,7 @@ namespace SpaceGame.graphics
         //size of sprite
         Rectangle _size;
         //shade do draw the sprite with
-        public Color Shade;
+        private Color _shade;
         //2Darray of rects to select from sprite sheet
         Rectangle[,] _rects;
         //origin used for rotation
@@ -54,6 +54,16 @@ namespace SpaceGame.graphics
         #endregion
 
         #region properties
+        public Color Shade
+        {
+            get { return _shade; }
+            set
+            {
+                _flashCounter = 0;  //stop flashing if shade manually set
+                _shade = value;
+            }
+        }
+
         public float Scale
         {
             get { return _scale; }
@@ -144,7 +154,6 @@ namespace SpaceGame.graphics
             Shade = Color.White;
             _angle = 0.0f;
             Scale = _defaultScale;
-            _flashCounter = 0;
         }
 
         public void Update(GameTime theGameTime)
@@ -166,7 +175,7 @@ namespace SpaceGame.graphics
 
                 if (_currentFlashTime < _halfFlashTime)
                 {
-                    Shade = Color.Lerp(Color.White, _flashColor, (float)_currentFlashTime.TotalSeconds / (float)_halfFlashTime.TotalSeconds);
+                    _shade = Color.Lerp(Color.White, _flashColor, (float)_currentFlashTime.TotalSeconds / (float)_halfFlashTime.TotalSeconds);
                     _currentFlashTime += theGameTime.ElapsedGameTime;
                 }
                 else if (_currentFlashTime >= (_halfFlashTime + _halfFlashTime))
@@ -174,11 +183,11 @@ namespace SpaceGame.graphics
                     _currentFlashTime = TimeSpan.Zero;
                     _flashCounter -= 1;
                     if (_flashCounter == 0)
-                        Shade = Color.White;
+                        _shade = Color.White;
                 }
                 else
                 {
-                    Shade = Color.Lerp(_flashColor, Color.White, (float)(_currentFlashTime - _halfFlashTime).TotalSeconds / (float)_halfFlashTime.TotalSeconds);
+                    _shade = Color.Lerp(_flashColor, Color.White, (float)(_currentFlashTime - _halfFlashTime).TotalSeconds / (float)_halfFlashTime.TotalSeconds);
                 }
 
             }
