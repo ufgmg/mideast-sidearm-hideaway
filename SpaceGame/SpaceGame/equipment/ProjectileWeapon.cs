@@ -28,6 +28,7 @@ namespace SpaceGame.equipment
             public bool ReadyToSplash;  //if projectile has hit a unit and is ready to apply splash next update
             public Vector2 Position;
             public Vector2 Velocity;
+            public Vector2 Acceleration;
             public TimeSpan LifeLeft;
             public float Angle;     //in radians
             public Sprite ProjectileSprite;
@@ -184,7 +185,7 @@ namespace SpaceGame.equipment
                     //updateProjectile(p, gameTime.ElapsedGameTime);
                     if (p.Velocity.Length() != 0)
                     {
-                        p.Velocity += p.Velocity / p.Velocity.Length() * _projectileAcceleration;
+                        p.Velocity += p.Acceleration;
                     }
                     p.Position += p.Velocity * (float)time.TotalSeconds;
                     p.LifeLeft -= time;
@@ -218,7 +219,8 @@ namespace SpaceGame.equipment
                         p.LifeLeft = _projectileLife;
                         p.Position = _owner.Center;
 //                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed + _owner.Velocity;
-                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed ;
+                        p.Velocity = _fireDirection * _projectileSpeed ;
+                        p.Acceleration = _fireDirection * _projectileAcceleration;
                         projectilesToSpawn -= 1;
                         _owner.ApplyForce(-_recoilForce * _fireDirection);
                         if (_hasProjectileSprite)
