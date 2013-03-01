@@ -115,12 +115,6 @@ namespace SpaceGame.states
             {
                 _primaryGadget.Trigger();
             }
-
-            if (input.ScrollUp)
-                _primaryWeapon.Trigger(_player.Position, input.MouseLocation);
-            if (input.ScrollDown)
-                _secondaryWeapon.Trigger(_player.Position, input.MouseLocation);
-
         }
 
         public override void Draw(SpriteBatch spriteBatch)
