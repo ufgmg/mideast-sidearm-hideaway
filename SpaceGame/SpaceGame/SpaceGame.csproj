@@ -121,6 +121,7 @@
     <Compile Include="states\Level.cs" />
     <Compile Include="units\BlackHole.cs" />
     <Compile Include="units\Enemy.cs" />
+    <Compile Include="units\Unicorn.cs" />
     <Compile Include="units\Wave.cs" />
     <Compile Include="units\PhysicalData.cs" />
     <Compile Include="units\Spaceman.cs" />

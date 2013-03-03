@@ -188,8 +188,16 @@ namespace SpaceGame.utility
                                                    select (string)enemy.Attribute("Name")).ToArray<string>(),
                                         SpawnInterval = TimeSpan.FromSeconds((float)wave.Attribute("SpawnInterval")),
                                         StartTime = TimeSpan.FromSeconds((float)wave.Attribute("StartTime")),
-                                    }).ToArray<Wave.WaveData>()
+                                    }).ToArray<Wave.WaveData>(),
+                        Unicorns = (from unicorn in level.Descendants("Unicorn")
+                                    select new UnicornData
+                                    {
+                                        StartTime = (float)unicorn.Attribute("StartTime"),
+                                        EndTime = (float)unicorn.Attribute("EndTime"),
+                                        SpawnTime = (float)unicorn.Attribute("SpawnTime"),
+                                    }).ToArray<UnicornData>()
                     }).Single<Level.LevelData>();
+
         }
 
         private static BlackHole parseBlackHole(XElement e)

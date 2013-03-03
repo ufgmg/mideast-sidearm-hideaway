@@ -21,6 +21,7 @@ namespace SpaceGame.states
         {
             public Wave.WaveData[] TrickleWaveData;
             public Wave.WaveData[] BurstWaveData;
+            public UnicornData[] Unicorns;
             public BlackHole BlackHole;
             public Vector2 PlayerStartLocation;
             public int Width, Height;
@@ -33,6 +34,7 @@ namespace SpaceGame.states
         Weapon _primaryWeapon, _secondaryWeapon;
         Gadget _primaryGadget, _secondaryGadget;
         Wave[] _waves;
+        Unicorn[] _unicorns;
         Rectangle _levelBounds;
         #endregion
 
@@ -53,6 +55,12 @@ namespace SpaceGame.states
             for (int i = 0; i < data.BurstWaveData.Length; i++)
             {
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false, _levelBounds);
+            }
+
+            _unicorns = new Unicorn[data.Unicorns.Length];
+            for (int j = 0; j < data.Unicorns.Length; j++)
+            {
+                _unicorns[j] = new Unicorn(data.Unicorns[j]);
             }
 
             _primaryWeapon = new ProjectileWeapon("Rocket", _player, _levelBounds);
@@ -88,6 +96,11 @@ namespace SpaceGame.states
                         _waves[i].CheckAndApplyCollisions(_waves[j]);
                     }
                 }
+            }
+
+            for (int i = 0; i < _unicorns.Length; i++)
+            {
+                _unicorns[i].Update(gameTime, _levelBounds, _blackHole.Position);
             }
 
             _primaryWeapon.Update(gameTime);
@@ -126,6 +139,10 @@ namespace SpaceGame.states
             foreach (Wave wave in _waves)
             {
                 wave.Draw(spriteBatch);
+            }
+            foreach (Unicorn unicorn in _unicorns)
+            {
+                unicorn.Draw(spriteBatch);
             }
         }
         #endregion

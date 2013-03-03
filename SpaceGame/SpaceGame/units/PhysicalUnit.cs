@@ -222,7 +222,7 @@ namespace SpaceGame.units
         /// Attempt to absorb unit into black hole. 
         /// </summary>
         /// <returns>Whether unit was successfully eaten</returns>
-        public bool EatByBlackHole()
+        public virtual bool EatByBlackHole()
         {
             if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed)
             {
