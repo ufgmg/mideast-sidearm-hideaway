@@ -87,7 +87,7 @@ namespace SpaceGame.states
 
             for (int i = 0; i < _waves.Length; i++)
             {
-                _waves[i].Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon);
+                _waves[i].Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon, _unicorns);
                 //check cross-wave collisions
                 if (_waves[i].Active)
                 {
@@ -100,7 +100,8 @@ namespace SpaceGame.states
 
             for (int i = 0; i < _unicorns.Length; i++)
             {
-                _unicorns[i].Update(gameTime, _levelBounds, _blackHole.Position);
+                _unicorns[i].Update(gameTime, _levelBounds, _blackHole.Position, _player.Position);
+                _unicorns[i].CheckAndApplyCollision(_player, gameTime);
             }
 
             _primaryWeapon.Update(gameTime);

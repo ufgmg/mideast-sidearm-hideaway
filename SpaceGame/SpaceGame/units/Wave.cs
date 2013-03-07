@@ -127,7 +127,8 @@ namespace SpaceGame.units
         /// <param name="weapon1"></param>
         /// <param name="weapon2"></param>
         public void Update(GameTime gameTime, Spaceman player, 
-            BlackHole blackHole, Weapon weapon1, Weapon weapon2)
+            BlackHole blackHole, Weapon weapon1, Weapon weapon2,
+            Unicorn[] unicorns)
         {
             if (_startTimer >= TimeSpan.Zero)        //not started yet
             {
@@ -186,8 +187,14 @@ namespace SpaceGame.units
 
                 for (int j = i - 1; j >= 0; j--)
                 {
-                    //check collision against other enemies 
+                    //check collision against other enemies in same wave
                     _enemies[i].CheckAndApplyUnitCollision(_enemies[j]);
+                }
+
+                for (int j = 0 ; j < unicorns.Length ; j++)
+                {
+                    //check collision against unicorns
+                    unicorns[j].CheckAndApplyCollision(_enemies[i], gameTime);
                 }
                 _enemies[i].CheckAndApplyUnitCollision(player);
                 _enemies[i].CheckAndApplyWeaponCollision(player);

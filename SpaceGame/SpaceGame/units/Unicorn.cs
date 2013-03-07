@@ -19,12 +19,17 @@ namespace SpaceGame.units
     class Unicorn
     {
         #region constant
-        const float SECONDS_TILL_CHARGE = 3;
+        const float SECONDS_TILL_CHARGE = 2;
         const float GRAVITY_FIELD = -3000;
-        const float IMPACT_DAMAGE = 100;
-        const float IMPACT_IMPULSE = 10000;
-        const float MOVE_SPEED = 10000;
-        const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200; 
+        const int IMPACT_DAMAGE = 100;
+        const int IMPACT_IMPULSE = 10000;
+        const float MOVE_SPEED = 1000;
+        const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200;
+        const int OUT_OF_BOUNDS_BUFFER = 200;
+        const float UNICORN_GRAVITY = -40000;
+        const string SPRITE_NAME = "Unicorn";
+        const string STAND_PARTICLE_EFFECT = "UnicornStand";
+        const string MOVE_PARTICLE_EFFECT = "UnicornCharge";
         #endregion
 
         #region static
@@ -37,15 +42,18 @@ namespace SpaceGame.units
         #endregion
 
         #region properties
+        public Gravity Gravity { get { return _gravity; } }
         #endregion
 
         #region fields
         TimeSpan _startTime, _endTime, _spawnTime;
         TimeSpan _timer;
         ParticleEffect _standingEffect, _chargeEffect;
-        Vector2 _position, _direction;
+        Vector2 _position, _direction, _velocity;
         State _state;
         Sprite _sprite;
+        Gravity _gravity;
+        Rectangle _hitRect;
         #endregion
 
         #region constructor
@@ -55,15 +63,17 @@ namespace SpaceGame.units
             _endTime = TimeSpan.FromSeconds(data.EndTime);
             _spawnTime = TimeSpan.FromSeconds(data.SpawnTime);
             _timer = _spawnTime;
-            _standingEffect = new ParticleEffect("UnicornStand");
-            _chargeEffect = new ParticleEffect("UnicornCharge");
-            _sprite = new Sprite("Unicorn");
+            _standingEffect = new ParticleEffect(STAND_PARTICLE_EFFECT);
+            _chargeEffect = new ParticleEffect(MOVE_PARTICLE_EFFECT);
+            _sprite = new Sprite(SPRITE_NAME);
             _state = State.Dormant;
+            _gravity = new Gravity(_position, UNICORN_GRAVITY);
+            _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
         }
         #endregion
 
         #region methods
-        public void Update(GameTime gameTime, Rectangle levelBounds, Vector2 blackHolePos)
+        public void Update(GameTime gameTime, Rectangle levelBounds, Vector2 blackHolePos, Vector2 playerPos)
         {
             _standingEffect.Update(gameTime);
             _chargeEffect.Update(gameTime);
@@ -75,7 +85,8 @@ namespace SpaceGame.units
                     _timer -= gameTime.ElapsedGameTime;
                     if (_timer <= TimeSpan.Zero)
                     {
-                        setPosition(blackHolePos, levelBounds.Width, levelBounds.Height);
+                        setPosition(blackHolePos, playerPos, levelBounds.Width, levelBounds.Height);
+                        _gravity.Position = _position;
                         _state = State.Standing;
                         _timer = TimeSpan.FromSeconds(SECONDS_TILL_CHARGE);
                     }
@@ -83,22 +94,75 @@ namespace SpaceGame.units
 
                 case State.Standing:
                     _timer -= gameTime.ElapsedGameTime;
-                    _standingEffect.Spawn(_position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
-                    _sprite.Shade = Color.Lerp(Color.Transparent, Color.White, 
-                        (SECONDS_TILL_CHARGE - (float)_timer.TotalSeconds) / SECONDS_TILL_CHARGE);
+                    if (_timer <= TimeSpan.Zero)
+                    {
+                        _state = State.Charging;
+                        _velocity = _direction * MOVE_SPEED;
+                    }
+                    else
+                    {
+                        _standingEffect.Spawn(_position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+                        _sprite.Shade = Color.Lerp(Color.Transparent, Color.White,
+                            (SECONDS_TILL_CHARGE - (float)_timer.TotalSeconds) / SECONDS_TILL_CHARGE);
+
+                        //track player
+                        Vector2.Subtract(ref playerPos, ref _position, out _direction);
+                        _direction.Normalize();
+                        _sprite.Angle = XnaHelper.RadiansFromVector(_direction);
+                    }
                     break;
 
                 case State.Charging:
+                    _position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _hitRect.X = (int)_position.X - _hitRect.Width / 2;
+                    _hitRect.Y = (int)_position.Y - _hitRect.Height / 2;
+                    _chargeEffect.Spawn(_position, 0.0f, gameTime.ElapsedGameTime, _velocity);
+                    _gravity.Position = _position;
+                    if (outOfBounds(levelBounds.Width, levelBounds.Height))
+                    {
+                        _sprite.Reset();
+                        _timer = _spawnTime;
+                        _state = State.Dormant;
+                    }
+
+
                     break;
             }
                     
+        }
+
+        public void CheckAndApplyCollision(PhysicalUnit unit, GameTime gameTime)
+        {
+            switch (_state)
+            {
+                case State.Dormant:
+                    break;
+                case State.Standing:
+                    unit.ApplyGravity(_gravity, gameTime);
+                    break;
+                case State.Charging:
+                    unit.ApplyGravity(_gravity, gameTime);
+                    if (XnaHelper.PredictCollision(
+                        _hitRect, _velocity, unit.HitRect, unit.Velocity, gameTime.ElapsedGameTime))
+                    {
+                        unit.ApplyImpact(_velocity, IMPACT_IMPULSE);
+                        unit.ApplyDamage(IMPACT_DAMAGE);
+                    }
+                    break;
+            }
+        }
+
+        private bool outOfBounds(int levelWidth, int levelHeight)
+        {
+            return (_position.X < -OUT_OF_BOUNDS_BUFFER || _position.X + _sprite.Width >= levelWidth + OUT_OF_BOUNDS_BUFFER||
+                    _position.Y < -OUT_OF_BOUNDS_BUFFER || _position.Y + _sprite.Height >= levelHeight + OUT_OF_BOUNDS_BUFFER);
         }
 
         private void EatByBlackHole()
         {
         }
 
-        private void setPosition(Vector2 blackHolePosition, int levelWidth, int levelHeight)
+        private void setPosition(Vector2 blackHolePosition, Vector2 playerPosition, int levelWidth, int levelHeight)
         {   //set bounds on new spawn location
             int minX, maxX, minY, maxY;
 
@@ -108,12 +172,13 @@ namespace SpaceGame.units
             minY = 0;
             maxY = levelHeight;
 
+            //keep reselecting position until find a position far enough from black hole
             do { XnaHelper.RandomizeVector(ref _position, minX, maxX, minY, maxY); }
             while (Vector2.Distance(blackHolePosition, _position) < MIN_BLACKHOLE_SPAWN_DISTANCE);
 
-            _sprite.Angle = MathHelper.ToRadians(XnaHelper.RandomAngle(0, 360));
-            _direction.X = (float)Math.Sin(_sprite.Angle);
-            _direction.Y = -(float)Math.Cos(_sprite.Angle);
+            Vector2.Subtract(ref playerPosition, ref _position, out _direction);
+            _direction.Normalize();
+            _sprite.Angle = XnaHelper.RadiansFromVector(_direction);
         }
 
         public void Draw(SpriteBatch sb)
@@ -122,6 +187,7 @@ namespace SpaceGame.units
                 _sprite.Draw(sb, _position);
             _standingEffect.Draw(sb);
             _chargeEffect.Draw(sb);
+            XnaHelper.DrawRect(Color.Red, _hitRect, sb);
         }
         #endregion
 

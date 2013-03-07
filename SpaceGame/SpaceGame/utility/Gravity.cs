@@ -18,6 +18,7 @@ namespace SpaceGame.utility
         public Vector2 Position
         {
             get { return _position; }
+            set { _position = value; }
         }
 
         public float Magnitude
@@ -43,6 +44,5 @@ namespace SpaceGame.utility
             _position = newPosition;
         }
 
-        //TODO -- add support for adding Gravities (for units like ogres)
     }
 }
