@@ -23,10 +23,11 @@ namespace SpaceGame.units
         const float GRAVITY_FIELD = -3000;
         const int IMPACT_DAMAGE = 100;
         const int IMPACT_IMPULSE = 10000;
-        const float MOVE_SPEED = 1000;
+        const float MOVE_SPEED = 1500;
         const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200;
         const int OUT_OF_BOUNDS_BUFFER = 200;
         const float UNICORN_GRAVITY = -40000;
+        const int COLLISION_GRANULARITY = 10;
         const string SPRITE_NAME = "Unicorn";
         const string STAND_PARTICLE_EFFECT = "UnicornStand";
         const string MOVE_PARTICLE_EFFECT = "UnicornCharge";
@@ -53,7 +54,7 @@ namespace SpaceGame.units
         State _state;
         Sprite _sprite;
         Gravity _gravity;
-        Rectangle _hitRect;
+        Rectangle[] _hitRects;
         #endregion
 
         #region constructor
@@ -68,7 +69,11 @@ namespace SpaceGame.units
             _sprite = new Sprite(SPRITE_NAME);
             _state = State.Dormant;
             _gravity = new Gravity(_position, UNICORN_GRAVITY);
-            _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
+            _hitRects = new Rectangle[COLLISION_GRANULARITY];
+            for (int i = 0 ; i < COLLISION_GRANULARITY ; i++)
+            {
+                _hitRects[i] = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
+            }
         }
         #endregion
 
@@ -113,9 +118,15 @@ namespace SpaceGame.units
                     break;
 
                 case State.Charging:
+                    //trace movement path
+                    for (int i = 0; i < _hitRects.Length; i++)
+                    {
+                        _hitRects[i].X = (int)(_position.X - _hitRects[i].Width / 2  + i * _velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds / COLLISION_GRANULARITY);
+                        _hitRects[i].Y = (int)(_position.Y - _hitRects[i].Height / 2 + i * _velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds / COLLISION_GRANULARITY);
+                    }
+
                     _position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    _hitRect.X = (int)_position.X - _hitRect.Width / 2;
-                    _hitRect.Y = (int)_position.Y - _hitRect.Height / 2;
+
                     _chargeEffect.Spawn(_position, 0.0f, gameTime.ElapsedGameTime, _velocity);
                     _gravity.Position = _position;
                     if (outOfBounds(levelBounds.Width, levelBounds.Height))
@@ -142,11 +153,14 @@ namespace SpaceGame.units
                     break;
                 case State.Charging:
                     unit.ApplyGravity(_gravity, gameTime);
-                    if (XnaHelper.PredictCollision(
-                        _hitRect, _velocity, unit.HitRect, unit.Velocity, gameTime.ElapsedGameTime))
+                    for (int i = 0; i < _hitRects.Length; i++)
                     {
-                        unit.ApplyImpact(_velocity, IMPACT_IMPULSE);
-                        unit.ApplyDamage(IMPACT_DAMAGE);
+                        if (_hitRects[i].Intersects(unit.HitRect))
+                        {
+                            unit.ApplyImpact(_velocity, IMPACT_IMPULSE);
+                            unit.ApplyDamage(IMPACT_DAMAGE);
+                            break;
+                        }
                     }
                     break;
             }
@@ -187,7 +201,8 @@ namespace SpaceGame.units
                 _sprite.Draw(sb, _position);
             _standingEffect.Draw(sb);
             _chargeEffect.Draw(sb);
-            XnaHelper.DrawRect(Color.Red, _hitRect, sb);
+            foreach (Rectangle rect in _hitRects)
+                XnaHelper.DrawRect(Color.Red, rect, sb);
         }
         #endregion
 
