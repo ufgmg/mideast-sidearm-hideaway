@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!-- A particle Effect is a combination of Particle Generators-->
 <!-- Speed is given in pixels/second-->
 <!-- Variance represents a percentage variance in a given value.
      For example, SpeedVariance="0.3" means that particle speeds can vary within 30% of the Speed value-->
@@ -11,36 +12,48 @@
 <!-- Colors are defined as "A,R,G,B"-->
 
 <ParticleEffectDatas>
+  <!--Particle Effects-->
+  <ParticleEffectData Name="UnicornStand">
+    <ParticleGenerator Name="UnicornStand1"/>
+    <ParticleGenerator Name="UnicornStand2"/>
+    <ParticleGenerator Name="UnicornStand3"/>
+  </ParticleEffectData>
+  <ParticleEffectData Name="UnicornCharge">
+    <ParticleGenerator Name="UnicornCharge1"/>
+    <ParticleGenerator Name="UnicornCharge2"/>
+    <ParticleGenerator Name="UnicornCharge3"/>
+  </ParticleEffectData>
 
-  <ParticleEffectData Name="SpacemanThruster" 
+  <!-- Particle Generators-->
+  <ParticleGeneratorData Name="SpacemanThruster" 
                       Speed="250.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="720.0" 
                       StartScale ="5.0" ScaleVariance="0.3" EndScale="40.0" 
                       SpawnArc="30.0" SpawnRate="50" ParticleLife="0.3" ParticleLifeVariance="0.5"
                       StartColor="255,255,0,0" EndColor ="0,50,50,50"
                       Reversed="False" />
 
-  <ParticleEffectData Name="PunchWave" 
+  <ParticleGeneratorData Name="PunchWave" 
                       Speed="1400.0" SpeedVariance="0.1" DecelerationFactor="3.0" ParticleRotation="0.0" 
                       StartScale ="1.0" ScaleVariance="0.1" EndScale="20.0" 
                       SpawnArc="90.0" SpawnRate="1800" ParticleLife="0.05" ParticleLifeVariance="0.0"
                       StartColor="255,0,0,255" EndColor ="0,0,0,255"
                       Reversed="False" />
 
-  <ParticleEffectData Name="RocketBooster" 
+  <ParticleGeneratorData Name="RocketBooster" 
                       Speed="100.0" SpeedVariance="0.3" DecelerationFactor="3.0" ParticleRotation="360.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="30.0" 
                       SpawnArc="30.0" SpawnRate="50" ParticleLife="0.4" ParticleLifeVariance="0.5"
                       StartColor="255,255,0,0" EndColor ="0,50,50,50"
                       Reversed="False" />
 
-  <ParticleEffectData Name="RocketExplosion" 
+  <ParticleGeneratorData Name="RocketExplosion" 
                       Speed="300.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
                       SpawnArc="360.0" SpawnRate="600" ParticleLife="0.2" ParticleLifeVariance="0.3"
                       StartColor="255,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
-  <ParticleEffectData Name="Flamethrower" 
+  <ParticleGeneratorData Name="Flamethrower" 
                       Speed="600.0" SpeedVariance="0.1" DecelerationFactor="0.1" ParticleRotation="720.0" 
                       StartScale ="3.0" ScaleVariance="0.3" EndScale="20.0" 
                       SpawnArc="20.0" SpawnRate="600" ParticleLife="0.3" ParticleLifeVariance="0.5"
@@ -50,14 +63,14 @@
   <!-- The following are special particle effects references directly by classes (rather than being specified by other xml files.
        The names cannot be changed without modifying the references in the associated classes-->
 
-  <ParticleEffectData Name="BlackHoleEffect1" 
+  <ParticleGeneratorData Name="BlackHoleEffect1" 
                       Speed="5.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="360.0" 
                       StartScale ="3.0" ScaleVariance="0.3" EndScale="30.0" 
                       SpawnArc="360.0" SpawnRate="100" ParticleLife="0.6" ParticleLifeVariance="0.5"
                       StartColor="00,0,0,0" EndColor ="100,148,0,211"
                       Reversed="True" />
 
-  <ParticleEffectData Name="BlackHoleEffect2" 
+  <ParticleGeneratorData Name="BlackHoleEffect2" 
                       Speed="30.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="-100.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
                       SpawnArc="360.0" SpawnRate="200" ParticleLife="1.2" ParticleLifeVariance="0.5"
@@ -65,23 +78,53 @@
                       UniqueParticle="HollowSquare2"
                       Reversed="True" />
 
-  <ParticleEffectData Name="SpawnPortal1" 
+  <ParticleGeneratorData Name="SpawnPortal1" 
                       Speed="600.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="90.0" 
                       StartScale ="5.0" ScaleVariance="0.3" EndScale="30.0" 
                       SpawnArc="90.0" SpawnRate="200" ParticleLife="0.2" ParticleLifeVariance="0.3"
                       StartColor="255,0,255,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
-  <ParticleEffectData Name="UnicornStand" 
+
+  <ParticleGeneratorData Name="UnicornStand1" 
                       Speed="900.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="30.0" 
                       SpawnArc="360.0" SpawnRate="1800" ParticleLife="0.2" ParticleLifeVariance="0.3"
-                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      StartColor="255,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
-  <ParticleEffectData Name="UnicornCharge" 
+
+  <ParticleGeneratorData Name="UnicornStand2" 
+                      Speed="900.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="360.0" SpawnRate="1800" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,0,255,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornStand3" 
+                      Speed="900.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="360.0" SpawnRate="1800" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,0,0,255" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornCharge1" 
                       Speed="200.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
                       SpawnArc="360.0" SpawnRate="1800" ParticleLife="1" ParticleLifeVariance="0.3"
-                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      StartColor="255,255,0,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornCharge2" 
+                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="1800" ParticleLife="1" ParticleLifeVariance="0.3"
+                      StartColor="255,0,0,255" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornCharge3" 
+                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="1800" ParticleLife="1" ParticleLifeVariance="0.3"
+                      StartColor="255,0,255,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
 </ParticleEffectDatas>

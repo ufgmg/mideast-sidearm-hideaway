@@ -74,8 +74,8 @@ namespace SpaceGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //Initialize blank particle texture as a single pixel
-            ParticleEffect.ParticleTexture = new Texture2D(GraphicsDevice, 1, 1);
-            ParticleEffect.ParticleTexture.SetData<Color>(new Color[] {Color.White});
+            ParticleGenerator.ParticleTexture = new Texture2D(GraphicsDevice, 1, 1);
+            ParticleGenerator.ParticleTexture.SetData<Color>(new Color[] {Color.White});
 
             //load hud textures
             //SpaceGame.graphics.hud.RadialBar.BarPipTexture = Content.Load<Texture2D>("hud/radial_bar_pip");
@@ -85,10 +85,11 @@ namespace SpaceGame
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});
 
             //load data from xml
-            Sprite.Data = DataLoader.LoadSpriteData("data/SpriteData.xml", Content);
-            ParticleEffect.Data = DataLoader.LoadParticleEffectData("data/ParticleEffectData.xml", Content);
-            ProjectileWeapon.ProjectileWeaponData = DataLoader.LoadProjectileWeaponData("data/WeaponData.xml");
-            MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData("data/WeaponData.xml");
+            Sprite.Data = DataLoader.LoadSpriteData(Content);
+            ParticleGenerator.Data = DataLoader.LoadParticleGeneratorData(Content);
+            ParticleEffect.Data = DataLoader.LoadParticleEffectData(Content);
+            ProjectileWeapon.ProjectileWeaponData = DataLoader.LoadProjectileWeaponData();
+            MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData();
             Spaceman.AstronautData = DataLoader.LoadAstronautData();
             Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
 

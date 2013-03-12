@@ -24,7 +24,11 @@ namespace SpaceGame.utility
     static class DataLoader
     {
         const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
+        const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
+        const string SPRITE_PATH = "data/SpriteData.xml";
         const string UNIT_DATA_PATH = "data/UnitData.xml";
+        const string PROJECTILE_WEAPON_PATH = "data/WeaponData.xml";
+        const string MELEE_WEAPON_PATH = "data/WeaponData.xml";
         const string LEVEL_DIRECTORY = "data/LevelData.xml";
         /// <summary>
         /// get a dict mapping sprite names to spritedata. 
@@ -33,10 +37,10 @@ namespace SpaceGame.utility
         /// <param name="pathToXML"></param>
         /// <param name="theContent"></param>
         /// <returns></returns>
-        public static Dictionary<string, SpriteData> LoadSpriteData(string pathToXML, ContentManager theContent)
+        public static Dictionary<string, SpriteData> LoadSpriteData(ContentManager theContent)
         {
             string spriteFolderPath = "spritesheets/";
-            return (from sd in XElement.Load(pathToXML).Descendants("SpriteData")
+            return (from sd in XElement.Load(SPRITE_PATH).Descendants("SpriteData")
                            select new SpriteData
                            {
                                Name = (string)sd.Attribute("Name"),
@@ -82,10 +86,10 @@ namespace SpaceGame.utility
                            }).ToDictionary(t => t.Name);
         }
 
-        public static Dictionary<string, ParticleEffectData> LoadParticleEffectData(string pathToXML, ContentManager content)
+        public static Dictionary<string, ParticleGeneratorData> LoadParticleGeneratorData(ContentManager content)
         {
-            return (from sd in XElement.Load(pathToXML).Descendants("ParticleEffectData")
-                           select new ParticleEffectData
+            return (from sd in XElement.Load(PARTICLE_EFFECT_PATH).Descendants("ParticleGeneratorData")
+                           select new ParticleGeneratorData
                            {
                                Name = (string)sd.Attribute("Name"),
                                Speed = (float)sd.Attribute("Speed"),
@@ -106,6 +110,17 @@ namespace SpaceGame.utility
                            }).ToDictionary(t => t.Name);
         }
 
+        public static Dictionary<string, ParticleEffectData> LoadParticleEffectData(ContentManager content)
+        {
+            return (from sd in XElement.Load(PARTICLE_EFFECT_PATH).Descendants("ParticleEffectData")
+                           select new ParticleEffectData
+                           {
+                               Name = (string)sd.Attribute("Name"),
+                               ParticleGenerators = (from gen in sd.Elements("ParticleGenerator")
+                                                     select (string)gen.Attribute("Name")).ToArray<string>()
+                           }).ToDictionary(t => t.Name);
+        }
+
         private static Color parseColor(string colorValues)
         {
 			string[] nums = colorValues.Split(',');
@@ -113,9 +128,9 @@ namespace SpaceGame.utility
 			return new Color(byte.Parse(nums[1]), byte.Parse(nums[2]), byte.Parse(nums[3]), byte.Parse(nums[0]));
 		}
 
-        public static Dictionary<string, ProjectileWeaponData> LoadProjectileWeaponData(string pathToXML)
+        public static Dictionary<string, ProjectileWeaponData> LoadProjectileWeaponData()
         {
-            return (from wd in XElement.Load(pathToXML).Descendants("ProjectileWeapon")
+            return (from wd in XElement.Load(PROJECTILE_WEAPON_PATH).Descendants("ProjectileWeapon")
                     select new ProjectileWeaponData
                     {
                         Name = (string)wd.Attribute("Name"),
@@ -144,9 +159,9 @@ namespace SpaceGame.utility
                     }).ToDictionary(t => t.Name);
         }
 
-        public static Dictionary<string, MeleeWeapon.MeleeWeaponData> LoadMeleeWeaponData(string pathToXML)
+        public static Dictionary<string, MeleeWeapon.MeleeWeaponData> LoadMeleeWeaponData()
         {
-            return (from wd in XElement.Load(pathToXML).Descendants("MeleeWeapon")
+            return (from wd in XElement.Load(MELEE_WEAPON_PATH).Descendants("MeleeWeapon")
                     select new MeleeWeapon.MeleeWeaponData
                     {
                         Name = (string)wd.Attribute("Name"),
