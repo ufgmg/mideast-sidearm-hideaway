@@ -33,15 +33,7 @@ namespace SpaceGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager _inputManager = new InputManager();
-        SpriteFont menuFont;
-        List<Gamestate> _stateStack = new List<Gamestate>();
-        GameStateDrawMenu gamemenu;
-        //will use input manager instead
-        KeyboardState currKeyState;
-        KeyboardState oldKeyState;
-        GameStateDrawMenu gameMenu;
-
-        bool isMenu;
+        List<Gamestate> _stateStack = new List<Gamestate>();  
 
         public static GameStates gamestate;
 
@@ -57,15 +49,12 @@ namespace SpaceGame
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            //set resolution        TODO: Move this to an XML Configuration File
+            //set resolution TODO: Move this to an XML Configuration File
             graphics.PreferredBackBufferWidth = SCREENWIDTH;
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;
 
-            isMenu = true;
             //TODO: replace with custom cursor
             this.IsMouseVisible = true;
-
-         //   gameMenu = new GameStateDrawMenu();
 
         }
 
@@ -118,14 +107,15 @@ namespace SpaceGame
             Spaceman.AstronautData = DataLoader.LoadAstronautData();
             Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
 
-            menuFont = Content.Load<SpriteFont>("MenuFont");
+            Gamemenu.LoadContent(Content);
 
-            //ADD IF LOGIC TO EXECUTE
-            if (gamestate == GameStates.Menu)
+          
                 _stateStack.Add(new Gamemenu());
+  
+            
+               
 
-            else if (gamestate == GameStates.Running)
-                _stateStack.Add(new Level(1));
+
         }
 
         /// <summary>
@@ -152,7 +142,13 @@ namespace SpaceGame
             _inputManager.Update();
 
             _stateStack.Last().Update(gameTime, _inputManager);
-       
+
+            if (_stateStack.Last().ReplaceState != null)
+            {
+                Gamestate newState = _stateStack.Last().ReplaceState;
+                _stateStack.RemoveAt(_stateStack.Count - 1);
+                _stateStack.Add(newState);
+            }
 
             base.Update(gameTime);
         }

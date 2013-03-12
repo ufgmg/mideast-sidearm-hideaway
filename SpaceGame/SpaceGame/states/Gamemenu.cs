@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -16,8 +16,8 @@ namespace SpaceGame.states
         private int iterator;
         public string infoText { get; set; }
         public string title { get; set; }
-
-        SpriteFont _spritefont;
+        public static SpriteFont spriteFont;
+        
 
         public Gamemenu() : base(false)
         {
@@ -26,9 +26,9 @@ namespace SpaceGame.states
             MenuItems.Add("Play Game");
             MenuItems.Add("Settings");
             MenuItems.Add("Exit Game");
-
             Iterator = 0;
             infoText = string.Empty;
+            
         }
 
         public int Iterator
@@ -57,40 +57,32 @@ namespace SpaceGame.states
 
         private void handleInput(InputManager input)
         {
+             // Allows the game to exit
             if (input.Exit)
                 this.PopState = true;
-            
-            // Allows the game to exit
-            if (input.Exit)
-                this.PopState() = true;
 
-                if (currKeyState.IsKeyDown(Keys.Up))
+                if (input.SelectUp)
                 {
-                    if ((!oldKeyState.IsKeyDown(Keys.Up)))
-                        this.Iterator--;
+                    this.Iterator--;
                 }
 
-                else if (currKeyState.IsKeyDown(Keys.Down))
+                else if (input.SelectDown)
                 {
-                    if ((!oldKeyState.IsKeyDown(Keys.Down)))
-                        this.Iterator++;
+                    this.Iterator++;
                 }
 
-                if (currKeyState.IsKeyDown(Keys.Enter))
+                if (input.Confirm)
                 {
                     if (this.Iterator == 0)
                     {
                         //load game
-                       
-                        gamestate = GameStates.Running;
-                        
-
-
+                        ReplaceState = new Level(1);
                     }
                     else if (this.Iterator == 1)
                     {
-                        //call method to load settings 
-                        
+                        //call method to load settings
+                        this.PopState = true;
+
                     }
 
                     else if (this.Iterator == 2)
@@ -99,27 +91,29 @@ namespace SpaceGame.states
                         this.PopState = true;
                     }
 
+                    this.Iterator = 0;
+                }
                     //Add more select menu logic here as menu items increase
 
-                    this.Iterator = 0;
-
-
-
+                    
+                
         }
 
         public override void Update(GameTime gameTime, InputManager input)
-        {
-            input.Update();
-
+        {  
             handleInput(input);
-
-            input.Update();
-            
+            //update logic goes here
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public static void LoadContent(ContentManager contentManager)
         {
-            batch.DrawString(arial, title, new Vector2(screenWidth / 2 - arial.MeasureString(title).X / 2, 20), Color.White);
+            spriteFont = contentManager.Load<SpriteFont>("MenuFont");
+        }
+
+        public void DrawMenu(SpriteBatch spriteBatch, SpriteFont mFont)
+        {
+            int screenWidth = 1280;
+            spriteBatch.DrawString(mFont, title, new Vector2(screenWidth / 2 - mFont.MeasureString(title).X / 2, 20), Color.White);
             int yPos = 100;
             for (int i = 0; i < GetNumberOfOptions(); i++)
             {
@@ -128,9 +122,17 @@ namespace SpaceGame.states
                 {
                     colour = Color.Cyan;
                 }
-                batch.DrawString(arial, GetItem(i), new Vector2(screenWidth / 2 - arial.MeasureString(GetItem(i)).X / 2, yPos), colour);
+                spriteBatch.DrawString(mFont, GetItem(i), new Vector2(screenWidth / 2 - mFont.MeasureString(GetItem(i)).X / 2, yPos), colour);
                 yPos += 50;
             }
         }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            DrawMenu(spriteBatch, spriteFont);
+        }
+
+       
+        //method to set selection value to pass up to game1.cs and Game1.cs getSelection, set gamestate.
     }
 }

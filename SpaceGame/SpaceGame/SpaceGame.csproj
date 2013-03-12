@@ -126,6 +126,7 @@
     <Compile Include="units\Wave.cs" />
     <Compile Include="units\PhysicalData.cs" />
     <Compile Include="units\Spaceman.cs" />
+    <Compile Include="utility\Camera.cs" />
     <Compile Include="utility\DataLoader.cs" />
     <Compile Include="utility\Gravity.cs" />
     <Compile Include="units\PhysicalUnit.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="equipment\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="UMLDiagram.cd" />
     <None Include="data\SpriteData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
