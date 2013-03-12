@@ -42,8 +42,8 @@ namespace SpaceGame.equipment
         #endregion
 
         #region constructor
-        public HookShot(PhysicalUnit owner)
-            :base(TimeSpan.FromSeconds(FIRE_DELAY), 1, 0, owner)
+        public HookShot(PhysicalUnit owner, Rectangle levelBounds)
+            :base(TimeSpan.FromSeconds(FIRE_DELAY), 1, 0, owner, levelBounds)
         {
             _hookState = HookState.Idle;
             _hookSprite = new Sprite("HookClaw");
@@ -70,7 +70,7 @@ namespace SpaceGame.equipment
                     }
                 case (HookState.Fired):
                     {
-                        if (XnaHelper.PointInRect(_hookPosition, ScreenBounds) && !(_firing))
+                        if (XnaHelper.PointInRect(_hookPosition, _levelBounds) && !(_firing))
                         {
                         _hookPosition += _hookVelocity;
                         _hookHitRect.X = (int)_hookPosition.X;

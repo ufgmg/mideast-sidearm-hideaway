@@ -171,6 +171,8 @@ namespace SpaceGame.utility
                     {
                         PlayerStartLocation = parseVector(level.Element("Player")),
                         BlackHole = parseBlackHole(level.Element("BlackHole")),
+                        Width = (int)level.Attribute("LevelWidth"),
+                        Height = (int)level.Attribute("LevelHeight"),
                         TrickleWaveData = (from wave in level.Descendants("TrickleWave")
                                     select new Wave.WaveData
                                     {

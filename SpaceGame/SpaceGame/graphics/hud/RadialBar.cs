@@ -79,12 +79,25 @@ namespace SpaceGame.graphics.hud
         /// <param name="maxVal">Current value of the value being displayed</param>
         public void Draw(SpriteBatch sb, float currentVal, float maxVal)
         {
-            //angle of rotation to currently draw bar pip at
-            float stopAngle = _arcStart + currentVal / maxVal * (_arcEnd - _arcStart);
-            //increment through angle, drawing pip along way
-            for (float angle = _arcStart; angle < stopAngle; angle += DRAW_FREQUENCY)
+            if (_arcStart < _arcEnd)
             {
-                sb.Draw(_barPipTexture, _drawPoint, null, _barColor, angle, _origin, 1.0f, SpriteEffects.None, 0);
+                //angle of rotation to currently draw bar pip at
+                float stopAngle = _arcStart + currentVal / maxVal * (_arcEnd - _arcStart);
+                //increment through angle, drawing pip along way
+                for (float angle = _arcStart; angle < stopAngle; angle += DRAW_FREQUENCY)
+                {
+                    sb.Draw(_barPipTexture, _drawPoint, null, _barColor, angle, _origin, 1.0f, SpriteEffects.None, 0);
+                }
+            }
+            else if (_arcStart > _arcEnd)
+            {
+                //angle of rotation to currently draw bar pip at
+                float stopAngle = _arcStart + currentVal / maxVal * (_arcEnd - _arcStart);
+                //increment through angle, drawing pip along way
+                for (float angle = _arcStart; angle > stopAngle; angle -= DRAW_FREQUENCY)
+                {
+                    sb.Draw(_barPipTexture, _drawPoint, null, _barColor, angle, _origin, 1.0f, SpriteEffects.None, 0);
+                }
             }
         }
         #endregion

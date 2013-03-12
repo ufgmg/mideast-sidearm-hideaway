@@ -23,6 +23,7 @@ namespace SpaceGame.states
             public Wave.WaveData[] BurstWaveData;
             public BlackHole BlackHole;
             public Vector2 PlayerStartLocation;
+            public int Width, Height;
         }
         #endregion
 
@@ -32,6 +33,7 @@ namespace SpaceGame.states
         Weapon _primaryWeapon, _secondaryWeapon;
         Gadget _primaryGadget, _secondaryGadget;
         Wave[] _waves;
+        Rectangle _levelBounds;
         #endregion
 
         #region constructor
@@ -39,21 +41,23 @@ namespace SpaceGame.states
             : base(false)
         {
             LevelData data = DataLoader.LoadLevel(levelNumber);
+            _levelBounds = new Rectangle(0, 0, data.Width, data.Height);
             _player = new Spaceman(data.PlayerStartLocation);
             _blackHole = data.BlackHole;
             _waves = new Wave[data.TrickleWaveData.Length + data.BurstWaveData.Length];
             //construct waves
             for (int i = 0; i < data.TrickleWaveData.Length; i++)
             { 
-                _waves[i] = new Wave(data.TrickleWaveData[i], true);
+                _waves[i] = new Wave(data.TrickleWaveData[i], true, _levelBounds);
             }
             for (int i = 0; i < data.BurstWaveData.Length; i++)
             {
-                _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false);
+                _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false, _levelBounds);
             }
 
-            _primaryWeapon = new ProjectileWeapon("Flamethrower", _player);
-            _secondaryWeapon = new HookShot(_player);
+            _primaryWeapon = new ProjectileWeapon("Rocket", _player, _levelBounds);
+            _secondaryWeapon = new ProjectileWeapon("Flamethrower", _player, _levelBounds);
+            //_secondaryWeapon = new HookShot(_player, _levelBounds);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
         }
 
@@ -69,7 +73,7 @@ namespace SpaceGame.states
                     TimeSpan.FromSeconds((float)gameTime.ElapsedGameTime.TotalSeconds / 2));
             
             _blackHole.ApplyToUnit(_player, gameTime);
-            _player.Update(gameTime);
+            _player.Update(gameTime, _levelBounds);
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
@@ -98,11 +102,11 @@ namespace SpaceGame.states
             _player.MoveDirection = input.MoveDirection;
             _player.LookDirection = XnaHelper.DirectionBetween(_player.Center, input.MouseLocation);
 
-            if (input.FirePrimary)
+            if (input.FirePrimary && _player.UnitLifeState == PhysicalUnit.LifeState.Living)
             {
                 _primaryWeapon.Trigger(_player.Position, input.MouseLocation);
             }
-            if (input.FireSecondary)
+            if (input.FireSecondary && _player.UnitLifeState == PhysicalUnit.LifeState.Living)
             {
                 _secondaryWeapon.Trigger(_player.Position, input.MouseLocation);
             }
@@ -111,7 +115,6 @@ namespace SpaceGame.states
             {
                 _primaryGadget.Trigger();
             }
-
         }
 
         public override void Draw(SpriteBatch spriteBatch)

@@ -49,15 +49,13 @@ namespace SpaceGame.equipment
         #endregion
 
         #region constructor
-        public MeleeWeapon(string weaponName, PhysicalUnit owner)
-            : this(MeleeWeaponDataDict[weaponName], owner)
+        public MeleeWeapon(string weaponName, PhysicalUnit owner, Rectangle levelBounds)
+            : this(MeleeWeaponDataDict[weaponName], owner, levelBounds)
         { }
 
-        protected MeleeWeapon(MeleeWeaponData data, PhysicalUnit owner)
+        protected MeleeWeapon(MeleeWeaponData data, PhysicalUnit owner, Rectangle levelBounds)
             :base(TimeSpan.FromSeconds(1.0 / data.FireRate), 
-                  data.MaxAmmo,
-                  data.AmmoConsumption,
-                  owner)
+                  data.MaxAmmo, data.AmmoConsumption, owner, levelBounds)
         {
             _damage = data.Damage;
             _force = data.Force;

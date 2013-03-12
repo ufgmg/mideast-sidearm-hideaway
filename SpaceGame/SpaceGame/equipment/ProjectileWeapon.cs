@@ -28,6 +28,7 @@ namespace SpaceGame.equipment
             public bool ReadyToSplash;  //if projectile has hit a unit and is ready to apply splash next update
             public Vector2 Position;
             public Vector2 Velocity;
+            public Vector2 Acceleration;
             public TimeSpan LifeLeft;
             public float Angle;     //in radians
             public Sprite ProjectileSprite;
@@ -64,15 +65,13 @@ namespace SpaceGame.equipment
         #endregion
 
         #region constructor
-        public ProjectileWeapon(string weaponName, PhysicalUnit owner)
-            : this(ProjectileWeaponData[weaponName], owner)
+        public ProjectileWeapon(string weaponName, PhysicalUnit owner, Rectangle levelBounds)
+            : this(ProjectileWeaponData[weaponName], owner, levelBounds)
         { }
 
-        protected ProjectileWeapon(ProjectileWeaponData data, PhysicalUnit owner)
-            :base(TimeSpan.FromSeconds(1.0 / data.FireRate), 
-                  data.MaxAmmo,
-                  data.AmmoConsumption,
-                  owner)
+        protected ProjectileWeapon(ProjectileWeaponData data, PhysicalUnit owner, Rectangle levelBounds)
+            :base(TimeSpan.FromSeconds(1.0 / data.FireRate), data.MaxAmmo,
+                  data.AmmoConsumption, owner, levelBounds)
         {
             _hasProjectileSprite = (data.ProjectileSpriteName != null);
             _maxProjectiles = data.MaxProjectiles;
@@ -186,7 +185,7 @@ namespace SpaceGame.equipment
                     //updateProjectile(p, gameTime.ElapsedGameTime);
                     if (p.Velocity.Length() != 0)
                     {
-                        p.Velocity += p.Velocity / p.Velocity.Length() * _projectileAcceleration;
+                        p.Velocity += p.Acceleration;
                     }
                     p.Position += p.Velocity * (float)time.TotalSeconds;
                     p.LifeLeft -= time;
@@ -194,7 +193,7 @@ namespace SpaceGame.equipment
                         p.ProjectileSprite.Update(gameTime);
                     if (_movementParticleEffect != null)
                         _movementParticleEffect.Spawn(p.Position, MathHelper.ToDegrees(MathHelper.Pi + p.Angle), gameTime.ElapsedGameTime, Vector2.Zero);
-                    if (p.LifeLeft <= TimeSpan.Zero || !(XnaHelper.PointInRect(p.Position, ScreenBounds)))
+                    if (p.LifeLeft <= TimeSpan.Zero || !(XnaHelper.PointInRect(p.Position, _levelBounds)))
                         p.Active = false;
                 }
 
@@ -219,7 +218,9 @@ namespace SpaceGame.equipment
                         p.Angle = XnaHelper.RandomAngle(p.Angle, _projectileSpread);
                         p.LifeLeft = _projectileLife;
                         p.Position = _owner.Center;
-                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed + _owner.Velocity;
+//                        p.Velocity = XnaHelper.VectorFromAngle(p.Angle) * _projectileSpeed + _owner.Velocity;
+                        p.Velocity = _fireDirection * _projectileSpeed ;
+                        p.Acceleration = _fireDirection * _projectileAcceleration;
                         projectilesToSpawn -= 1;
                         _owner.ApplyForce(-_recoilForce * _fireDirection);
                         if (_hasProjectileSprite)

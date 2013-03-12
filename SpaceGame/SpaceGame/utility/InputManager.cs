@@ -9,12 +9,19 @@ namespace SpaceGame.utility
 {
     class InputManager
     {
+        #region constants
+        const int WHEEL_UNITS_PER_SCROLL = 10;
+        #endregion
         #region fields
         #region members
         KeyboardState previousKeyboardState;
         KeyboardState currentKeyboardState;
         MouseState previousMouseState;
         MouseState currentMouseState;
+        //current scrolls toward next scroll event
+        //- for scroll down, + for scroll up
+        int _scrollCounter;
+        bool _scrollUp, _scrollDown;
         #endregion
 
         #region properties
@@ -36,6 +43,9 @@ namespace SpaceGame.utility
         { 
             get {return currentKeyboardState.IsKeyDown(Keys.W);}
         }
+
+        public bool ScrollUp { get { return _scrollUp; } }
+        public bool ScrollDown { get { return _scrollDown; } }
 
         /// <summary>
         /// Request to move selector left (use for menus)
@@ -153,6 +163,19 @@ namespace SpaceGame.utility
             currentKeyboardState = Keyboard.GetState();
             previousMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
+            _scrollCounter += (currentMouseState.ScrollWheelValue - previousMouseState.ScrollWheelValue);
+            _scrollDown = false;
+            _scrollUp = false;
+            if (_scrollCounter > WHEEL_UNITS_PER_SCROLL)
+            {
+                _scrollUp = true;
+                _scrollCounter -= WHEEL_UNITS_PER_SCROLL;
+            }
+            else if (_scrollCounter < -WHEEL_UNITS_PER_SCROLL)
+            {
+                _scrollDown = true;
+                _scrollCounter += WHEEL_UNITS_PER_SCROLL;
+            }
         }
 
         private bool keyTapped(Keys key)
