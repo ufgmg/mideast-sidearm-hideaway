@@ -152,23 +152,6 @@ namespace SpaceGame.utility
             return (rect.Left <= point.X && point.X <= rect.Right && rect.Top <= point.Y && point.Y <= rect.Bottom);
         }
 
-        /// <summary>
-        /// Predict whether two rects will collide
-        /// Use for collision detection on fast moving objects
-        /// </summary>
-        /// <param name="rect1">First hit rect</param>
-        /// <param name="vel1">Velocity of first hit rect(px/sec)</param>
-        /// <param name="rect2">Second hit rect</param>
-        /// <param name="vel2">Velocity of second hit rect(px/sec)</param>
-        /// <returns></returns>
-        public static bool PredictCollision(Rectangle rect1, Vector2 vel1, Rectangle rect2, Vector2 vel2, TimeSpan time)
-        {
-            Point start1 = rect1.Center;
-            Point end1 = new Point(rect1.Center.X + (int)(vel1.X * time.TotalSeconds), rect1.Center.Y + (int)(vel1.Y * time.TotalSeconds));
-            Point start2 = rect2.Center;
-            Point end2 = new Point(rect2.Center.X + (int)(vel2.X * time.TotalSeconds), rect2.Center.Y + (int)(vel2.Y * time.TotalSeconds));
-            return (RectsCollide(rect1, rect2) || SegmentIntersectsRect(start1, end1, rect2) || SegmentIntersectsRect(start2, end2, rect1));
-        }
 
         public static bool SegmentIntersectsRect(Point p1, Point p2, Rectangle r)
         {

@@ -201,8 +201,6 @@ namespace SpaceGame.units
                 _sprite.Draw(sb, _position);
             _standingEffect.Draw(sb);
             _chargeEffect.Draw(sb);
-            foreach (Rectangle rect in _hitRects)
-                XnaHelper.DrawRect(Color.Red, rect, sb);
         }
         #endregion
 
