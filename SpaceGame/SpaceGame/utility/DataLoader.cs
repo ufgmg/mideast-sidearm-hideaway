@@ -111,7 +111,8 @@ namespace SpaceGame.utility
                 Reversed = (bool)el.Attribute("Reversed"),
                 StartColor = parseColor((string)el.Attribute("StartColor")),
                 EndColor = parseColor((string)el.Attribute("EndColor")),
-                UniqueParticle = ((string)el.Attribute("UniqueParticle") == null ? null : content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + (string)el.Attribute("UniqueParticle")))
+                UniqueParticle = ((string)el.Attribute("UniqueParticle") == null ? null : content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + (string)el.Attribute("UniqueParticle"))),
+                Offset = (el.Attribute("Offset") == null ? 0 : (float)el.Attribute("Offset"))
             };
         }
 
@@ -135,6 +136,8 @@ namespace SpaceGame.utility
                     
             foreach (XAttribute at in el.Attributes())
             {
+                if (at.Name.LocalName == "Offset")
+                    originalElement.Add(new XAttribute(at.Name.LocalName, at.Value));
                 originalElement.Attribute(at.Name.LocalName).SetValue(at.Value);
             }
 

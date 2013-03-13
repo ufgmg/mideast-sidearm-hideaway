@@ -32,6 +32,10 @@ namespace SpaceGame.graphics
         /// </summary>
         public float SpawnArc;
         /// <summary>
+        /// angle(degrees) offset from spawn angle (only used in generators that are part of an effect)
+        /// </summary>
+        public float Offset;
+        /// <summary>
         /// Average lifespan of particle
         /// </summary>
         public TimeSpan ParticleLife;
@@ -86,6 +90,8 @@ namespace SpaceGame.graphics
         #region fields
         //range of angles through which particles can be spawned, in degrees
         float _arc;
+        //angle offset for spawning
+        float _offset;
         //speed with which particles are spawned, and random variance factor
         float _particleSpeed, _speedVariance;
         //fraction of speed that is reduced each second
@@ -164,6 +170,7 @@ namespace SpaceGame.graphics
                 / ((float)_particleEffectData.ParticleLife.TotalSeconds));
             _scaleVariance = _particleEffectData.ScaleVariance;
             _arc = _particleEffectData.SpawnArc;
+            _offset = _particleEffectData.Offset;
             _particleLife = _particleEffectData.ParticleLife;
             _particleLifeVariance = _particleEffectData.ParticleLifeVariance;
             _particleRotationSpeed = MathHelper.ToRadians(
@@ -278,7 +285,7 @@ namespace SpaceGame.graphics
             //spawn integer number of particles
             for(int i = 0 ; i < (int)particlesToSpawn ; i++)
             {
-                _particles.Add(newParticle(position, angle, sourceVelocity));
+                _particles.Add(newParticle(position, angle + _offset, sourceVelocity));
             }
             //now deal with fractional part
             _tillNextParticleSpawn -= TimeSpan.FromSeconds((double)(particlesToSpawn - (int)particlesToSpawn));
