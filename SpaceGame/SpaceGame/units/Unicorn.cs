@@ -106,14 +106,16 @@ namespace SpaceGame.units
                     }
                     else
                     {
-                        _standingEffect.Spawn(_position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
-                        _sprite.Shade = Color.Lerp(Color.Transparent, Color.White,
-                            (SECONDS_TILL_CHARGE - (float)_timer.TotalSeconds) / SECONDS_TILL_CHARGE);
-
                         //track player
                         Vector2.Subtract(ref playerPos, ref _position, out _direction);
                         _direction.Normalize();
+
                         _sprite.Angle = XnaHelper.RadiansFromVector(_direction);
+
+                        _standingEffect.Spawn(_position, XnaHelper.DegreesFromVector(_direction), gameTime.ElapsedGameTime, Vector2.Zero);
+                        _sprite.Shade = Color.Lerp(Color.Transparent, Color.White,
+                            (SECONDS_TILL_CHARGE - (float)_timer.TotalSeconds) / SECONDS_TILL_CHARGE);
+
                     }
                     break;
 

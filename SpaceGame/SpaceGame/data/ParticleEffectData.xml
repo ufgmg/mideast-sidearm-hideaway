@@ -25,14 +25,14 @@
   </ParticleEffectData>
 
   <ParticleEffectData Name="UnicornCharge">
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,255,0,0" Offset="-14"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,0,255,0" Offset="-10"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,255,127,0" Offset="-6"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,255,255,0" Offset="-2"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,0,255,0" Offset="2"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,0,0,255" Offset="6"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,75,0,130" Offset="10"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,143,0,255" Offset="14"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,0,0" Offset="-70"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,0,255,0" Offset="-50"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="64,255,127,0" Offset="-30"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="64,255,255,0" Offset="-10"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="32,0,255,0" Offset="10"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="32,0,0,255" Offset="30"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="16,75,0,130" Offset="50"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="16,143,0,255" Offset="70"/>
   </ParticleEffectData>
 
   <!-- Particle Generators-->
@@ -104,7 +104,7 @@
                       Reversed="False"/>
 
   <ParticleGeneratorData Name="UnicornCharge" 
-                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
                       StartScale ="4.0" ScaleVariance="0.3" EndScale="20.0" 
                       SpawnArc="360.0" SpawnRate="150" ParticleLife="1" ParticleLifeVariance="0.3"
                       StartColor="255,0,0,0" EndColor ="0,0,0,0"
