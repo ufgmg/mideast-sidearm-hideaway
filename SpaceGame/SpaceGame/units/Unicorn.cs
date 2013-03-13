@@ -25,6 +25,7 @@ namespace SpaceGame.units
         const int IMPACT_IMPULSE = 10000;
         const float MOVE_SPEED = 5000;
         const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200;
+        const float MIN_PLAYER_SPAWN_DISTANCE = 200;
         const int OUT_OF_BOUNDS_BUFFER = 200;
         const float UNICORN_GRAVITY = -40000;
         const int COLLISION_GRANULARITY = 30;
@@ -194,7 +195,8 @@ namespace SpaceGame.units
 
             //keep reselecting position until find a position far enough from black hole
             do { XnaHelper.RandomizeVector(ref _position, minX, maxX, minY, maxY); }
-            while (Vector2.Distance(blackHolePosition, _position) < MIN_BLACKHOLE_SPAWN_DISTANCE);
+            while (Vector2.Distance(blackHolePosition, _position) < MIN_BLACKHOLE_SPAWN_DISTANCE ||
+                   Vector2.Distance(playerPosition, _position) < MIN_PLAYER_SPAWN_DISTANCE);
 
             Vector2.Subtract(ref playerPosition, ref _position, out _direction);
             _direction.Normalize();
@@ -203,10 +205,10 @@ namespace SpaceGame.units
 
         public void Draw(SpriteBatch sb)
         {
-            if (_state != State.Dormant)
-                _sprite.Draw(sb, _position);
             _standingEffect.Draw(sb);
             _chargeEffect.Draw(sb);
+            if (_state != State.Dormant)
+                _sprite.Draw(sb, _position);
         }
         #endregion
 

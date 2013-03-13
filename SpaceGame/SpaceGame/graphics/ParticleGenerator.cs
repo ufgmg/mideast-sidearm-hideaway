@@ -291,7 +291,7 @@ namespace SpaceGame.graphics
             _tillNextParticleSpawn -= TimeSpan.FromSeconds((double)(particlesToSpawn - (int)particlesToSpawn));
             if (_tillNextParticleSpawn < TimeSpan.Zero)
             {
-                _particles.Add(newParticle(position, angle, sourceVelocity));
+                _particles.Add(newParticle(position, angle + _offset, sourceVelocity));
                 _tillNextParticleSpawn = TimeSpan.FromSeconds(1.0f / (float)_spawnRate);
             }
         }

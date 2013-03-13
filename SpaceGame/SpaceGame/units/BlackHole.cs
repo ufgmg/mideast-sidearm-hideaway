@@ -125,7 +125,7 @@ namespace SpaceGame.units
 
         public void Draw(SpriteBatch sb)
         {
-            _particleEffect.Draw(sb, Position);
+            _particleEffect.Draw(sb);
         }
         #endregion
     }

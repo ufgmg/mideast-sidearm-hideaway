@@ -15,8 +15,8 @@
   <!--Particle Effects-->
   <ParticleEffectData Name="UnicornStand">
     <ParticleGenerator Name="UnicornStand" StartColor="128,255,0,0" Offset="0"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="128,255,127,0" Offset="51.4"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="128,255,255,0" Offset="102.8"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="200,255,127,0" Offset="51.4"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="64,255,255,0" Offset="102.8"/>
     <ParticleGenerator Name="UnicornStand" StartColor="128,0,255,0" Offset="157.2"/>
     <ParticleGenerator Name="UnicornStand" StartColor="128,0,0,255" Offset="208.6"/>
     <ParticleGenerator Name="UnicornStand" StartColor="128,75,0,130" Offset="260"/>
@@ -78,16 +78,16 @@
        The names cannot be changed without modifying the references in the associated classes-->
 
   <ParticleGeneratorData Name="BlackHoleEffect1" 
-                      Speed="5.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="360.0" 
+                      Speed="55.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="360.0" 
                       StartScale ="3.0" ScaleVariance="0.3" EndScale="30.0" 
                       SpawnArc="360.0" SpawnRate="100" ParticleLife="0.6" ParticleLifeVariance="0.5"
                       StartColor="00,0,0,0" EndColor ="100,148,0,211"
                       Reversed="True" />
 
   <ParticleGeneratorData Name="BlackHoleEffect2" 
-                      Speed="30.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="-100.0" 
+                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="-100.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
-                      SpawnArc="360.0" SpawnRate="200" ParticleLife="1.2" ParticleLifeVariance="0.5"
+                      SpawnArc="360.0" SpawnRate="200" ParticleLife="0.6" ParticleLifeVariance="0.5"
                       StartColor="00,0,0,0" EndColor ="100,148,0,211"
                       UniqueParticle="HollowSquare2"
                       Reversed="True" />
@@ -102,7 +102,7 @@
   <ParticleGeneratorData Name="UnicornStand" 
                       Speed="900.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
                       StartScale ="6.0" ScaleVariance="0.3" EndScale="40.0" 
-                      SpawnArc="45.0" SpawnRate="1000" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      SpawnArc="51.4" SpawnRate="1000" ParticleLife="0.2" ParticleLifeVariance="0.3"
                       StartColor="255,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
