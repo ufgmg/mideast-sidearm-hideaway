@@ -69,11 +69,6 @@ namespace SpaceGame
 
             _inputManager = new InputManager();
 
-            //Set so units stay in screen bounds
-            PhysicalUnit.ScreenWidth = graphics.GraphicsDevice.Viewport.Width;
-            PhysicalUnit.ScreenHeight = graphics.GraphicsDevice.Viewport.Height;
-            Weapon.ScreenBounds = graphics.GraphicsDevice.Viewport.Bounds;
-
             gamestate = GameStates.Menu;
 
             base.Initialize();
