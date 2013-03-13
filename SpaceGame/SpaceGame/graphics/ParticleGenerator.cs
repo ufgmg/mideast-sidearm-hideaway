@@ -13,7 +13,7 @@ using SpaceGame.utility;
 
 namespace SpaceGame.graphics
 {
-    public class ParticleGeneratorData
+    public struct ParticleGeneratorData
     {
         /// <summary>
         /// Key to identify effect data
@@ -144,8 +144,13 @@ namespace SpaceGame.graphics
         /// </summary>
         /// <param name="effectKey">string identifier used to fetch parameters. Must match Name attribute in XML</param>
         public ParticleGenerator(string effectKey)
+            :this(Data[effectKey])
         {
-            _particleEffectData = Data[effectKey];
+        }
+
+        public ParticleGenerator(ParticleGeneratorData data)
+        {
+            _particleEffectData = data;
             _particleSpeed = _particleEffectData.Speed;
             _speedVariance = _particleEffectData.SpeedVariance;
             _particleDecelerationFactor = _particleEffectData.DecelerationFactor;

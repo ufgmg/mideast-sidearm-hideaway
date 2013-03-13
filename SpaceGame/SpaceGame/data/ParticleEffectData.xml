@@ -15,9 +15,16 @@
   <!--Particle Effects-->
   <ParticleEffectData Name="UnicornStand">
     <ParticleGenerator Name="UnicornStand1"/>
+    <ParticleGenerator Name="UnicornStand1" StartColor="255,0,255,0" />
+    <ParticleGenerator Name="UnicornStand1" StartColor="255,0,0,255" />
+  </ParticleEffectData>
+  <!--
+  <ParticleEffectData Name="UnicornStand">
+    <ParticleGenerator Name="UnicornStand1"/>
     <ParticleGenerator Name="UnicornStand2"/>
     <ParticleGenerator Name="UnicornStand3"/>
   </ParticleEffectData>
+  -->
   <ParticleEffectData Name="UnicornCharge">
     <ParticleGenerator Name="UnicornCharge1"/>
     <ParticleGenerator Name="UnicornCharge2"/>

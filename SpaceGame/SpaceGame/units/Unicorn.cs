@@ -23,11 +23,11 @@ namespace SpaceGame.units
         const float GRAVITY_FIELD = -3000;
         const int IMPACT_DAMAGE = 100;
         const int IMPACT_IMPULSE = 10000;
-        const float MOVE_SPEED = 1500;
+        const float MOVE_SPEED = 5000;
         const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200;
         const int OUT_OF_BOUNDS_BUFFER = 200;
         const float UNICORN_GRAVITY = -40000;
-        const int COLLISION_GRANULARITY = 10;
+        const int COLLISION_GRANULARITY = 30;
         const string SPRITE_NAME = "Unicorn";
         const string STAND_PARTICLE_EFFECT = "UnicornStand";
         const string MOVE_PARTICLE_EFFECT = "UnicornCharge";
@@ -125,9 +125,13 @@ namespace SpaceGame.units
                         _hitRects[i].Y = (int)(_position.Y - _hitRects[i].Height / 2 + i * _velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds / COLLISION_GRANULARITY);
                     }
 
+                    foreach (Rectangle rect in _hitRects)
+                    {
+                        _chargeEffect.Spawn(new Vector2(rect.Center.X, rect.Center.Y), 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+                    }
+
                     _position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    _chargeEffect.Spawn(_position, 0.0f, gameTime.ElapsedGameTime, _velocity);
                     _gravity.Position = _position;
                     if (outOfBounds(levelBounds.Width, levelBounds.Height))
                     {

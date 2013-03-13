@@ -16,7 +16,7 @@ namespace SpaceGame.graphics
     public class ParticleEffectData
     {
         public string Name;
-        public string[] ParticleGenerators;
+        public ParticleGeneratorData[] ParticleGenerators;
     }
 
     public class ParticleEffect

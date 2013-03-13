@@ -88,27 +88,33 @@ namespace SpaceGame.utility
 
         public static Dictionary<string, ParticleGeneratorData> LoadParticleGeneratorData(ContentManager content)
         {
-            return (from sd in XElement.Load(PARTICLE_EFFECT_PATH).Descendants("ParticleGeneratorData")
-                           select new ParticleGeneratorData
-                           {
-                               Name = (string)sd.Attribute("Name"),
-                               Speed = (float)sd.Attribute("Speed"),
-                               SpeedVariance = (float)sd.Attribute("SpeedVariance"),
-                               DecelerationFactor = (float)sd.Attribute("DecelerationFactor"),
-                               ParticleRotation = (float)sd.Attribute("ParticleRotation"),
-                               StartScale = (float)sd.Attribute("StartScale"),
-                               ScaleVariance = (float)sd.Attribute("ScaleVariance"),
-                               EndScale = (float)sd.Attribute("EndScale"),
-                               SpawnArc = (float)sd.Attribute("SpawnArc"),
-                               SpawnRate = (int)sd.Attribute("SpawnRate"),
-                               ParticleLife = TimeSpan.FromSeconds((double)sd.Attribute("ParticleLife")),
-                               ParticleLifeVariance = (float)sd.Attribute("ParticleLifeVariance"),
-                               Reversed = (bool)sd.Attribute("Reversed"),
-                               StartColor = parseColor((string)sd.Attribute("StartColor")),
-                               EndColor = parseColor((string)sd.Attribute("EndColor")),
-                               UniqueParticle = ((string)sd.Attribute("UniqueParticle") == null ? null : content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + (string)sd.Attribute("UniqueParticle")))
-                           }).ToDictionary(t => t.Name);
+            return (from el in XElement.Load(PARTICLE_EFFECT_PATH).Descendants("ParticleGeneratorData")
+                           select parseGeneratorElement(el, content)).ToDictionary(t => t.Name);
         }
+
+        private static ParticleGeneratorData parseGeneratorElement(XElement el, ContentManager content)
+        {
+            return new ParticleGeneratorData
+            {
+                Name = (string)el.Attribute("Name"),
+                Speed = (float)el.Attribute("Speed"),
+                SpeedVariance = (float)el.Attribute("SpeedVariance"),
+                DecelerationFactor = (float)el.Attribute("DecelerationFactor"),
+                ParticleRotation = (float)el.Attribute("ParticleRotation"),
+                StartScale = (float)el.Attribute("StartScale"),
+                ScaleVariance = (float)el.Attribute("ScaleVariance"),
+                EndScale = (float)el.Attribute("EndScale"),
+                SpawnArc = (float)el.Attribute("SpawnArc"),
+                SpawnRate = (int)el.Attribute("SpawnRate"),
+                ParticleLife = TimeSpan.FromSeconds((double)el.Attribute("ParticleLife")),
+                ParticleLifeVariance = (float)el.Attribute("ParticleLifeVariance"),
+                Reversed = (bool)el.Attribute("Reversed"),
+                StartColor = parseColor((string)el.Attribute("StartColor")),
+                EndColor = parseColor((string)el.Attribute("EndColor")),
+                UniqueParticle = ((string)el.Attribute("UniqueParticle") == null ? null : content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + (string)el.Attribute("UniqueParticle")))
+            };
+        }
+
 
         public static Dictionary<string, ParticleEffectData> LoadParticleEffectData(ContentManager content)
         {
@@ -117,8 +123,22 @@ namespace SpaceGame.utility
                            {
                                Name = (string)sd.Attribute("Name"),
                                ParticleGenerators = (from gen in sd.Elements("ParticleGenerator")
-                                                     select (string)gen.Attribute("Name")).ToArray<string>()
+                                                     select parseGeneratorInstance(gen, content)).ToArray<ParticleGeneratorData>(),
                            }).ToDictionary(t => t.Name);
+        }
+
+        private static ParticleGeneratorData parseGeneratorInstance(XElement el, ContentManager content)
+        {
+            XElement originalElement = (from template in XElement.Load(PARTICLE_EFFECT_PATH).Descendants("ParticleGeneratorData")
+                                        where (string)template.Attribute("Name") == (string)el.Attribute("Name")
+                                            select template).Single<XElement>();                     
+                    
+            foreach (XAttribute at in el.Attributes())
+            {
+                originalElement.Attribute(at.Name.LocalName).SetValue(at.Value);
+            }
+
+            return parseGeneratorElement(originalElement, content);
         }
 
         private static Color parseColor(string colorValues)
