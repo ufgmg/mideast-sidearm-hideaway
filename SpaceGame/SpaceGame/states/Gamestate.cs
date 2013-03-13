@@ -5,6 +5,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 using SpaceGame.utility;
 
@@ -33,6 +34,7 @@ namespace SpaceGame.states
         #region methods
         public abstract void Update(GameTime gameTime, InputManager input);
         public abstract void Draw(SpriteBatch spriteBatch);
+        
         #endregion
     }
 }

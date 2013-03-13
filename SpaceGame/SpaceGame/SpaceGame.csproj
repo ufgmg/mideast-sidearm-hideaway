@@ -110,6 +110,7 @@
     <Compile Include="equipment\Gadget.cs" />
     <Compile Include="equipment\MeleeWeapon.cs" />
     <Compile Include="graphics\hud\RadialBar.cs" />
+    <Compile Include="GameStateDrawMenu.cs" />
     <Compile Include="graphics\ParticleEffect.cs" />
     <Compile Include="graphics\ParticleEffectData.cs" />
     <Compile Include="graphics\Sprite.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="states\Gamemenu.cs" />
     <Compile Include="states\Gamestate.cs" />
     <Compile Include="states\Level.cs" />
     <Compile Include="units\BlackHole.cs" />
@@ -124,6 +126,7 @@
     <Compile Include="units\Wave.cs" />
     <Compile Include="units\PhysicalData.cs" />
     <Compile Include="units\Spaceman.cs" />
+    <Compile Include="utility\Camera.cs" />
     <Compile Include="utility\DataLoader.cs" />
     <Compile Include="utility\Gravity.cs" />
     <Compile Include="units\PhysicalUnit.cs" />
@@ -135,6 +138,7 @@
     <Compile Include="equipment\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="UMLDiagram.cd" />
     <None Include="data\SpriteData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>

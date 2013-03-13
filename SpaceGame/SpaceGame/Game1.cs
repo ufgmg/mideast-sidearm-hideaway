@@ -33,15 +33,23 @@ namespace SpaceGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager _inputManager = new InputManager();
+        List<Gamestate> _stateStack = new List<Gamestate>();  
 
-        List<Gamestate> _stateStack = new List<Gamestate>();
+        public static GameStates gamestate;
+
+        public enum GameStates
+        {
+            Menu,
+            Running,
+            GameOver
+        }
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            //set resolution        TODO: Move this to an XML Configuration File
+            //set resolution TODO: Move this to an XML Configuration File
             graphics.PreferredBackBufferWidth = SCREENWIDTH;
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;
 
@@ -60,6 +68,13 @@ namespace SpaceGame
         {
 
             _inputManager = new InputManager();
+
+            //Set so units stay in screen bounds
+            PhysicalUnit.ScreenWidth = graphics.GraphicsDevice.Viewport.Width;
+            PhysicalUnit.ScreenHeight = graphics.GraphicsDevice.Viewport.Height;
+            Weapon.ScreenBounds = graphics.GraphicsDevice.Viewport.Bounds;
+
+            gamestate = GameStates.Menu;
 
             base.Initialize();
         }
@@ -92,7 +107,15 @@ namespace SpaceGame
             Spaceman.AstronautData = DataLoader.LoadAstronautData();
             Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
 
-            _stateStack.Add(new Level(1));
+            Gamemenu.LoadContent(Content);
+
+          
+                _stateStack.Add(new Gamemenu());
+  
+            
+               
+
+
         }
 
         /// <summary>
@@ -102,6 +125,7 @@ namespace SpaceGame
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -111,12 +135,20 @@ namespace SpaceGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+
             if (_inputManager.Exit)
                 this.Exit();
 
             _inputManager.Update();
 
             _stateStack.Last().Update(gameTime, _inputManager);
+
+            if (_stateStack.Last().ReplaceState != null)
+            {
+                Gamestate newState = _stateStack.Last().ReplaceState;
+                _stateStack.RemoveAt(_stateStack.Count - 1);
+                _stateStack.Add(newState);
+            }
 
             base.Update(gameTime);
         }
@@ -128,6 +160,7 @@ namespace SpaceGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            
             spriteBatch.Begin();
             _stateStack.Last().Draw(spriteBatch);
             spriteBatch.End();
