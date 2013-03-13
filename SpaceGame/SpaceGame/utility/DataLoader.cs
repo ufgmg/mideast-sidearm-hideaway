@@ -136,9 +136,11 @@ namespace SpaceGame.utility
                     
             foreach (XAttribute at in el.Attributes())
             {
-                if (at.Name.LocalName == "Offset")
+                XName atName = at.Name.LocalName;
+                if (originalElement.Attribute(atName) != null)
+                    originalElement.Attribute(atName).SetValue(at.Value);
+                else
                     originalElement.Add(new XAttribute(at.Name.LocalName, at.Value));
-                originalElement.Attribute(at.Name.LocalName).SetValue(at.Value);
             }
 
             return parseGeneratorElement(originalElement, content);
