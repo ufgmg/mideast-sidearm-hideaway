@@ -14,25 +14,28 @@
 <ParticleEffectDatas>
   <!--Particle Effects-->
   <ParticleEffectData Name="UnicornStand">
-    <ParticleGenerator Name="UnicornStand" StartColor="64,255,0,0" Offset="0"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="64,0,255,0" Offset="45"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="32,255,127,0" Offset="90"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="32,255,255,0" Offset="135"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="16,0,255,0" Offset="180"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="16,0,0,255" Offset="225"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="8,75,0,130" Offset="270"/>
-    <ParticleGenerator Name="UnicornStand" StartColor="8,143,0,255" Offset="315"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,255,0,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,255,127,0" Offset="51.4"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,255,255,0" Offset="102.8"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,0,255,0" Offset="157.2"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,0,0,255" Offset="208.6"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,75,0,130" Offset="260"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,143,0,255" Offset="311.4"/>
   </ParticleEffectData>
 
   <ParticleEffectData Name="UnicornCharge">
-    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,0,0" Offset="-70"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="128,0,255,0" Offset="-50"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,255,127,0" Offset="-30"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="64,255,255,0" Offset="-10"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="32,0,255,0" Offset="10"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="32,0,0,255" Offset="30"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="16,75,0,130" Offset="50"/>
-    <ParticleGenerator Name="UnicornCharge" StartColor="16,143,0,255" Offset="70"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,0,0" Offset="-90"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,127,0" Offset="-60"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,255,0" Offset="-30"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,0,255,0" Offset="-0"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,0,0,255" Offset="30"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,75,0,130" Offset="60"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,143,0,255" Offset="90"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="BlackHoleEffect">
+    <ParticleGenerator Name="BlackHoleEffect1"/>
+    <ParticleGenerator Name="BlackHoleEffect2"/>
   </ParticleEffectData>
 
   <!-- Particle Generators-->
@@ -71,7 +74,7 @@
                       StartColor="100,0,0,100" EndColor ="00,100,0,0"
                       Reversed="False" />
 
-  <!-- The following are special particle effects references directly by classes (rather than being specified by other xml files.
+  <!-- The following are special particle effects referenced directly by classes (rather than being specified by other xml files.
        The names cannot be changed without modifying the references in the associated classes-->
 
   <ParticleGeneratorData Name="BlackHoleEffect1" 
@@ -97,17 +100,18 @@
                       Reversed="False"/>
 
   <ParticleGeneratorData Name="UnicornStand" 
-                      Speed="900.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
+                      Speed="900.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
                       StartScale ="6.0" ScaleVariance="0.3" EndScale="40.0" 
                       SpawnArc="45.0" SpawnRate="1000" ParticleLife="0.2" ParticleLifeVariance="0.3"
                       StartColor="255,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
   <ParticleGeneratorData Name="UnicornCharge" 
-                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
-                      StartScale ="4.0" ScaleVariance="0.3" EndScale="20.0" 
-                      SpawnArc="360.0" SpawnRate="150" ParticleLife="1" ParticleLifeVariance="0.3"
+                      Speed="400.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="1440.0" 
+                      StartScale ="20" ScaleVariance="0.3" EndScale="10.0" 
+                      SpawnArc="0.0" SpawnRate="300" ParticleLife="1" ParticleLifeVariance="0.3"
                       StartColor="255,0,0,0" EndColor ="0,0,0,0"
+                      UniqueParticle="HollowSquare2"
                       Reversed="False"/>
 
 </ParticleEffectDatas>

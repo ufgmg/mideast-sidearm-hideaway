@@ -38,7 +38,7 @@ namespace SpaceGame.units
         float _capacityUsed;
         float _totalCapacity;
         
-        ParticleEffect[] _particleEffects;
+        ParticleEffect _particleEffect;
 
         BlackHoleState _state;    //state of black hole
         bool Exhausted;      //explosion complete
@@ -59,9 +59,7 @@ namespace SpaceGame.units
             Position = position;
             Gravity = new Gravity(position, gravMagnitude);
             _radius = radius;
-            _particleEffects = new ParticleEffect[] {
-                new ParticleEffect("BlackHoleEffect1"),
-                new ParticleEffect("BlackHoleEffect2")};
+            _particleEffect = new ParticleEffect("BlackHoleEffect");
             _totalCapacity = capacity;
             _capacityUsed = 0.0f;
         }
@@ -70,16 +68,14 @@ namespace SpaceGame.units
         #region methods
         public void Update(GameTime gameTime)
         {
-            foreach (ParticleEffect p in _particleEffects)
+            _particleEffect.Update(gameTime);
+            //only spawn particles when pulling or pushing
+            if (_state == BlackHoleState.Pulling || _state == BlackHoleState.Explosion)
             {
-                p.Update(gameTime);
-                //only spawn particles when pulling or pushing
-                if (_state == BlackHoleState.Pulling || _state == BlackHoleState.Explosion)
-                {
-                    p.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero,
-                        1.0f + _capacityUsed / _totalCapacity);   //spawn rate increases as capacity fills 
-                }
+                _particleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero,
+                    1.0f + _capacityUsed / _totalCapacity);   //spawn rate increases as capacity fills 
             }
+
             if (_state == BlackHoleState.PreExplosion || _state == BlackHoleState.Explosion)
             {
                 _explosionTimer -= gameTime.ElapsedGameTime;
@@ -89,8 +85,7 @@ namespace SpaceGame.units
                     {
                         _state = BlackHoleState.Explosion;  //start exploding
                         Gravity.MagnitudeFactor = -3;   //go from suck to blow 
-                        foreach (ParticleEffect p in _particleEffects)
-                            p.Reversed = false;     //cause particle effects to push out
+                        _particleEffect.Reversed = false;     //cause particle effects to push out
                         _explosionTimer = TimeSpan.FromSeconds(SECONDS_DURING_EXPLODE);
                     }
                     else
@@ -116,10 +111,7 @@ namespace SpaceGame.units
                 if (unit.EatByBlackHole())
                 {
                     _capacityUsed += unit.Mass;
-                    foreach (ParticleEffect p in _particleEffects)
-                    {
-                        p.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
-                    }
+                    _particleEffect.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
                     Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
                     if (_capacityUsed > _totalCapacity)
                     {
@@ -133,8 +125,7 @@ namespace SpaceGame.units
 
         public void Draw(SpriteBatch sb)
         {
-            foreach (ParticleEffect p in _particleEffects)
-                p.Draw(sb, Position);
+            _particleEffect.Draw(sb, Position);
         }
         #endregion
     }
