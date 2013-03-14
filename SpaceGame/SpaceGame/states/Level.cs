@@ -100,7 +100,7 @@ namespace SpaceGame.states
 
             for (int i = 0; i < _unicorns.Length; i++)
             {
-                _unicorns[i].Update(gameTime, _levelBounds, _blackHole.Position, _player.Position);
+                _unicorns[i].Update(gameTime, _levelBounds, _blackHole.Position, _player.Position, _player.HitRect);
                 _unicorns[i].CheckAndApplyCollision(_player, gameTime);
             }
 

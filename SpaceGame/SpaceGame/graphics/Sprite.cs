@@ -110,6 +110,8 @@ namespace SpaceGame.graphics
                 (float)_animationInterval.TotalSeconds * _framesPerAnimation);
             }
         }
+        public bool FlipH { get; set; }
+        public bool FlipV { get; set; }
         #endregion properties
 
         #region methods
@@ -212,12 +214,23 @@ namespace SpaceGame.graphics
 
         public void Draw(SpriteBatch batch, Vector2 position)
         {
-            batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, _angle, _textureCenter, Scale, SpriteEffects.None, _zLayer);
+            Draw(batch, position, _angle);
         }
 
         public void Draw(SpriteBatch batch, Vector2 position, float rotation)
         {
-            batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, Scale, SpriteEffects.None, _zLayer);
+            if (FlipH && FlipV)
+                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
+                    Scale, SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically, _zLayer);
+            else if (FlipV)
+                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
+                    Scale, SpriteEffects.FlipVertically, _zLayer);
+            else if (FlipH)
+                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
+                    Scale, SpriteEffects.FlipHorizontally, _zLayer);
+            else
+                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
+                    Scale, SpriteEffects.None, _zLayer);
         }
 
         #endregion

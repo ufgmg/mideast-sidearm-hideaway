@@ -14,6 +14,7 @@ namespace SpaceGame.utility
 
         static Random rand = new Random();
         static Vector2 tempVec1;
+        static Matrix tempMatrix;
         /// <summary>
         /// get a unit vector pointing from start to end
         /// </summary>
@@ -54,11 +55,24 @@ namespace SpaceGame.utility
         /// get a unit vector pointing in the direction of the angle
         /// </summary>
         /// <param name="angle">angle in radians</param>
-        /// <returns></returns>
+        /// <returns>unit vector pointing towards angle</returns>
         public static Vector2 VectorFromAngle(float angle)
         {
-            Matrix rotMatrix = Matrix.CreateRotationZ(angle);
-            return Vector2.Transform(-Vector2.UnitY, rotMatrix);
+            Matrix.CreateRotationZ(angle, out tempMatrix);
+            return Vector2.Transform(-Vector2.UnitY, tempMatrix);
+        }
+
+        /// <summary>
+        /// get a unit vector pointing in the direction of the angle
+        /// </summary>
+        /// <param name="angle">angle in radians</param>
+        /// <returns></returns>
+        public static void VectorFromAngle(float angle, out Vector2 outVector)
+        {
+            Matrix.CreateRotationZ(angle, out tempMatrix);
+            tempVec1.X = 0;
+            tempVec1.Y = -1;
+            Vector2.Transform(ref tempVec1, ref tempMatrix, out outVector);
         }
 
         /// <summary>
