@@ -105,13 +105,7 @@ namespace SpaceGame
 
             Gamemenu.LoadContent(Content);
 
-          
-                _stateStack.Add(new Gamemenu());
-  
-            
-               
-
-
+            _stateStack.Add(new Gamemenu());
         }
 
         /// <summary>

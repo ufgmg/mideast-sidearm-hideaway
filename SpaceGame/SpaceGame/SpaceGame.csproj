@@ -110,7 +110,6 @@
     <Compile Include="equipment\Gadget.cs" />
     <Compile Include="equipment\MeleeWeapon.cs" />
     <Compile Include="graphics\hud\RadialBar.cs" />
-    <Compile Include="GameStateDrawMenu.cs" />
     <Compile Include="graphics\ParticleEffect.cs" />
     <Compile Include="graphics\ParticleGenerator.cs" />
     <Compile Include="graphics\Sprite.cs" />
