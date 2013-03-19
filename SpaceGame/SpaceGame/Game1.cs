@@ -101,6 +101,7 @@ namespace SpaceGame
             ProjectileWeapon.ProjectileWeaponData = DataLoader.LoadProjectileWeaponData();
             MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData();
             Spaceman.AstronautData = DataLoader.LoadAstronautData();
+            FoodCart.Data = DataLoader.LoadFoodCartData();
             Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
 
             Gamemenu.LoadContent(Content);

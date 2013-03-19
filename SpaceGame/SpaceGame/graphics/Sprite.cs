@@ -96,7 +96,7 @@ namespace SpaceGame.graphics
         public int AnimationState
         {
             get { return _currentState; }
-            set { _currentState = value; }
+            set { _currentState = value % _numStates; }
         }
 
         public Vector2 Center {get {return new Vector2(_size.Center.X, _size.Center.Y);}}

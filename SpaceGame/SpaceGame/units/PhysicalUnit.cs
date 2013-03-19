@@ -28,7 +28,7 @@ namespace SpaceGame.units
         #endregion
         #region fields
         string _unitName;
-        Vector2 _position;
+        protected Vector2 _position;
         //Physical properties--------------------
         public Vector2 Position
         {
@@ -128,7 +128,7 @@ namespace SpaceGame.units
         #endregion
 
         #region other members
-        Sprite _sprite;
+        protected Sprite _sprite;
         ParticleEffect _movementParticleEffect;
         #endregion
 
@@ -149,6 +149,7 @@ namespace SpaceGame.units
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
             BeingEaten,     //being consumed by black hole
             Destroyed,      //no longer Update or Draw
+            Ghost           //keep updating and drawing, but don't collide or apply gravity
         }
 
         protected LifeState _lifeState;
@@ -224,7 +225,8 @@ namespace SpaceGame.units
         /// <returns>Whether unit was successfully eaten</returns>
         public virtual bool EatByBlackHole()
         {
-            if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed)
+            if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed 
+                && _lifeState != LifeState.Ghost)
             {
                 _lifeState = LifeState.BeingEaten;
                 _angularVelocity = 4 * MathHelper.TwoPi;
@@ -239,7 +241,8 @@ namespace SpaceGame.units
 
             switch(_lifeState)
             {
-                case (LifeState.Living):
+                case LifeState.Living:
+                case LifeState.Ghost:
                     {
                         lookThisWay(LookDirection);
                         if (MoveDirection.Length() > 0)
@@ -286,6 +289,9 @@ namespace SpaceGame.units
         //more dynamic stayInBounds
         private void stayInBounds(float levelWidth, float levelHeight)
         {
+            if (_lifeState == LifeState.Ghost)
+                return;
+
             if (Position.X < BOUND_BUFFER)
             {
                 _acceleration.X += OUT_OF_BOUNDS_ACCEL_FACTOR * (BOUND_BUFFER - Position.X);

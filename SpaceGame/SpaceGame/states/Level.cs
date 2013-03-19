@@ -22,6 +22,7 @@ namespace SpaceGame.states
             public Wave.WaveData[] TrickleWaveData;
             public Wave.WaveData[] BurstWaveData;
             public UnicornData[] Unicorns;
+            public FoodCart[] FoodCarts;
             public BlackHole BlackHole;
             public Vector2 PlayerStartLocation;
             public int Width, Height;
@@ -35,6 +36,7 @@ namespace SpaceGame.states
         Gadget _primaryGadget, _secondaryGadget;
         Wave[] _waves;
         Unicorn[] _unicorns;
+        FoodCart[] _foodCarts;
         Rectangle _levelBounds;
         #endregion
 
@@ -62,6 +64,8 @@ namespace SpaceGame.states
             {
                 _unicorns[j] = new Unicorn(data.Unicorns[j]);
             }
+
+            _foodCarts = data.FoodCarts;
 
             _primaryWeapon = new ProjectileWeapon("Rocket", _player, _levelBounds);
             _secondaryWeapon = new ProjectileWeapon("Flamethrower", _player, _levelBounds);
@@ -102,6 +106,18 @@ namespace SpaceGame.states
             {
                 _unicorns[i].Update(gameTime, _levelBounds, _blackHole.Position, _player.Position, _player.HitRect);
                 _unicorns[i].CheckAndApplyCollision(_player, gameTime);
+                for (int j = 0; j < _foodCarts.Length; j++)
+                {
+                    _unicorns[i].CheckAndApplyCollision(_player, gameTime);
+                }
+            }
+
+            for (int i = 0; i < _foodCarts.Length; i++)
+            {
+                _foodCarts[i].Update(gameTime, _levelBounds, _blackHole.Position);
+                _primaryWeapon.CheckAndApplyCollision(_foodCarts[i]);
+                _secondaryWeapon.CheckAndApplyCollision(_foodCarts[i]);
+                _blackHole.ApplyToUnit(_foodCarts[i], gameTime);
             }
 
             _primaryWeapon.Update(gameTime);
@@ -137,6 +153,10 @@ namespace SpaceGame.states
             _player.Draw(spriteBatch);
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
+            foreach (FoodCart cart in _foodCarts)
+            {
+                cart.Draw(spriteBatch);
+            }
             foreach (Wave wave in _waves)
             {
                 wave.Draw(spriteBatch);

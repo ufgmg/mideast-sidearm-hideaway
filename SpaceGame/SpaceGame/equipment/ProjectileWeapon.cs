@@ -122,6 +122,9 @@ namespace SpaceGame.equipment
         #region methods
         public override void CheckAndApplyCollision(units.PhysicalUnit unit)
         {
+            if (!unit.Collides)
+                return;
+
             Projectile p;
             for (int i = 0 ; i < _projectiles.Length ; i++)
             {

@@ -8,4 +8,5 @@
   <SpriteData Name="Rocket" AssetName="Rocket" FrameWidth="32" FrameHeight="32" NumFrames="4" NumStates="2" DefaultScale ="1.0" SecondsPerAnimation="0.03" ZLayer="0" />
   <SpriteData Name="Flame" AssetName="Flame" FrameWidth="4" FrameHeight="4" NumFrames="1" NumStates="1" DefaultScale ="1.0" SecondsPerAnimation="0.03" ZLayer="0" />
   <SpriteData Name="Unicorn" AssetName="Unicorn" FrameWidth="1536" FrameHeight="2048" NumFrames="1" NumStates="1" DefaultScale ="0.03" SecondsPerAnimation="0.5" ZLayer="0" />
+  <SpriteData Name="FoodCart" AssetName="Food_Cart" FrameWidth="897" FrameHeight="574" NumFrames="1" NumStates="1" DefaultScale ="0.13" SecondsPerAnimation="0.5" ZLayer="0" />
 </SpriteDatas>

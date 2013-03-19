@@ -75,6 +75,12 @@ namespace SpaceGame.utility
             return LoadPhysicalData(element);
         }
 
+        public static PhysicalData LoadFoodCartData()
+        {
+            XElement element = XElement.Load(UNIT_DATA_PATH).Descendants("FoodCartData").Single();
+            return LoadPhysicalData(element);
+        }
+
         public static Dictionary<string, EnemyData> LoadEnemyData()
         {
             return (from enemy in XElement.Load(UNIT_DATA_PATH).Descendants("EnemyData")
@@ -235,9 +241,18 @@ namespace SpaceGame.utility
                                         StartTime = (float)unicorn.Attribute("StartTime"),
                                         EndTime = (float)unicorn.Attribute("EndTime"),
                                         SpawnTime = (float)unicorn.Attribute("SpawnTime"),
-                                    }).ToArray<UnicornData>()
+                                    }).ToArray<UnicornData>(),
+                                    FoodCarts = (from cart in level.Descendants("FoodCart")
+                                                 select buildFoodCart(cart)).ToArray<FoodCart>()
+
                     }).Single<Level.LevelData>();
 
+        }
+
+        private static FoodCart buildFoodCart(XElement el)
+        {
+            return new FoodCart(TimeSpan.FromSeconds((double)el.Attribute("StartTime")),
+                TimeSpan.FromSeconds((double)el.Attribute("Duration")));
         }
 
         private static BlackHole parseBlackHole(XElement e)

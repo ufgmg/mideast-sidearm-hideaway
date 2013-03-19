@@ -72,7 +72,7 @@ namespace SpaceGame.equipment
         #region methods
         public override void CheckAndApplyCollision(PhysicalUnit unit)
         {
-            if (!_firing)
+            if (!_firing || !unit.Collides)
                 return;     //don't check collisions if not firing
 
             float fireAngle = XnaHelper.RadiansFromVector(_fireDirection);
