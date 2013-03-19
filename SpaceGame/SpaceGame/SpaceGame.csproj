@@ -132,6 +132,7 @@
     <Compile Include="utility\Gravity.cs" />
     <Compile Include="units\PhysicalUnit.cs" />
     <Compile Include="utility\InputManager.cs" />
+    <Compile Include="utility\WeaponManager.cs" />
     <Compile Include="utility\XnaHelper.cs" />
     <Compile Include="equipment\HookShot.cs" />
     <Compile Include="equipment\ProjectileWeapon.cs" />

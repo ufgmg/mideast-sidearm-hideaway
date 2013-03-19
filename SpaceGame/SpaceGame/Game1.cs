@@ -33,6 +33,7 @@ namespace SpaceGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager _inputManager = new InputManager();
+        WeaponManager _weaponManager = new WeaponManager();
         List<Gamestate> _stateStack = new List<Gamestate>();  
 
         public static GameStates gamestate;
@@ -68,7 +69,7 @@ namespace SpaceGame
         {
 
             _inputManager = new InputManager();
-
+            _weaponManager = new WeaponManager();
             gamestate = GameStates.Menu;
 
             base.Initialize();
@@ -105,7 +106,7 @@ namespace SpaceGame
             Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
 
             Gamemenu.LoadContent(Content);
-
+			
             _stateStack.Add(new Gamemenu());
         }
 
@@ -131,8 +132,8 @@ namespace SpaceGame
                 this.Exit();
 
             _inputManager.Update();
-
-            _stateStack.Last().Update(gameTime, _inputManager);
+            _weaponManager.Update(_inputManager);
+            _stateStack.Last().Update(gameTime, _inputManager, _weaponManager);
 
             if (_stateStack.Last().ReplaceState != null)
             {
