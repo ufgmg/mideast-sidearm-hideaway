@@ -21,13 +21,12 @@ namespace SpaceGame.units
         #region constant
         const float APPEAR_TIME = 1;
         const float MAX_SCAN_TIME = 3.0f;
+        const float LOCK_ON_TIME = 0.5f;
         const float CHARGE_TIME = 0.5f;
         const float GRAVITY_FIELD = -3000;
         const int IMPACT_DAMAGE = 100;
         const int IMPACT_IMPULSE = 10000;
         const float MOVE_SPEED = 5000;
-        const float SCAN_ARC_RADIUS = 2000;
-        const float SCAN_ARC_ANGLE = 0.349f;     //20 degrees, in radians
         const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200;
         const float MIN_PLAYER_SPAWN_DISTANCE = 200;
         const int OUT_OF_BOUNDS_BUFFER = 200;
@@ -56,14 +55,13 @@ namespace SpaceGame.units
 
         #region fields
         TimeSpan _startTime, _endTime, _spawnTime;
-        TimeSpan _timer;
+        TimeSpan _timer, _lockOnTimer;
         ParticleEffect _standingEffect, _chargeEffect;
         Vector2 _position, _direction, _velocity;
         State _state;
         Sprite _sprite;
         Gravity _gravity;
-        Rectangle[] _hitRects;
-        float _turnSpeed;
+        Rectangle _hitRect;
         #endregion
 
         #region constructor
@@ -78,11 +76,7 @@ namespace SpaceGame.units
             _sprite = new Sprite(SPRITE_NAME);
             _state = State.Dormant;
             _gravity = new Gravity(_position, UNICORN_GRAVITY);
-            _hitRects = new Rectangle[COLLISION_GRANULARITY];
-            for (int i = 0 ; i < COLLISION_GRANULARITY ; i++)
-            {
-                _hitRects[i] = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
-            }
+            _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
         }
         #endregion
 
@@ -111,6 +105,7 @@ namespace SpaceGame.units
                     if (_timer <= TimeSpan.Zero)
                     {
                         _timer = TimeSpan.FromSeconds(MAX_SCAN_TIME);
+                        _lockOnTimer = TimeSpan.FromSeconds(LOCK_ON_TIME);
                         _state = State.Scanning;
                         _sprite.Shade = Color.White;
                     }
@@ -125,6 +120,7 @@ namespace SpaceGame.units
                 case State.Scanning:
                     _timer -= gameTime.ElapsedGameTime;
                     _standingEffect.Spawn(_position, XnaHelper.DegreesFromVector(_direction), gameTime.ElapsedGameTime, Vector2.Zero);
+                    _position.Y += _
                     //scan for player
                     //check if player found or scan time up
                     if (XnaHelper.RectangleIntersectsArc(playerRect, _position, SCAN_ARC_RADIUS, _sprite.Angle, SCAN_ARC_ANGLE)
@@ -213,9 +209,21 @@ namespace SpaceGame.units
         {   //set bounds on new spawn location
             bool leftSide = (XnaHelper.RandomInt(0, 1) == 0);
             _position.X = leftSide ? 0 : levelWidth;
+            _hitRect.X = leftSide ? 0 : levelWidth - _hitRect.Width;
+            _hitRect.Y = (int)_position.Y;
             _sprite.Angle = leftSide ? MathHelper.PiOver2 : -MathHelper.PiOver2;
             _sprite.FlipH = leftSide;
             _position.Y = XnaHelper.RandomInt(0, levelHeight); 
+        }
+
+        /// <summary>
+        /// get the move speed (px/second) as a function of distance from player
+        /// </summary>
+        /// <param name="distanceFromPlayer"></param>
+        /// <returns></returns>
+        private float moveSpeed(float distanceFromPlayer)
+        {
+            return distanceFromPlayer;
         }
 
         public void Draw(SpriteBatch sb)
