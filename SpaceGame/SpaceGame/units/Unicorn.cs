@@ -215,6 +215,12 @@ namespace SpaceGame.units
 
         private void setPosition(Vector2 blackHolePosition, Vector2 playerPosition, int levelWidth, int levelHeight)
         {   //set bounds on new spawn location
+            bool leftSide = (XnaHelper.RandomInt(0, 1) == 0);
+            _position.X = leftSide ? 0 : levelWidth;
+            _sprite.Angle = leftSide ? -MathHelper.PiOver2 : MathHelper.PiOver2;
+            _position.Y = XnaHelper.RandomInt(0, levelHeight); 
+
+            /*
             int minX, maxX, minY, maxY;
 
             //spawn in bounds 
@@ -229,6 +235,7 @@ namespace SpaceGame.units
                    Vector2.Distance(playerPosition, _position) < MIN_PLAYER_SPAWN_DISTANCE);
 
             _sprite.Angle = MathHelper.ToRadians(XnaHelper.RandomAngle(0.0f, 180.0f));
+            */
         }
 
         public void Draw(SpriteBatch sb)
