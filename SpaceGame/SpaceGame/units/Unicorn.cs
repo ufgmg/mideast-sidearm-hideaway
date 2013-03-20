@@ -26,7 +26,6 @@ namespace SpaceGame.units
         const int IMPACT_DAMAGE = 100;
         const int IMPACT_IMPULSE = 10000;
         const float MOVE_SPEED = 5000;
-        const float MAX_SCAN_SPEED = MathHelper.TwoPi;
         const float SCAN_ARC_RADIUS = 2000;
         const float SCAN_ARC_ANGLE = 0.349f;     //20 degrees, in radians
         const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200;
@@ -113,7 +112,6 @@ namespace SpaceGame.units
                     {
                         _timer = TimeSpan.FromSeconds(MAX_SCAN_TIME);
                         _state = State.Scanning;
-                        _turnSpeed = 2 * MAX_SCAN_SPEED * (float)(0.5 - rand.NextDouble());
                         _sprite.Shade = Color.White;
                     }
                     else
@@ -128,8 +126,6 @@ namespace SpaceGame.units
                     _timer -= gameTime.ElapsedGameTime;
                     _standingEffect.Spawn(_position, XnaHelper.DegreesFromVector(_direction), gameTime.ElapsedGameTime, Vector2.Zero);
                     //scan for player
-                    _sprite.Angle += _turnSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    _sprite.FlipH = (MathHelper.WrapAngle(_sprite.Angle) > 0);
                     //check if player found or scan time up
                     if (XnaHelper.RectangleIntersectsArc(playerRect, _position, SCAN_ARC_RADIUS, _sprite.Angle, SCAN_ARC_ANGLE)
                         || _timer < TimeSpan.Zero)
@@ -217,25 +213,9 @@ namespace SpaceGame.units
         {   //set bounds on new spawn location
             bool leftSide = (XnaHelper.RandomInt(0, 1) == 0);
             _position.X = leftSide ? 0 : levelWidth;
-            _sprite.Angle = leftSide ? -MathHelper.PiOver2 : MathHelper.PiOver2;
+            _sprite.Angle = leftSide ? MathHelper.PiOver2 : -MathHelper.PiOver2;
+            _sprite.FlipH = leftSide;
             _position.Y = XnaHelper.RandomInt(0, levelHeight); 
-
-            /*
-            int minX, maxX, minY, maxY;
-
-            //spawn in bounds 
-            minX = 0;
-            maxX = levelWidth;
-            minY = 0;
-            maxY = levelHeight;
-
-            //keep reselecting position until find a position far enough from black hole
-            do { XnaHelper.RandomizeVector(ref _position, minX, maxX, minY, maxY); }
-            while (Vector2.Distance(blackHolePosition, _position) < MIN_BLACKHOLE_SPAWN_DISTANCE ||
-                   Vector2.Distance(playerPosition, _position) < MIN_PLAYER_SPAWN_DISTANCE);
-
-            _sprite.Angle = MathHelper.ToRadians(XnaHelper.RandomAngle(0.0f, 180.0f));
-            */
         }
 
         public void Draw(SpriteBatch sb)
