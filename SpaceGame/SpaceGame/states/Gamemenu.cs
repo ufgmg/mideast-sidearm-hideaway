@@ -55,7 +55,7 @@ namespace SpaceGame.states
             return MenuItems[index];
         }
 
-        private void handleInput(InputManager input)
+        private void handleInput(InputManager input, WeaponManager wm)
         {
              // Allows the game to exit
             if (input.Exit)
@@ -76,7 +76,7 @@ namespace SpaceGame.states
                     if (this.Iterator == 0)
                     {
                         //load game
-                        ReplaceState = new Level(1);
+                        ReplaceState = new Level(1, wm);
                     }
                     else if (this.Iterator == 1)
                     {
@@ -99,9 +99,9 @@ namespace SpaceGame.states
                 
         }
 
-        public override void Update(GameTime gameTime, InputManager input)
+        public override void Update(GameTime gameTime, InputManager input, WeaponManager wm)
         {  
-            handleInput(input);
+            handleInput(input, wm);
             //update logic goes here
         }
 

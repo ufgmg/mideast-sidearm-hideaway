@@ -144,6 +144,37 @@ namespace SpaceGame.utility
         {
             get { return currentKeyboardState.IsKeyDown(Keys.Escape); }
         }
+        //Change Weapon Request
+        public bool Weapon1
+        {
+            get { return currentKeyboardState.IsKeyDown(Keys.NumPad1) ||
+                         currentKeyboardState.IsKeyDown(Keys.D1);}
+        }
+        public bool Weapon2
+        {
+            get { return currentKeyboardState.IsKeyDown(Keys.NumPad2)||
+                         currentKeyboardState.IsKeyDown(Keys.D2);}
+        }
+        public bool Weapon3
+        {
+            get { return currentKeyboardState.IsKeyDown(Keys.NumPad3)||
+                         currentKeyboardState.IsKeyDown(Keys.D3);}
+        }
+        public bool Weapon4
+        {
+            get { return currentKeyboardState.IsKeyDown(Keys.NumPad4)||
+                         currentKeyboardState.IsKeyDown(Keys.D4);}
+        }
+        public bool Weapon5
+        {
+            get { return currentKeyboardState.IsKeyDown(Keys.NumPad5)||
+                         currentKeyboardState.IsKeyDown(Keys.D5);}
+        }
+        public bool Weapon6
+        {
+            get { return currentKeyboardState.IsKeyDown(Keys.NumPad6)||
+                         currentKeyboardState.IsKeyDown(Keys.D6);}
+        }
 
         //the magical all-purpose dubugging key. Who knows what surprises it holds?
         public bool DebugKey    
