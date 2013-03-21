@@ -114,9 +114,10 @@ namespace SpaceGame.states
             {
                 _unicorns[i].Update(gameTime, _levelBounds, _blackHole.Position, _player.Position, _player.HitRect);
                 _unicorns[i].CheckAndApplyCollision(_player, gameTime);
+                _blackHole.TryEatUnicorn(_unicorns[i], gameTime);
                 for (int j = 0; j < _foodCarts.Length; j++)
                 {
-                    _unicorns[i].CheckAndApplyCollision(_player, gameTime);
+                    _unicorns[i].CheckAndApplyCollision(_foodCarts[j], gameTime);
                 }
             }
 
