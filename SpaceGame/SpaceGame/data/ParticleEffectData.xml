@@ -33,6 +33,17 @@
     <ParticleGenerator Name="UnicornCharge" StartColor="128,143,0,255" Offset="90"/>
   </ParticleEffectData>
 
+  <ParticleEffectData Name="UnicornExplode">
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,255,0,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,255,127,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,255,255,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,0,255,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,0,0,255" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,75,0,130" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,143,0,255" Offset="0"/>
+  </ParticleEffectData>
+
+
   <ParticleEffectData Name="BlackHoleEffect">
     <ParticleGenerator Name="BlackHoleEffect1"/>
     <ParticleGenerator Name="BlackHoleEffect2"/>
@@ -102,7 +113,7 @@
   <ParticleGeneratorData Name="UnicornStand" 
                       Speed="900.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
                       StartScale ="6.0" ScaleVariance="0.3" EndScale="40.0" 
-                      SpawnArc="51.4" SpawnRate="1000" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      SpawnArc="51.4" SpawnRate="100" ParticleLife="0.2" ParticleLifeVariance="0.3"
                       StartColor="255,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
@@ -112,6 +123,13 @@
                       SpawnArc="0.0" SpawnRate="300" ParticleLife="1" ParticleLifeVariance="0.3"
                       StartColor="255,0,0,0" EndColor ="0,0,0,0"
                       UniqueParticle="HollowSquare2"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornExplode" 
+                      Speed="300.0" SpeedVariance="0.6" DecelerationFactor="1" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="10.0" 
+                      SpawnArc="360" SpawnRate="90000" ParticleLife="1.0" ParticleLifeVariance="0.8"
+                      StartColor="0,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
 </ParticleEffectDatas>

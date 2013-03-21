@@ -24,17 +24,20 @@ namespace SpaceGame.units
         const float LOCK_ON_TIME = 0.5f;
         const float CHARGE_TIME = 0.5f;
         const float GRAVITY_FIELD = -3000;
+        const float EAT_TIME = 2.0f;
         const int IMPACT_DAMAGE = 100;
         const int IMPACT_IMPULSE = 10000;
         const float MOVE_SPEED = 5000;
         const float MIN_BLACKHOLE_SPAWN_DISTANCE = 200;
         const float MIN_PLAYER_SPAWN_DISTANCE = 200;
+        public const float UNICORN_MASS = 50.0f;
         const int OUT_OF_BOUNDS_BUFFER = 200;
-        const float UNICORN_GRAVITY = -40000;
-        const int COLLISION_GRANULARITY = 30;
+        const float UNICORN_GRAVITY = -4000;
+        const int PARTICLE_SPAWN_GRANULARITY = 20;
         const string SPRITE_NAME = "Unicorn";
         const string STAND_PARTICLE_EFFECT = "UnicornStand";
         const string MOVE_PARTICLE_EFFECT = "UnicornCharge";
+        const string EXPLODE_PARTICLE_EFFECT = "UnicornExplode";
         #endregion
 
         #region static
@@ -44,7 +47,8 @@ namespace SpaceGame.units
             Appearing,
             Scanning,
             Locked,
-            Charging
+            Charging,
+            BeingEaten
         }
         static Random rand = new Random();
         #endregion
@@ -56,7 +60,7 @@ namespace SpaceGame.units
         #region fields
         TimeSpan _startTime, _endTime, _spawnTime;
         TimeSpan _timer, _lockOnTimer;
-        ParticleEffect _standingEffect, _chargeEffect;
+        ParticleEffect _standingEffect, _chargeEffect, _explodeEffect;
         Vector2 _position, _direction, _velocity;
         State _state;
         Sprite _sprite;
@@ -73,6 +77,7 @@ namespace SpaceGame.units
             _timer = _spawnTime;
             _standingEffect = new ParticleEffect(STAND_PARTICLE_EFFECT);
             _chargeEffect = new ParticleEffect(MOVE_PARTICLE_EFFECT);
+            _explodeEffect = new ParticleEffect(EXPLODE_PARTICLE_EFFECT);
             _sprite = new Sprite(SPRITE_NAME);
             _state = State.Dormant;
             _gravity = new Gravity(_position, UNICORN_GRAVITY);
@@ -81,10 +86,11 @@ namespace SpaceGame.units
         #endregion
 
         #region methods
-        public void Update(GameTime gameTime, Rectangle levelBounds, Vector2 blackHolePos, Vector2 playerPos, Rectangle playerRect)
+        public void Update(GameTime gameTime, Rectangle levelBounds, Vector2 blackHolePos, Vector2 targetPos, Rectangle playerRect)
         {
             _standingEffect.Update(gameTime);
             _chargeEffect.Update(gameTime);
+            _explodeEffect.Update(gameTime);
             _sprite.Update(gameTime);
 
             switch (_state)
@@ -93,7 +99,7 @@ namespace SpaceGame.units
                     _timer -= gameTime.ElapsedGameTime;
                     if (_timer <= TimeSpan.Zero)
                     {
-                        setPosition(blackHolePos, playerPos, levelBounds.Width, levelBounds.Height);
+                        setPosition(blackHolePos, targetPos, levelBounds.Width, levelBounds.Height);
                         _gravity.Position = _position;
                         _state = State.Appearing;
                         _timer = TimeSpan.FromSeconds(APPEAR_TIME);
@@ -120,15 +126,19 @@ namespace SpaceGame.units
                 case State.Scanning:
                     _timer -= gameTime.ElapsedGameTime;
                     _standingEffect.Spawn(_position, XnaHelper.DegreesFromVector(_direction), gameTime.ElapsedGameTime, Vector2.Zero);
-                    _position.Y += _
+                    _position.Y += scanVelocity(targetPos.Y - _position.Y) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _hitRect.Y = (int)_position.Y - _hitRect.Height / 2;
                     //scan for player
                     //check if player found or scan time up
-                    if (XnaHelper.RectangleIntersectsArc(playerRect, _position, SCAN_ARC_RADIUS, _sprite.Angle, SCAN_ARC_ANGLE)
-                        || _timer < TimeSpan.Zero)
+                    if (_hitRect.Top < targetPos.Y && targetPos.Y < _hitRect.Bottom)
+                    {
+                        _lockOnTimer -= gameTime.ElapsedGameTime;
+                    }
+                    if (_lockOnTimer < TimeSpan.Zero || _timer < TimeSpan.Zero)
                     {
                         _timer = TimeSpan.FromSeconds(CHARGE_TIME);
                         _state = State.Locked;
-                        XnaHelper.VectorFromAngle(_sprite.Angle, out _direction); 
+                        XnaHelper.VectorFromAngle(_sprite.Angle, out _direction);
                     }
                     break;
 
@@ -143,18 +153,12 @@ namespace SpaceGame.units
 
                 case State.Charging:
                     //trace movement path
-                    for (int i = 0; i < _hitRects.Length; i++)
+                    for (int i = 0 ; i < PARTICLE_SPAWN_GRANULARITY ; i++)
                     {
-                        _hitRects[i].X = (int)(_position.X - _hitRects[i].Width / 2  + i * _velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds / COLLISION_GRANULARITY);
-                        _hitRects[i].Y = (int)(_position.Y - _hitRects[i].Height / 2 + i * _velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds / COLLISION_GRANULARITY);
+                        _position.X += _velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds / PARTICLE_SPAWN_GRANULARITY;
+                        _chargeEffect.Spawn(_position, _sprite.Angle, gameTime.ElapsedGameTime, Vector2.Zero);
                     }
-
-                    foreach (Rectangle rect in _hitRects)
-                    {
-                        _chargeEffect.Spawn(new Vector2(rect.Center.X, rect.Center.Y), 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
-                    }
-
-                    _position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _hitRect.X = (int)_position.X - _hitRect.Width;
 
                     _gravity.Position = _position;
                     if (outOfBounds(levelBounds.Width, levelBounds.Height))
@@ -163,8 +167,16 @@ namespace SpaceGame.units
                         _timer = _spawnTime;
                         _state = State.Dormant;
                     }
+                    break;
 
-
+                case State.BeingEaten:
+                    _timer -= gameTime.ElapsedGameTime;
+                    //_explodeEffect.Spawn(_position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero);
+                    if (_timer <= TimeSpan.Zero)
+                    {
+                        _state = State.Dormant;
+                        _timer = _spawnTime;
+                    }
                     break;
             }
                     
@@ -182,17 +194,24 @@ namespace SpaceGame.units
                     break;
                 case State.Charging:
                     unit.ApplyGravity(_gravity, gameTime);
-                    for (int i = 0; i < _hitRects.Length; i++)
+                    if (willCollide(unit.Top, unit.Bottom, unit.Left, unit.Right, gameTime.ElapsedGameTime))
                     {
-                        if (_hitRects[i].Intersects(unit.HitRect))
-                        {
-                            unit.ApplyImpact(_velocity, IMPACT_IMPULSE);
-                            unit.ApplyDamage(IMPACT_DAMAGE);
-                            break;
-                        }
+                        unit.ApplyImpact(_velocity, IMPACT_IMPULSE);
+                        unit.ApplyDamage(IMPACT_DAMAGE);
+                        break;
                     }
                     break;
             }
+        }
+
+        private bool willCollide(float targetTop, float targetBottom, float targetLeft, float targetRight, TimeSpan time)
+        {
+                    float leftPoint = _velocity.X > 0 ? _hitRect.Left
+                         : _hitRect.Left + (int)((float)time.TotalSeconds * _velocity.X);
+                    float rightPoint = _velocity.X > 0 ? _hitRect.Right + (int)((float)time.TotalSeconds * _velocity.X)
+                        : _hitRect.Right;
+                    return (targetTop < _hitRect.Bottom && targetBottom > _hitRect.Top
+                        && leftPoint < targetRight && targetLeft < rightPoint);
         }
 
         private bool outOfBounds(int levelWidth, int levelHeight)
@@ -201,8 +220,19 @@ namespace SpaceGame.units
                     _position.Y < -OUT_OF_BOUNDS_BUFFER || _position.Y + _sprite.Height >= levelHeight + OUT_OF_BOUNDS_BUFFER);
         }
 
-        private void EatByBlackHole()
+        public bool EatByBlackHole(Vector2 blackHolePos, GameTime gameTime)
         {
+            if (_state == State.Charging && willCollide(blackHolePos.Y, blackHolePos.Y, blackHolePos.X, blackHolePos.X, gameTime.ElapsedGameTime))
+            {
+                _state = State.BeingEaten;
+                _sprite.Reset();
+                _position = blackHolePos;
+                _timer = TimeSpan.FromSeconds(EAT_TIME);
+                float particleAngle = MathHelper.ToDegrees(_sprite.Angle + MathHelper.PiOver2 * (_velocity.X > 0 ? 1 : -1));
+                _explodeEffect.Spawn(blackHolePos, particleAngle, gameTime.ElapsedGameTime, Vector2.Zero);
+                return true;
+            }
+            return false;
         }
 
         private void setPosition(Vector2 blackHolePosition, Vector2 playerPosition, int levelWidth, int levelHeight)
@@ -210,27 +240,28 @@ namespace SpaceGame.units
             bool leftSide = (XnaHelper.RandomInt(0, 1) == 0);
             _position.X = leftSide ? 0 : levelWidth;
             _hitRect.X = leftSide ? 0 : levelWidth - _hitRect.Width;
-            _hitRect.Y = (int)_position.Y;
             _sprite.Angle = leftSide ? MathHelper.PiOver2 : -MathHelper.PiOver2;
             _sprite.FlipH = leftSide;
             _position.Y = XnaHelper.RandomInt(0, levelHeight); 
+            _hitRect.Y = (int)_position.Y;
         }
 
         /// <summary>
         /// get the move speed (px/second) as a function of distance from player
         /// </summary>
-        /// <param name="distanceFromPlayer"></param>
+        /// <param name="distanceFromPlayer">Vertical displacement (signed) from target</param>
         /// <returns></returns>
-        private float moveSpeed(float distanceFromPlayer)
+        private float scanVelocity(float verticalDisplacement)
         {
-            return distanceFromPlayer;
+            return verticalDisplacement + 100 * (verticalDisplacement < 0 ? -1 : 1);
         }
 
         public void Draw(SpriteBatch sb)
         {
             _standingEffect.Draw(sb);
             _chargeEffect.Draw(sb);
-            if (_state != State.Dormant)
+            _explodeEffect.Draw(sb);
+            if (_state != State.Dormant && _state != State.BeingEaten)
                 _sprite.Draw(sb, _position);
         }
         #endregion
