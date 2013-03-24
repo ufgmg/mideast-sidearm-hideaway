@@ -136,7 +136,6 @@
     <Compile Include="utility\XnaHelper.cs" />
     <Compile Include="equipment\HookShot.cs" />
     <Compile Include="equipment\ProjectileWeapon.cs" />
-    <Compile Include="equipment\ProjectileWeaponData.cs" />
     <Compile Include="equipment\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>

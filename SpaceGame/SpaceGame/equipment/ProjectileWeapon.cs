@@ -12,6 +12,42 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceGame.equipment
 {
+    class ProjectileEffectData
+    {
+        public int Radius;
+        public int Damage;
+        public string ParticleEffectName;
+        public float Force;
+    }
+
+    class ProjectileData
+    {
+        public float Speed;
+        public float Acceleration;
+        public float SecondsToLive;
+        public string SpriteName;
+        public int MaxInstances;
+        public int Penetration;
+        public int Mass;
+        public ProjectileEffectData ContactEffect;          //effect upon hitting a unit
+        public ProjectileEffectData ProximityEffect;        //effect upon moving/existing
+        public ProjectileEffectData DestinationEffect;      //effect upon reaching click location
+    }
+
+    class ProjectileWeaponData
+    {
+        public string Name;
+        public float FireRate;  //rounds/second
+        public int MaxAmmo;
+        public int AmmoConsumption;
+        public int ProjectilesPerFire;
+        public float Recoil;
+        public float ProjectileSpread;  //spread of fired projectiles in degrees
+        public string FireParticleEffectName;
+        public ProjectileData Projectile;
+    }
+    
+
     class ProjectileWeapon : Weapon
     {
         #region static
@@ -19,20 +55,25 @@ namespace SpaceGame.equipment
 
         protected class Projectile
         {
-            public bool Active;
-            //Splashing and REadyToSplash are used to ensure that a splash effect hits each in range enemy once
-            //When a projectile hits, ReadyToSplash is set. When update is called after this hit, 
-            //Splashing is also set. The next series of hit checks, the splash effect is applied.
-            //The next update, ReadyToSplash is set to false, so splash damage checks are no longer applied
-            public bool Splashing;  //if particle is exploding & applying splash effect
-            public bool ReadyToSplash;  //if projectile has hit a unit and is ready to apply splash next update
+            public enum ProjectileState
+            {
+                Dormant,
+                Active,
+                JustHit,
+                ApplyContactEffect,
+                ReachedDestination,
+            }
+            public ProjectileState State;
             public Vector2 Position;
             public Vector2 Velocity;
             public Vector2 Acceleration;
+            public Rectangle HitRect;
             public TimeSpan LifeLeft;
             public float Angle;     //in radians
             public Sprite ProjectileSprite;
         }
+
+            
         #endregion
 
         #region fields
@@ -40,28 +81,15 @@ namespace SpaceGame.equipment
         protected Projectile[] _projectiles;
         int _projectilesPerFire;
 
-        int _projectileDamage;
-        float _projectileForce;
         float _recoilForce; 
-        float _projectileSpeed;
         float _projectileSpread;
         float _projectileAcceleration;
-        bool _dissipateOnHit;   //if true, the projectile dissipates after hitting a target
-        TimeSpan _projectileLife;
-
-        //only applicable for particles with splash effects
-        float _splashRadius, _splashForce;
-        int _splashDamage;
-        //how much to scale sprite each second when splashing
-        float _splashScaleRate;
 
         Rectangle _hitDetectionRect;    //width and height based on texture, x and y change
         Rectangle _splashDetectionRect;    //width and height based on _splashRadius, x and y change
 
-        ParticleEffect _fireParticleEffect;
-        ParticleEffect _movementParticleEffect;
-        ParticleEffect _splashParticleEffect;
-        bool _hasProjectileSprite;
+        ProjectileData _projData;
+
         #endregion
 
         #region constructor
@@ -73,49 +101,20 @@ namespace SpaceGame.equipment
             :base(TimeSpan.FromSeconds(1.0 / data.FireRate), data.MaxAmmo,
                   data.AmmoConsumption, owner, levelBounds)
         {
-            _hasProjectileSprite = (data.ProjectileSpriteName != null);
-            _maxProjectiles = data.MaxProjectiles;
+            _projData = data.Projectile;
+            _maxProjectiles = _projData.MaxInstances;
             _projectiles = new Projectile[_maxProjectiles];
             for (int i = 0; i < _maxProjectiles; i++)
             {
                 _projectiles[i] = new Projectile();
-                _projectiles[i].ProjectileSprite = _hasProjectileSprite ? 
-                    new Sprite(data.ProjectileSpriteName) : null;
+                Sprite sprite = new Sprite(_projData.SpriteName);
+                _projectiles[i].ProjectileSprite = sprite;
+                _projectiles[i].HitRect = new Rectangle(0,0, (int)(sprite.Width), (int)sprite.Height); 
+                _projectiles[i].State = Projectile.ProjectileState.Dormant;
             }
-            _projectileDamage = data.Damage;
-            _projectileForce = data.ProjectileForce;
             _recoilForce = data.Recoil;
-            _projectileSpeed = data.ProjectileSpeed;
-            _projectileAcceleration = data.ProjectileAcceleration;
-            _dissipateOnHit = data.DissipateOnHit;
             _projectileSpread = MathHelper.ToRadians(data.ProjectileSpread);
             _projectilesPerFire = data.ProjectilesPerFire;
-            _projectileLife = data.ProjectileLife;
-
-            _splashDamage = data.SplashDamage;
-            _splashRadius = data.SplashRadius;
-            _splashForce = data.SplashForce;
-
-            Sprite projectileSprite = _projectiles[0].ProjectileSprite;
-
-            if (_hasProjectileSprite && projectileSprite.Width <= _splashRadius * 2)
-            {
-                _splashScaleRate = (projectileSprite.Width / _splashRadius);
-                _splashScaleRate /= (float)projectileSprite.FullAnimationTime.TotalSeconds;
-            }
-
-            _hitDetectionRect = (_hasProjectileSprite) ? 
-                new Rectangle(0,0, (int)(projectileSprite.Width), (int)projectileSprite.Height)
-                : new Rectangle(0,0,1,1);
-               
-
-            if (data.FireParticleEffect != null)
-                _fireParticleEffect = new ParticleEffect(data.FireParticleEffect);
-            if (data.MovementParticleEffect != null)
-                _movementParticleEffect = new ParticleEffect(data.MovementParticleEffect);
-            if (data.SplashParticleEffect != null)
-                _splashParticleEffect = new ParticleEffect(data.SplashParticleEffect);
-            
         }
         #endregion
 
