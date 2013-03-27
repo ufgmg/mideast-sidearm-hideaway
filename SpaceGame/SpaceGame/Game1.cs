@@ -33,7 +33,7 @@ namespace SpaceGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         InputManager _inputManager = new InputManager();
-        WeaponManager _weaponManager = new WeaponManager();
+        InventoryManager _weaponManager = new InventoryManager();
         List<Gamestate> _stateStack = new List<Gamestate>();  
 
         public static GameStates gamestate;
@@ -69,7 +69,7 @@ namespace SpaceGame
         {
 
             _inputManager = new InputManager();
-            _weaponManager = new WeaponManager();
+            _weaponManager = new InventoryManager();
             gamestate = GameStates.Menu;
 
             base.Initialize();

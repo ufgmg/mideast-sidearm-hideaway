@@ -146,38 +146,47 @@ namespace SpaceGame.utility
         {
             get { return currentKeyboardState.IsKeyDown(Keys.Escape); }
         }
-        //Change Weapon Request
-        public bool Weapon1
+        //Change Item Request
+        public bool Item1
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad1) ||
-                         currentKeyboardState.IsKeyDown(Keys.D1);}
+            get { return keyTapped(Keys.NumPad1) ||
+                         keyTapped(Keys.D1);}
         }
-        public bool Weapon2
+        public bool Item2
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad2)||
-                         currentKeyboardState.IsKeyDown(Keys.D2);}
+            get { return keyTapped(Keys.NumPad2)||
+                         keyTapped(Keys.D2);}
         }
-        public bool Weapon3
+        public bool Item3
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad3)||
-                         currentKeyboardState.IsKeyDown(Keys.D3);}
+            get { return keyTapped(Keys.NumPad3)||
+                         keyTapped(Keys.D3);}
         }
-        public bool Weapon4
+        public bool Item4
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad4)||
-                         currentKeyboardState.IsKeyDown(Keys.D4);}
+            get { return keyTapped(Keys.NumPad4)||
+                         keyTapped(Keys.D4);}
         }
-        public bool Weapon5
+        public bool Item5
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad5)||
-                         currentKeyboardState.IsKeyDown(Keys.D5);}
+            get { return keyTapped(Keys.NumPad5)||
+                         keyTapped(Keys.D5);}
         }
-        public bool Weapon6
+        public bool Item6
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad6)||
-                         currentKeyboardState.IsKeyDown(Keys.D6);}
+            get { return keyTapped(Keys.NumPad6)||
+                         keyTapped(Keys.D6);}
         }
 
+        public bool fCycle
+        {
+            get { return keyTapped(Keys.Q); }
+        }
+
+        public bool bCycle
+        {
+            get { return keyTapped(Keys.E); }
+        }
         //the magical all-purpose dubugging key. Who knows what surprises it holds?
         public bool DebugKey    
         {
