@@ -32,7 +32,7 @@ namespace SpaceGame.states
         #endregion
 
         #region methods
-        public abstract void Update(GameTime gameTime, InputManager input, WeaponManager wm);
+        public abstract void Update(GameTime gameTime, InputManager input, InventoryManager im);
         public abstract void Draw(SpriteBatch spriteBatch);
         
         #endregion

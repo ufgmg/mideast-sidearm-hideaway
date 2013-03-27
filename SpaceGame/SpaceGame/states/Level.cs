@@ -41,7 +41,7 @@ namespace SpaceGame.states
         #endregion
 
         #region constructor
-        public Level (int levelNumber, WeaponManager wm)
+        public Level (int levelNumber, InventoryManager im)
             : base(false)
         {
             LevelData data = DataLoader.LoadLevel(levelNumber);
@@ -59,16 +59,13 @@ namespace SpaceGame.states
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false, _levelBounds);
             }
             //Test code to set weapons 1-6 to created weapons
-            wm.setSlot(1, new ProjectileWeapon("Gun", _player, _levelBounds));
-            wm.setSlot(2, new ProjectileWeapon("Flamethrower", _player, _levelBounds));
-            wm.setSlot(3, new ProjectileWeapon("Rocket", _player, _levelBounds));
-            wm.setSlot(4, new ProjectileWeapon("Swarmer", _player, _levelBounds));
-            wm.setSlot(5, new MeleeWeapon("Gravity Gauntlet", _player, _levelBounds));
-            wm.setSlot(6, new HookShot(_player, _levelBounds));
+            im.setPrimaryWeapon(new ProjectileWeapon("Flamethrower", _player, _levelBounds));
+            im.setSecondaryWeapon(new ProjectileWeapon("Swarmer", _player, _levelBounds));
+            im.setPrimaryGadget(new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 }));
 
             //Set Weapon holders in level
-            _primaryWeapon = wm.getPrimary();
-            _secondaryWeapon = wm.getSecondary();
+            _primaryWeapon = im.getPrimaryWeapon();
+            _secondaryWeapon = im.getSecondaryWeapon();
 
             _unicorns = new Unicorn[data.Unicorns.Length];
             for (int j = 0; j < data.Unicorns.Length; j++)
@@ -78,13 +75,13 @@ namespace SpaceGame.states
 
             _foodCarts = data.FoodCarts;
 
-            _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
+            _primaryGadget = im.getPrimaryGadget();
         }
 
         #endregion
 
         #region methods
-        public override void Update(GameTime gameTime, InputManager input, WeaponManager wm)
+        public override void Update(GameTime gameTime, InputManager input, InventoryManager im)
         {
             handleInput(input);
 
@@ -132,10 +129,6 @@ namespace SpaceGame.states
             //Update Weapon Choice
             _primaryWeapon.Update(gameTime);
             _secondaryWeapon.Update(gameTime);
-			
-            //Set choice to weapon values
-            _primaryWeapon = wm.getPrimary();
-            _secondaryWeapon = wm.getSecondary();
  
         }
 
