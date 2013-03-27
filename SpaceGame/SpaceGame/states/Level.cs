@@ -38,6 +38,7 @@ namespace SpaceGame.states
         Unicorn[] _unicorns;
         FoodCart[] _foodCarts;
         Rectangle _levelBounds;
+        GUI userInterface;
         #endregion
 
         #region constructor
@@ -79,6 +80,8 @@ namespace SpaceGame.states
             _foodCarts = data.FoodCarts;
 
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
+
+            userInterface = new GUI();
         }
 
         #endregion
@@ -179,6 +182,7 @@ namespace SpaceGame.states
             {
                 unicorn.Draw(spriteBatch);
             }
+            userInterface.draw(spriteBatch);
         }
         #endregion
     }
