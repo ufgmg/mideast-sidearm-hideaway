@@ -127,7 +127,8 @@ I'll explain the case where you push directly to this repository:
 
 2.  Start a new feature branch based on `origin/master`.
 
-        $ git checkout -b newbranchname origin/master
+        $ git checkout origin/master
+        $ git checkout -b newbranchname
 
 3.  Start coding! Commit often! Don't worry about making too many
     commits; we can combine them into fewer commits later.
@@ -137,6 +138,10 @@ I'll explain the case where you push directly to this repository:
 
         $ git fetch origin
         $ git rebase origin/master
+
+    If you end up with merge conflicts, run `git status` and follow the
+    instructions. Keep running `git status` as you go. It will help you through
+    them.
 
 5.  Push your commits to the repository:
 
