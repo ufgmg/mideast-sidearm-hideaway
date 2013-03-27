@@ -126,6 +126,8 @@ namespace SpaceGame.utility
         {
             get { return currentMouseState.RightButton == ButtonState.Pressed; }
         }
+        public bool TogglePrimary { get { return keyTapped(Keys.Q); } }
+        public bool ToggleSecondary { get { return keyTapped(Keys.E); } }
         public bool TriggerGadget1
         { 
             get {return (currentKeyboardState.IsKeyDown(Keys.LeftShift)
@@ -213,6 +215,23 @@ namespace SpaceGame.utility
         {
             return currentKeyboardState.IsKeyDown(key)
                 && previousKeyboardState.IsKeyUp(key);
+        }
+
+        /// <summary>
+        /// Return the integer of the numkey between 1 and 6 pressed
+        /// Return -1 if no numkey pressed
+        /// </summary>
+        /// <returns></returns>
+        public int NumKey()
+        {
+            foreach (Keys key in currentKeyboardState.GetPressedKeys())
+            {
+                if (keyTapped(key) && Keys.NumPad0 <= key && key <= Keys.NumPad6)
+                    return (int)(key - Keys.NumPad0);
+                if (keyTapped(key) && Keys.D0 <= key && key <= Keys.D6)
+                    return (int)(key - Keys.D0);
+            }
+            return -1;
         }
         #endregion
     }
