@@ -102,7 +102,7 @@ namespace SpaceGame.units
         /// <param name="unit">unit to affect. Should be called after updating unit</param>
         public void ApplyToUnit(PhysicalUnit unit, GameTime gameTime)
         {
-            if (_state == BlackHoleState.Exhausted || _state == BlackHoleState.PreExplosion)
+            if (_state != BlackHoleState.Pulling)
                 return;
 
             unit.ApplyGravity(Gravity, gameTime);
@@ -118,6 +118,29 @@ namespace SpaceGame.units
                         _state = BlackHoleState.PreExplosion;
                         _explosionTimer = TimeSpan.FromSeconds(SECONDS_BEFORE_EXPLODE);
                     }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Try to eat a passing unicorn
+        /// </summary>
+        /// <param name="unicorn">unicorn</param>
+        public void TryEatUnicorn(Unicorn uni, GameTime gameTime)
+        {
+            if (_state != BlackHoleState.Pulling)
+                return;
+
+            if (uni.EatByBlackHole(Position, gameTime) && _state == BlackHoleState.Pulling)
+            {   //try to eat unit
+                _capacityUsed += Unicorn.UNICORN_MASS;
+                _particleEffect.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
+                Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
+                if (_capacityUsed > _totalCapacity)
+                {
+                    _state = BlackHoleState.PreExplosion;
+                    _explosionTimer = TimeSpan.FromSeconds(SECONDS_BEFORE_EXPLODE);
                 }
             }
 

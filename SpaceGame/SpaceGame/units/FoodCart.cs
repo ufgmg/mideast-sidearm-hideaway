@@ -148,7 +148,7 @@ namespace SpaceGame.units
             }
 
             do { XnaHelper.RandomizeVector(ref _position, minX, maxX, minY, maxY); }
-            while (Vector2.Distance(blackHolePosition, _nextWaypoint) < MIN_BLACKHOLE_DISTANCE);
+            while (Vector2.Distance(blackHolePosition, _position) < MIN_BLACKHOLE_DISTANCE);
         }
 
         #endregion

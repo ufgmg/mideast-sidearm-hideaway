@@ -216,9 +216,15 @@ namespace SpaceGame.utility
             refVector.Y = minY + (float)rand.NextDouble() * (maxY - minY);
         }
 
+        /// <summary>
+        /// Get a random number in the range [min,max]
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         public static int RandomInt(int min, int max)
         {
-            return rand.Next(min, max);
+            return rand.Next(min, max + 1);
         }
 
         public static void DrawRect(Color color, Rectangle rect, SpriteBatch sb)

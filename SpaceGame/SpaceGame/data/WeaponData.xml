@@ -61,6 +61,6 @@
   <MeleeWeapon Name="Gravity Gauntlet" 
                     FireRate ="1" MaxAmmo="60" AmmoConsumption="0"
                     Damage="20" Impact="6000" Recoil="1500" 
-                    HitArc="30" Range="100"
+                    HitArc="30" Range="75"
                     AttackParticleEffect="PunchWave"/>
 </Weapons>

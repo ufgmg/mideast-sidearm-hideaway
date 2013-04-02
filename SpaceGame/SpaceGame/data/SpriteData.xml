@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SpriteDatas>
   <SpriteData Name="Spaceman" AssetName="Spaceman" FrameWidth="724" FrameHeight="863" NumFrames="1" NumStates="4" DefaultScale ="0.05" SecondsPerAnimation="0.5" ZLayer="0" />
-  <SpriteData Name="Goblin" AssetName="Goblin" FrameWidth="200" FrameHeight="200" NumFrames="1" NumStates="4" DefaultScale ="0.15" SecondsPerAnimation="0.5" ZLayer="0" />
+  <SpriteData Name="Goblin" AssetName="Goblin1" FrameWidth="217" FrameHeight="287" NumFrames="1" NumStates="1" DefaultScale ="0.15" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="Projectile" AssetName="Projectile" FrameWidth="32" FrameHeight="32" NumFrames="1" NumStates="1" DefaultScale ="0.5" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="HookClaw" AssetName="HookClaw" FrameWidth="32" FrameHeight="32" NumFrames="1" NumStates="1" DefaultScale ="0.5" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="HookChain" AssetName="HookChain" FrameWidth="32" FrameHeight="32" NumFrames="1" NumStates="1" DefaultScale ="0.5" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="Rocket" AssetName="Rocket" FrameWidth="32" FrameHeight="32" NumFrames="4" NumStates="2" DefaultScale ="1.0" SecondsPerAnimation="0.03" ZLayer="0" />
   <SpriteData Name="Flame" AssetName="Flame" FrameWidth="4" FrameHeight="4" NumFrames="1" NumStates="1" DefaultScale ="1.0" SecondsPerAnimation="0.03" ZLayer="0" />
-  <SpriteData Name="Unicorn" AssetName="Unicorn" FrameWidth="1536" FrameHeight="2048" NumFrames="1" NumStates="1" DefaultScale ="0.03" SecondsPerAnimation="0.5" ZLayer="0" />
+  <SpriteData Name="Unicorn" AssetName="Unicorn" FrameWidth="466" FrameHeight="349" NumFrames="1" NumStates="1" DefaultScale ="0.12" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="FoodCart" AssetName="Food_Cart" FrameWidth="897" FrameHeight="574" NumFrames="1" NumStates="1" DefaultScale ="0.13" SecondsPerAnimation="0.5" ZLayer="0" />
 </SpriteDatas>
