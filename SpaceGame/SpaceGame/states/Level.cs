@@ -94,6 +94,14 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
+            if (_blackHole.State == BlackHole.BlackHoleState.Overdrive)
+            {
+                foreach (Wave w in _waves)
+                {
+                    w.SpawnEnable = false;
+                }
+            }
+
             for (int i = 0; i < _waves.Length; i++)
             {
                 _waves[i].Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon, _unicorns);
