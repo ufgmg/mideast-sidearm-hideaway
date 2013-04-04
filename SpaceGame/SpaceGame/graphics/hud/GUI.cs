@@ -9,6 +9,10 @@ namespace SpaceGame.graphics.hud
 {
     class GUI
     {
+        public static float ARC_ADJUST = 2.38f;
+        public static float RADIUS_ADJUST = 1.974f;
+        public static float HEIGHT_ADJUST = 1.146f;
+
         public static Texture2D targetWheel;
         public static Texture2D leftClick;
         public static Texture2D rightClick;
@@ -38,7 +42,12 @@ namespace SpaceGame.graphics.hud
         private Rectangle button6Rec;
         private Rectangle voidWheelRec;
 
-        public GUI()
+        private RadialBar healthBar;
+
+        private SpaceGame.units.Spaceman player;
+        private SpaceGame.units.BlackHole blackhole;
+
+        public GUI(SpaceGame.units.Spaceman player, SpaceGame.units.BlackHole blackhole)
         {
             this.screenHeight = Game1.SCREENHEIGHT;
             this.screenWidth = Game1.SCREENWIDTH;
@@ -102,10 +111,20 @@ namespace SpaceGame.graphics.hud
             voidWheelRec.Y = 0;
             voidWheelRec.Width = voidWheel.Width;
             voidWheelRec.Height = voidWheel.Height;
+
+            this.player = player;
+            this.blackhole = blackhole;
+            
+            //Initialize health bar in its location
+            Vector2 healthBarLoc = new Vector2(targetWheelRec.X + targetWheelRec.Width / 2, (int)(targetWheelRec.Y + HEIGHT_ADJUST * targetWheelRec.Height));
+            healthBar = new RadialBar(healthBarLoc, targetWheelRec.Width / RADIUS_ADJUST, 25, -(float)Math.PI / ARC_ADJUST, (float)Math.PI / ARC_ADJUST, Color.Red);
         }
 
         public void draw(SpriteBatch batch)
         {
+            //Draw health bar first so it is "under" the wheel
+            healthBar.Draw(batch, player.health, player.maxHealth);
+
             batch.Draw(targetWheel, targetWheelRec, Color.White);
             batch.Draw(leftClick, leftClickRec, Color.White);
             batch.Draw(rightClick, rightClickRec, Color.White);

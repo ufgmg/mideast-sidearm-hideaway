@@ -47,6 +47,11 @@ namespace SpaceGame.units
 
         #endregion
 
+        #region properties
+        public float capacityUsed { get { return _capacityUsed; } }
+        public float totalCapacity { get { return _totalCapacity; } }
+        #endregion
+
         #region constructors
         /// <summary>
         /// Construct a new black hole

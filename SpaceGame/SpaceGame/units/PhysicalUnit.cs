@@ -55,6 +55,9 @@ namespace SpaceGame.units
         #endregion
 
         #region properties
+        public float health { get { return _health; } }
+        public float maxHealth { get { return _maxHealth; } }
+
         public float Mass { get { return _mass + _additionalMass; } }
         Rectangle _hitRect;
 

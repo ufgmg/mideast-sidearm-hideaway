@@ -79,7 +79,7 @@ namespace SpaceGame.states
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
             _primaryGadget = im.getPrimaryGadget();
             
-            userInterface = new GUI();
+            userInterface = new GUI(_player, _blackHole);
         }
 
         #endregion
