@@ -54,13 +54,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="spritesheets\Goblin.png">
-      <Name>Goblin</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="spritesheets\Projectile.png">
       <Name>Projectile</Name>
       <Importer>TextureImporter</Importer>
@@ -117,15 +110,30 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="spritesheets\Unicorn.JPG">
-      <Name>Unicorn</Name>
+    <Compile Include="spritesheets\Food_Cart.png">
+      <Name>Food_Cart</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="spritesheets\Food_Cart.png">
-      <Name>Food_Cart</Name>
+    <Compile Include="spritesheets\Goblin1.png">
+      <Name>Goblin1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="spritesheets\Goblin2.png">
+      <Name>Goblin2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="spritesheets\Goblin3.png">
+      <Name>Goblin3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="spritesheets\Unicorn.png">
+      <Name>Unicorn</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

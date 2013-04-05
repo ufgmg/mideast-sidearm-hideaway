@@ -18,21 +18,27 @@ namespace SpaceGame.units
     class BlackHole
     {
         #region constants
+        const float SECONDS_FOR_OVERDRIVE = 3.0f;
         const float SECONDS_BEFORE_EXPLODE = 1.0f;
         const float SECONDS_DURING_EXPLODE = 5.0f;
         #endregion
 
-        enum BlackHoleState
+        public enum BlackHoleState
         {
             Pulling,
+            Overdrive,
             PreExplosion,
             Explosion,
             Exhausted
         }
 
-        #region fields
+        #region properties
         public Vector2 Position;
         public Gravity Gravity { get; private set; }
+        public BlackHoleState State { get { return _state; } }
+        #endregion
+        
+        #region fields
 
         float _radius;
         float _capacityUsed;
@@ -44,6 +50,7 @@ namespace SpaceGame.units
         bool Exhausted;      //explosion complete
 
         TimeSpan _explosionTimer;
+        TimeSpan _overdriveTimer;
 
         #endregion
 
@@ -62,6 +69,7 @@ namespace SpaceGame.units
             _particleEffect = new ParticleEffect("BlackHoleEffect");
             _totalCapacity = capacity;
             _capacityUsed = 0.0f;
+            _overdriveTimer = TimeSpan.FromSeconds(SECONDS_FOR_OVERDRIVE);
         }
         #endregion
 
@@ -70,10 +78,19 @@ namespace SpaceGame.units
         {
             _particleEffect.Update(gameTime);
             //only spawn particles when pulling or pushing
-            if (_state == BlackHoleState.Pulling || _state == BlackHoleState.Explosion)
+            if (_state == BlackHoleState.Pulling || _state == BlackHoleState.Explosion || _state == BlackHoleState.Overdrive)
             {
                 _particleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, Vector2.Zero,
                     1.0f + _capacityUsed / _totalCapacity);   //spawn rate increases as capacity fills 
+            }
+
+            if (_state == BlackHoleState.Overdrive)
+            {
+                _overdriveTimer -= gameTime.ElapsedGameTime;
+                if (_overdriveTimer < TimeSpan.Zero)
+                {
+                    _state = BlackHoleState.PreExplosion;
+                }
             }
 
             if (_state == BlackHoleState.PreExplosion || _state == BlackHoleState.Explosion)
@@ -102,11 +119,18 @@ namespace SpaceGame.units
         /// <param name="unit">unit to affect. Should be called after updating unit</param>
         public void ApplyToUnit(PhysicalUnit unit, GameTime gameTime)
         {
-            if (_state != BlackHoleState.Pulling)
+            if (_state != BlackHoleState.Pulling && _state != BlackHoleState.Overdrive)
                 return;
-
-            unit.ApplyGravity(Gravity, gameTime);
-            if ((Position - unit.Center).Length() <= _radius && _state == BlackHoleState.Pulling)
+            if (_state == BlackHoleState.Pulling)
+            {
+                unit.ApplyGravity(Gravity, gameTime);
+            }
+            else if (_state == BlackHoleState.Overdrive)
+            {
+                unit.FlyToPoint(Position, _overdriveTimer, 2.0f);
+            }
+            
+            if ((Position - unit.Center).Length() <= _radius)
             {   //try to eat unit
                 if (unit.EatByBlackHole())
                 {
@@ -115,12 +139,10 @@ namespace SpaceGame.units
                     Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
                     if (_capacityUsed > _totalCapacity)
                     {
-                        _state = BlackHoleState.PreExplosion;
-                        _explosionTimer = TimeSpan.FromSeconds(SECONDS_BEFORE_EXPLODE);
+                        goOverdrive();
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -129,21 +151,35 @@ namespace SpaceGame.units
         /// <param name="unicorn">unicorn</param>
         public void TryEatUnicorn(Unicorn uni, GameTime gameTime)
         {
-            if (_state != BlackHoleState.Pulling)
+            if (_state != BlackHoleState.Pulling && _state != BlackHoleState.Overdrive)
                 return;
 
-            if (uni.EatByBlackHole(Position, gameTime) && _state == BlackHoleState.Pulling)
+            if (uni.EatByBlackHole(Position, gameTime)) 
             {   //try to eat unit
                 _capacityUsed += Unicorn.UNICORN_MASS;
                 _particleEffect.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
                 Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
                 if (_capacityUsed > _totalCapacity)
                 {
-                    _state = BlackHoleState.PreExplosion;
-                    _explosionTimer = TimeSpan.FromSeconds(SECONDS_BEFORE_EXPLODE);
+                    goOverdrive();
                 }
             }
+        }
 
+        private void goOverdrive()
+        {
+            _state = BlackHoleState.Overdrive;
+            _explosionTimer = TimeSpan.FromSeconds(SECONDS_BEFORE_EXPLODE);
+            _particleEffect.IntensityFactor = 3.0f;
+            Gravity = new Gravity(Position, Gravity.Magnitude * 1.4f);
+        }
+
+        /// <summary>
+        /// automatically explode black hole
+        /// </summary>
+        public void Explode()
+        {
+            goOverdrive();
         }
 
         public void Draw(SpriteBatch sb)

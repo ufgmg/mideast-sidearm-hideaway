@@ -55,6 +55,14 @@ namespace SpaceGame.units
 
         #region properties
         public Gravity Gravity { get { return _gravity; } }
+        public bool SpawnEnable 
+        {
+            get {return _spawnEnable; }
+            set
+            {
+                _state = State.Dormant;
+            }
+        }
         #endregion
 
         #region fields
@@ -66,6 +74,7 @@ namespace SpaceGame.units
         Sprite _sprite;
         Gravity _gravity;
         Rectangle _hitRect;
+        bool _spawnEnable;
         #endregion
 
         #region constructor
@@ -96,7 +105,11 @@ namespace SpaceGame.units
             switch (_state)
             {
                 case State.Dormant:
-                    _timer -= gameTime.ElapsedGameTime;
+                    if (SpawnEnable)
+                    {
+                        _timer -= gameTime.ElapsedGameTime;
+                    }
+
                     if (_timer <= TimeSpan.Zero)
                     {
                         setPosition(blackHolePos, targetPos, levelBounds.Width, levelBounds.Height);
@@ -138,7 +151,7 @@ namespace SpaceGame.units
                     {
                         _timer = TimeSpan.FromSeconds(CHARGE_TIME);
                         _state = State.Locked;
-                        XnaHelper.VectorFromAngle(_sprite.Angle, out _direction);
+                        _direction = _sprite.FlipH ? -Vector2.UnitX : Vector2.UnitX;
                     }
                     break;
 
@@ -156,7 +169,8 @@ namespace SpaceGame.units
                     for (int i = 0 ; i < PARTICLE_SPAWN_GRANULARITY ; i++)
                     {
                         _position.X += _velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds / PARTICLE_SPAWN_GRANULARITY;
-                        _chargeEffect.Spawn(_position, _sprite.Angle, gameTime.ElapsedGameTime, Vector2.Zero);
+                        float angle = (_sprite.FlipH) ? 90 : -90;
+                        _chargeEffect.Spawn(_position, angle, gameTime.ElapsedGameTime, Vector2.Zero);
                     }
                     _hitRect.X = (int)_position.X - _hitRect.Width;
 
@@ -228,8 +242,7 @@ namespace SpaceGame.units
                 _sprite.Reset();
                 _position = blackHolePos;
                 _timer = TimeSpan.FromSeconds(EAT_TIME);
-                float particleAngle = MathHelper.ToDegrees(_sprite.Angle + MathHelper.PiOver2 * (_velocity.X > 0 ? 1 : -1));
-                _explodeEffect.Spawn(blackHolePos, particleAngle, gameTime.ElapsedGameTime, Vector2.Zero);
+                _explodeEffect.Spawn(blackHolePos, 0, gameTime.ElapsedGameTime, Vector2.Zero);
                 return true;
             }
             return false;
@@ -240,8 +253,7 @@ namespace SpaceGame.units
             bool leftSide = (XnaHelper.RandomInt(0, 1) == 0);
             _position.X = leftSide ? 0 : levelWidth;
             _hitRect.X = leftSide ? 0 : levelWidth - _hitRect.Width;
-            _sprite.Angle = leftSide ? MathHelper.PiOver2 : -MathHelper.PiOver2;
-            _sprite.FlipH = leftSide;
+            _sprite.FlipH = !leftSide;
             _position.Y = XnaHelper.RandomInt(0, levelHeight); 
             _hitRect.Y = (int)_position.Y;
         }

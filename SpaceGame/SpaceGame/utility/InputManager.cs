@@ -126,6 +126,8 @@ namespace SpaceGame.utility
         {
             get { return currentMouseState.RightButton == ButtonState.Pressed; }
         }
+        public bool TogglePrimary { get { return keyTapped(Keys.Q); } }
+        public bool ToggleSecondary { get { return keyTapped(Keys.E); } }
         public bool TriggerGadget1
         { 
             get {return (currentKeyboardState.IsKeyDown(Keys.LeftShift)
@@ -144,39 +146,50 @@ namespace SpaceGame.utility
         {
             get { return currentKeyboardState.IsKeyDown(Keys.Escape); }
         }
-        //Change Weapon Request
-        public bool Weapon1
+        //Change Item Request
+        public bool Item1
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad1) ||
-                         currentKeyboardState.IsKeyDown(Keys.D1);}
+            get { return keyTapped(Keys.NumPad1) ||
+                         keyTapped(Keys.D1);}
         }
-        public bool Weapon2
+        public bool Item2
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad2)||
-                         currentKeyboardState.IsKeyDown(Keys.D2);}
+            get { return keyTapped(Keys.NumPad2)||
+                         keyTapped(Keys.D2);}
         }
-        public bool Weapon3
+        public bool Item3
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad3)||
-                         currentKeyboardState.IsKeyDown(Keys.D3);}
+            get { return keyTapped(Keys.NumPad3)||
+                         keyTapped(Keys.D3);}
         }
-        public bool Weapon4
+        public bool Item4
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad4)||
-                         currentKeyboardState.IsKeyDown(Keys.D4);}
+            get { return keyTapped(Keys.NumPad4)||
+                         keyTapped(Keys.D4);}
         }
-        public bool Weapon5
+        public bool Item5
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad5)||
-                         currentKeyboardState.IsKeyDown(Keys.D5);}
+            get { return keyTapped(Keys.NumPad5)||
+                         keyTapped(Keys.D5);}
         }
-        public bool Weapon6
+        public bool Item6
         {
-            get { return currentKeyboardState.IsKeyDown(Keys.NumPad6)||
-                         currentKeyboardState.IsKeyDown(Keys.D6);}
+            get { return keyTapped(Keys.NumPad6)||
+                         keyTapped(Keys.D6);}
         }
 
-        //the magical all-purpose dubugging key. Who knows what surprises it holds?
+        public bool fCycle
+        {
+            get { return keyTapped(Keys.Q); }
+        }
+
+        public bool bCycle
+        {
+            get { return keyTapped(Keys.E); }
+        }
+        /// <summary>
+        /// return true if debug key (B) is pressed
+        /// </summary>
         public bool DebugKey    
         {
             get { return currentKeyboardState.IsKeyDown(Keys.B); }
@@ -213,6 +226,23 @@ namespace SpaceGame.utility
         {
             return currentKeyboardState.IsKeyDown(key)
                 && previousKeyboardState.IsKeyUp(key);
+        }
+
+        /// <summary>
+        /// Return the integer of the numkey between 1 and 6 pressed
+        /// Return -1 if no numkey pressed
+        /// </summary>
+        /// <returns></returns>
+        public int NumKey()
+        {
+            foreach (Keys key in currentKeyboardState.GetPressedKeys())
+            {
+                if (keyTapped(key) && Keys.NumPad0 <= key && key <= Keys.NumPad6)
+                    return (int)(key - Keys.NumPad0);
+                if (keyTapped(key) && Keys.D0 <= key && key <= Keys.D6)
+                    return (int)(key - Keys.D0);
+            }
+            return -1;
         }
         #endregion
     }
