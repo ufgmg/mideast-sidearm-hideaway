@@ -121,8 +121,15 @@ namespace SpaceGame.units
         {
             if (_state != BlackHoleState.Pulling && _state != BlackHoleState.Overdrive)
                 return;
-
-            unit.ApplyGravity(Gravity, gameTime);
+            if (_state == BlackHoleState.Pulling)
+            {
+                unit.ApplyGravity(Gravity, gameTime);
+            }
+            else if (_state == BlackHoleState.Overdrive)
+            {
+                unit.FlyToPoint(Position, _overdriveTimer, 2.0f);
+            }
+            
             if ((Position - unit.Center).Length() <= _radius)
             {   //try to eat unit
                 if (unit.EatByBlackHole())
@@ -165,6 +172,14 @@ namespace SpaceGame.units
             _explosionTimer = TimeSpan.FromSeconds(SECONDS_BEFORE_EXPLODE);
             _particleEffect.IntensityFactor = 3.0f;
             Gravity = new Gravity(Position, Gravity.Magnitude * 1.4f);
+        }
+
+        /// <summary>
+        /// automatically explode black hole
+        /// </summary>
+        public void Explode()
+        {
+            goOverdrive();
         }
 
         public void Draw(SpriteBatch sb)

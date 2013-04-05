@@ -187,7 +187,9 @@ namespace SpaceGame.utility
         {
             get { return keyTapped(Keys.E); }
         }
-        //the magical all-purpose dubugging key. Who knows what surprises it holds?
+        /// <summary>
+        /// return true if debug key (B) is pressed
+        /// </summary>
         public bool DebugKey    
         {
             get { return currentKeyboardState.IsKeyDown(Keys.B); }

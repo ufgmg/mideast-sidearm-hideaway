@@ -88,8 +88,11 @@ namespace SpaceGame.states
             if (_primaryGadget.Active)
                 gameTime = new GameTime(gameTime.TotalGameTime, 
                     TimeSpan.FromSeconds((float)gameTime.ElapsedGameTime.TotalSeconds / 2));
-            
-            _blackHole.ApplyToUnit(_player, gameTime);
+
+            if (_blackHole.State == BlackHole.BlackHoleState.Pulling)
+            {
+                _blackHole.ApplyToUnit(_player, gameTime);
+            }
             _player.Update(gameTime, _levelBounds);
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
@@ -99,6 +102,10 @@ namespace SpaceGame.states
                 foreach (Wave w in _waves)
                 {
                     w.SpawnEnable = false;
+                }
+                foreach (Unicorn u in _unicorns)
+                {
+                    u.SpawnEnable = false;
                 }
             }
 
@@ -145,6 +152,9 @@ namespace SpaceGame.states
             if (input.Exit)
                 this.PopState = true;
 
+            if (_blackHole.State == BlackHole.BlackHoleState.Exhausted)
+                return;
+
             _player.MoveDirection = input.MoveDirection;
             _player.LookDirection = XnaHelper.DirectionBetween(_player.Center, input.MouseLocation);
 
@@ -160,6 +170,11 @@ namespace SpaceGame.states
             if (input.TriggerGadget1)
             {
                 _primaryGadget.Trigger();
+            }
+
+            if (input.DebugKey)
+            {
+                _blackHole.Explode();
             }
         }
 

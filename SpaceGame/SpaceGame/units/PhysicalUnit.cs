@@ -235,6 +235,16 @@ namespace SpaceGame.units
             return false;
         }
 
+        public void FlyToPoint(Vector2 pos, TimeSpan time)
+        {
+            _velocity = (pos - _position) / (float)time.TotalSeconds;
+        }
+
+        public void FlyToPoint(Vector2 pos, TimeSpan time, float speedFactor)
+        {
+            _velocity = speedFactor * (pos - _position) / (float)time.TotalSeconds;
+        }
+
         #region Update Logic
         public virtual void Update(GameTime gameTime, Rectangle levelBounds)
         {
