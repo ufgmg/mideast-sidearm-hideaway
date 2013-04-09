@@ -9,10 +9,13 @@ namespace SpaceGame.graphics.hud
 {
     class GUI
     {
+        //Ugly constants for figuring things out about the health and void wheels
         public static float ARC_ADJUST = 2.38f;
+        public static float VOID_ARC_ADJUST = 1.45f;
         public static float RADIUS_ADJUST = 1.974f;
         public static float HEIGHT_ADJUST = 1.146f;
 
+        //Static textures to draw to the screen
         public static Texture2D targetWheel;
         public static Texture2D leftClick;
         public static Texture2D rightClick;
@@ -26,9 +29,11 @@ namespace SpaceGame.graphics.hud
         public static Texture2D button6;
         public static Texture2D voidWheel;
 
+        //Screen dimensions
         private int screenWidth;
         private int screenHeight;
 
+        //Rectangles for static GUI elements
         private Rectangle targetWheelRec;
         private Rectangle leftClickRec;
         private Rectangle rightClickRec;
@@ -42,8 +47,11 @@ namespace SpaceGame.graphics.hud
         private Rectangle button6Rec;
         private Rectangle voidWheelRec;
 
+        //Radial bars for health and void
         private RadialBar healthBar;
+        private RadialBar voidBar;
 
+        //Player and blackhole objects - to get the health and void numbers
         private SpaceGame.units.Spaceman player;
         private SpaceGame.units.BlackHole blackhole;
 
@@ -118,12 +126,17 @@ namespace SpaceGame.graphics.hud
             //Initialize health bar in its location
             Vector2 healthBarLoc = new Vector2(targetWheelRec.X + targetWheelRec.Width / 2, (int)(targetWheelRec.Y + HEIGHT_ADJUST * targetWheelRec.Height));
             healthBar = new RadialBar(healthBarLoc, targetWheelRec.Width / RADIUS_ADJUST, 25, -(float)Math.PI / ARC_ADJUST, (float)Math.PI / ARC_ADJUST, Color.Red);
+
+            //Initialize void bar in its location
+            Vector2 voidBarLoc = new Vector2(voidWheelRec.X + voidWheelRec.Width / 2, (int)(voidWheelRec.Y + voidWheelRec.Height - 10));
+            voidBar = new RadialBar(voidBarLoc, voidWheelRec.Width / RADIUS_ADJUST, 25, (float)(2 * Math.PI - (float)Math.PI / VOID_ARC_ADJUST), (float)Math.PI / VOID_ARC_ADJUST, Color.Purple);
         }
 
         public void draw(SpriteBatch batch)
         {
-            //Draw health bar first so it is "under" the wheel
+            //Draw health and void bars first so they are under the wheels
             healthBar.Draw(batch, player.health, player.maxHealth);
+            voidBar.Draw(batch, blackhole.capacityUsed, blackhole.totalCapacity);
 
             batch.Draw(targetWheel, targetWheelRec, Color.White);
             batch.Draw(leftClick, leftClickRec, Color.White);
