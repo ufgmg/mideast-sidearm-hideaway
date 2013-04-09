@@ -244,7 +244,7 @@ namespace SpaceGame.utility
             return new Vector2((float)e.Attribute("X"), (float)e.Attribute("Y"));
         }
 
-        private static T ElementToData<T>(XElement el)
+        public static T ElementToData<T>(XElement el)
         {
             Type dataType = typeof(T);
             T data = Activator.CreateInstance<T>();

@@ -203,12 +203,12 @@ namespace SpaceGame.units
                     unicorns[j].CheckAndApplyCollision(_enemies[i], gameTime);
                 }
                 _enemies[i].CheckAndApplyUnitCollision(player);
-                _enemies[i].CheckAndApplyWeaponCollision(player);
+                _enemies[i].CheckAndApplyWeaponCollision(player, gameTime.ElapsedGameTime);
 
                 _enemies[i].Update(gameTime, player.Position, Vector2.Zero, _levelBounds);
                 blackHole.ApplyToUnit(_enemies[i], gameTime);
-                weapon1.CheckAndApplyCollision(_enemies[i]);
-                weapon2.CheckAndApplyCollision(_enemies[i]);
+                weapon1.CheckAndApplyCollision(_enemies[i], gameTime.ElapsedGameTime);
+                weapon2.CheckAndApplyCollision(_enemies[i], gameTime.ElapsedGameTime);
             }
             //stay active unless it is not a trickle wave and all enemies are destroyed
             Active = Active && (_isTrickleWave || !allDestroyed);

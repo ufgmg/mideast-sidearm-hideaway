@@ -43,7 +43,8 @@ namespace SpaceGame.equipment
             _name = data.Name;
             _projectilesPerFire = data.ProjectilesPerFire;
             _projectileInfo = data.ProjectileInfo;
-            _fireParticleEffect = new ParticleEffect(data.FireParticleEffectName);
+            _fireParticleEffect = data.FireParticleEffectName == null ? 
+                null : new ParticleEffect(data.FireParticleEffectName);
             float maxProjectiles = 
                 data.FireRate * data.ProjectileInfo.SecondsToLive * data.ProjectilesPerFire;
             _projectiles = new Projectile[(int)maxProjectiles + 1];
@@ -55,14 +56,14 @@ namespace SpaceGame.equipment
         #endregion
 
         #region methods
-        public override void CheckAndApplyCollision(PhysicalUnit unit)
+        public override void CheckAndApplyCollision(PhysicalUnit unit, TimeSpan time)
         {
             if (!unit.Collides)
                 return;
 
             foreach (Projectile p in _projectiles)
             {
-                p.CheckAndApplyCollision(unit);
+                p.CheckAndApplyCollision(unit, time);
             }
         }
 
@@ -78,7 +79,7 @@ namespace SpaceGame.equipment
                     && projectilesToSpawn > 0)
                 {
                     p.Initialize(_owner.Position, _fireDirection,
-                        _projectileInfo, _targetDestination);
+                        _projectileInfo, _targetDestination, _owner.Velocity);
                     projectilesToSpawn--;
                 }
             }

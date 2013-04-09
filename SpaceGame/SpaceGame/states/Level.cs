@@ -60,6 +60,7 @@ namespace SpaceGame.states
             }
             //Test code to set weapons 1-6 to created weapons
             im.setPrimaryWeapon(new ProjectileWeapon("Rocket", _player));
+            im.setSecondaryWeapon(new ProjectileWeapon("Rocket", _player));
             im.setPrimaryGadget(new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 }));
 
             //Set Weapon holders in level
@@ -135,8 +136,8 @@ namespace SpaceGame.states
             for (int i = 0; i < _foodCarts.Length; i++)
             {
                 _foodCarts[i].Update(gameTime, _levelBounds, _blackHole.Position);
-                _primaryWeapon.CheckAndApplyCollision(_foodCarts[i]);
-                _secondaryWeapon.CheckAndApplyCollision(_foodCarts[i]);
+                _primaryWeapon.CheckAndApplyCollision(_foodCarts[i], gameTime.ElapsedGameTime);
+                _secondaryWeapon.CheckAndApplyCollision(_foodCarts[i], gameTime.ElapsedGameTime);
                 _blackHole.ApplyToUnit(_foodCarts[i], gameTime);
             }
 

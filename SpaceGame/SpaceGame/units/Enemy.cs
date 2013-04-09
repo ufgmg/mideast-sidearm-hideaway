@@ -59,10 +59,10 @@ namespace SpaceGame.units
             base.Update(gameTime, levelBounds);
         }
 
-        public void CheckAndApplyWeaponCollision(PhysicalUnit unit)
+        public void CheckAndApplyWeaponCollision(PhysicalUnit unit, TimeSpan time)
         {
             if (_meleeWeapon != null)
-                _meleeWeapon.CheckAndApplyCollision(unit);
+                _meleeWeapon.CheckAndApplyCollision(unit, time);
         }
 
         public override void Draw(SpriteBatch sb)

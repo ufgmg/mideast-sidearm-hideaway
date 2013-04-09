@@ -108,7 +108,7 @@ namespace SpaceGame.equipment
 
         }
 
-        public override void CheckAndApplyCollision(PhysicalUnit unit)
+        public override void CheckAndApplyCollision(PhysicalUnit unit, TimeSpan time)
         {
             if (_hookState == HookState.Fired || _hookState == HookState.Retracting)
             { 

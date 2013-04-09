@@ -51,6 +51,7 @@ namespace SpaceGame.equipment
         ProjectileEffect _destinationEffect;      //effect upon reaching click location
         State _state;
         Rectangle _hitRect;
+        TimeSpan _timer;
         #endregion
 
         #region contructor
@@ -69,22 +70,33 @@ namespace SpaceGame.equipment
         /// <param name="direction">fire direction</param>
         /// <param name="data">data to initialize projectile with</param>
         public void Initialize(Vector2 pos, Vector2 direction, ProjectileData data,
-            Vector2 targetDestination)
+            Vector2 targetDestination, Vector2 sourceVelocity)
         {
+            _position = pos;
             Vector2.Multiply(ref direction, data.Speed, out _velocity);
+            Vector2.Add(ref _velocity, ref sourceVelocity, out _velocity);
             Vector2.Multiply(ref direction, data.Acceleration, out _acceleration);
             _lifeTime = TimeSpan.FromSeconds(data.SecondsToLive);
             _sprite = new Sprite(data.SpriteName);
             _penetration = data.Penetration;
             _mass = data.Mass;
-            _contactEffect = data.ContactEffect;
-            _proximityEffect = data.ProximityEffect;
-            _destinationEffect = data.DestinationEffect;
+            //OPTIMIZE: don't instantiate new projectile effects. reference a pool of pre-initialized effects managed elsewhere
+            _contactEffect = data.ContactEffect == null ? ProjectileEffect.NullEffect : new ProjectileEffect(data.ContactEffect);
+            _proximityEffect = data.ProximityEffect == null ? ProjectileEffect.NullEffect : new ProjectileEffect(data.ProximityEffect);
+            _destinationEffect = data.DestinationEffect == null ? ProjectileEffect.NullEffect : new ProjectileEffect(data.DestinationEffect);
             _distanceLeft = Vector2.Distance(pos, targetDestination);
+            _state = State.Moving;
+            _sprite.Angle = utility.XnaHelper.RadiansFromVector(direction);
         }
 
         public void Update(GameTime gameTime)
         {
+            if (_state != State.Dormant)
+            {
+                _contactEffect.Update(gameTime);
+                _destinationEffect.Update(gameTime);
+                _proximityEffect.Update(gameTime);
+            }
 
             TimeSpan time = gameTime.ElapsedGameTime;
 
@@ -106,26 +118,36 @@ namespace SpaceGame.equipment
                     if (_distanceLeft < 0 && _destinationEffect != null)
                     {
                         _state = State.ReachedDestination;
+                        _timer = _destinationEffect.Duration;
                     }
                     break;
 
                 case State.JustHit:
                     _state = State.ApplyContactEffect;
+                    _timer = _contactEffect.Duration;
                     break;
 
                 case State.ApplyContactEffect:
-                    _state = State.Dormant;
+                    _timer -= time;
+                    if (_timer < TimeSpan.Zero)
+                    {
+                        _state = State.Dormant;
+                    }
                     _contactEffect.SpawnParticles(time, _position);
                     break;
 
                 case State.ReachedDestination:
-                    _state = State.Dormant;
+                    _timer -= time;
+                    if (_timer < TimeSpan.Zero)
+                    {
+                        _state = State.Dormant;
+                    }
                     _destinationEffect.SpawnParticles(time, _position);
                     break;
             }
         }
 
-        public void CheckAndApplyCollision(PhysicalUnit u)
+        public void CheckAndApplyCollision(PhysicalUnit u, TimeSpan time)
         {
             if (!u.Collides)
                 return;
@@ -145,15 +167,15 @@ namespace SpaceGame.equipment
                         }
                         u.ApplyImpact(_velocity, _mass);
                     }
-                    _proximityEffect.TryApply(_position, u);
+                    _proximityEffect.TryApply(_position, u, time);
                     break;
                 case State.JustHit:
                     break;
                 case State.ApplyContactEffect:
-                    _contactEffect.TryApply(_position, u);
+                    _contactEffect.TryApply(_position, u, time);
                     break;
                 case State.ReachedDestination:
-                    _destinationEffect.TryApply(_position, u);
+                    _destinationEffect.TryApply(_position, u, time);
                     break;
                 default:
                     break;
@@ -163,10 +185,15 @@ namespace SpaceGame.equipment
 
         public void Draw(SpriteBatch sb)
         {
-            if (_state != State.Dormant)
+            if (_state == State.Dormant)
             {
-                _sprite.Draw(sb, _position);
+                return;
             }
+
+            _contactEffect.Draw(sb);
+            _proximityEffect.Draw(sb);
+            _destinationEffect.Draw(sb);
+            _sprite.Draw(sb, _position);
         }
         #endregion
     }
@@ -179,8 +206,8 @@ namespace SpaceGame.equipment
         public string SpriteName;
         public int Penetration;     //number of hits before dissipating. Set as -1 for infinite
         public int Mass;            //affects force applied to impacted unit
-        public ProjectileEffect ContactEffect;          //effect upon hitting a unit
-        public ProjectileEffect ProximityEffect;        //effect upon moving/existing
-        public ProjectileEffect DestinationEffect;        //effect upon reaching destination
+        public ProjectileEffectData ContactEffect;          //effect upon hitting a unit
+        public ProjectileEffectData ProximityEffect;        //effect upon moving/existing
+        public ProjectileEffectData DestinationEffect;        //effect upon reaching destination
     }
 }
