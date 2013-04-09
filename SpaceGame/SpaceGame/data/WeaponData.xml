@@ -25,9 +25,9 @@
   <ProjectileWeapon Name="Rocket" FireRate="2" ProjectilesPerFire="1">
     <ProjectileInfo SpriteName="Rocket" Speed="30" Acceleration="3000" SecondsToLive="3" 
                     Penetration="1" Mass="10">
-      <ContactEffect ParticleEffectName="RocketExplosion" Radius="80" Damage="10" Force="10000"/>
+      <ContactEffect ParticleEffectName="RocketExplosion" Duration="0.2" Radius="100" Damage="10" Force="10000"/>
       <ProximityEffect ParticleEffectName="RocketBooster"/>
-      <DestinationEffect ParticleEffectName="RocketExplosion" Radius="80" Damage="10" Force="10000"/>
+      <DestinationEffect ParticleEffectName="RocketExplosion" Duration="0.2" Radius="100" Damage="10" Force="10000"/>
     </ProjectileInfo>
   </ProjectileWeapon>
 

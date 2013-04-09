@@ -59,6 +59,9 @@ namespace SpaceGame.equipment
         {
             _sprite = new Sprite(spriteName);
             _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
+            _contactEffect = ProjectileEffect.NullEffect;
+            _destinationEffect = ProjectileEffect.NullEffect;
+            _proximityEffect = ProjectileEffect.NullEffect;
         }
         #endregion
 
@@ -91,12 +94,9 @@ namespace SpaceGame.equipment
 
         public void Update(GameTime gameTime)
         {
-            if (_state != State.Dormant)
-            {
-                _contactEffect.Update(gameTime);
-                _destinationEffect.Update(gameTime);
-                _proximityEffect.Update(gameTime);
-            }
+            _contactEffect.Update(gameTime);
+            _destinationEffect.Update(gameTime);
+            _proximityEffect.Update(gameTime);
 
             TimeSpan time = gameTime.ElapsedGameTime;
 
@@ -193,7 +193,10 @@ namespace SpaceGame.equipment
             _contactEffect.Draw(sb);
             _proximityEffect.Draw(sb);
             _destinationEffect.Draw(sb);
-            _sprite.Draw(sb, _position);
+            if (_state == State.Moving)
+            {
+                _sprite.Draw(sb, _position);
+            }
         }
         #endregion
     }
