@@ -30,6 +30,9 @@ namespace SpaceGame.equipment
         ProjectileData _projectileInfo;
         ParticleEffect _fireParticleEffect;
         Projectile[] _projectiles;
+        ProjectileEffect _contactEffect;
+        ProjectileEffect _proximityEffect;
+        ProjectileEffect _destinationEffect;
         #endregion
 
         #region constructor
@@ -43,6 +46,14 @@ namespace SpaceGame.equipment
             _name = data.Name;
             _projectilesPerFire = data.ProjectilesPerFire;
             _projectileInfo = data.ProjectileInfo;
+
+            _contactEffect = _projectileInfo.ContactEffect == null ?
+                ProjectileEffect.NullEffect : new ProjectileEffect(_projectileInfo.ContactEffect);
+            _proximityEffect = _projectileInfo.ContactEffect == null ?
+                 ProjectileEffect.NullEffect : new ProjectileEffect(_projectileInfo.ProximityEffect);
+            _destinationEffect = _projectileInfo.DestinationEffect == null ? 
+                ProjectileEffect.NullEffect : new ProjectileEffect(_projectileInfo.DestinationEffect);
+
             _fireParticleEffect = data.FireParticleEffectName == null ? 
                 null : new ParticleEffect(data.FireParticleEffectName);
             float maxProjectiles = 
@@ -69,6 +80,10 @@ namespace SpaceGame.equipment
 
         protected override void UpdateWeapon(GameTime gameTime)
         {
+            _contactEffect.Update(gameTime);
+            _destinationEffect.Update(gameTime);
+            _proximityEffect.Update(gameTime);
+
             int projectilesToSpawn = _firing ? _projectilesPerFire : 0;
 
             foreach (Projectile p in _projectiles)
@@ -79,7 +94,9 @@ namespace SpaceGame.equipment
                     && projectilesToSpawn > 0)
                 {
                     p.Initialize(_owner.Position, _fireDirection,
-                        _projectileInfo, _targetDestination, _owner.Velocity);
+                        _projectileInfo, _targetDestination, _owner.Velocity,
+                        _contactEffect, _destinationEffect,
+                        _proximityEffect);
                     projectilesToSpawn--;
                 }
             }
@@ -98,12 +115,17 @@ namespace SpaceGame.equipment
 
         public override void Draw(SpriteBatch sb)
         {
+            if (_fireParticleEffect != null)
+                _fireParticleEffect.Draw(sb);
+
+            _contactEffect.Draw(sb);
+            _proximityEffect.Draw(sb);
+            _destinationEffect.Draw(sb);
+
             foreach (Projectile p in _projectiles)
             {
                 p.Draw(sb);
             }
-            if (_fireParticleEffect != null)
-                _fireParticleEffect.Draw(sb);
         }
         #endregion
     }
@@ -116,4 +138,5 @@ namespace SpaceGame.equipment
         public ProjectileData ProjectileInfo;
         public string FireParticleEffectName;
     }
+
 }

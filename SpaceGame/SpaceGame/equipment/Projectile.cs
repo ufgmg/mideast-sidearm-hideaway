@@ -73,7 +73,9 @@ namespace SpaceGame.equipment
         /// <param name="direction">fire direction</param>
         /// <param name="data">data to initialize projectile with</param>
         public void Initialize(Vector2 pos, Vector2 direction, ProjectileData data,
-            Vector2 targetDestination, Vector2 sourceVelocity)
+            Vector2 targetDestination, Vector2 sourceVelocity,
+            ProjectileEffect contactEffect, ProjectileEffect destinationEffect,
+            ProjectileEffect proximityEffect)
         {
             _position = pos;
             Vector2.Multiply(ref direction, data.Speed, out _velocity);
@@ -84,9 +86,9 @@ namespace SpaceGame.equipment
             _penetration = data.Penetration;
             _mass = data.Mass;
             //OPTIMIZE: don't instantiate new projectile effects. reference a pool of pre-initialized effects managed elsewhere
-            _contactEffect = data.ContactEffect == null ? ProjectileEffect.NullEffect : new ProjectileEffect(data.ContactEffect);
-            _proximityEffect = data.ProximityEffect == null ? ProjectileEffect.NullEffect : new ProjectileEffect(data.ProximityEffect);
-            _destinationEffect = data.DestinationEffect == null ? ProjectileEffect.NullEffect : new ProjectileEffect(data.DestinationEffect);
+            _contactEffect = contactEffect;
+            _proximityEffect = proximityEffect;
+            _destinationEffect = destinationEffect;
             _distanceLeft = Vector2.Distance(pos, targetDestination);
             _state = State.Moving;
             _sprite.Angle = utility.XnaHelper.RadiansFromVector(direction);
@@ -94,9 +96,6 @@ namespace SpaceGame.equipment
 
         public void Update(GameTime gameTime)
         {
-            _contactEffect.Update(gameTime);
-            _destinationEffect.Update(gameTime);
-            _proximityEffect.Update(gameTime);
 
             TimeSpan time = gameTime.ElapsedGameTime;
 
@@ -190,9 +189,6 @@ namespace SpaceGame.equipment
                 return;
             }
 
-            _contactEffect.Draw(sb);
-            _proximityEffect.Draw(sb);
-            _destinationEffect.Draw(sb);
             if (_state == State.Moving)
             {
                 _sprite.Draw(sb, _position);
