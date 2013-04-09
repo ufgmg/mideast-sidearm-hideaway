@@ -21,14 +21,17 @@
                           when particle splashes. May be ommitted.
   -->
 <Weapons>
-  <ProjectileWeapon Name="Gun" ProjectileSpriteName="Projectile"
-                    FireRate ="5" MaxAmmo="10" AmmoConsumption="1"
-                    ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"
-                    Recoil="1000" ProjectileSpeed="800" ProjectileAcceleration="0"
-                    ProjectileSpread="30" DissipateOnHit="true"
-                    SplashDamage="0" SplashRadius="0" SplashForce="0"
-                    MaxProjectiles="5" ProjectileLife="1" />
 
+  <ProjectileWeapon Name="Rocket" FireRate="2" ProjectilesPerFire="1">
+    <ProjectileInfo SpriteName="Rocket" Speed="30" Acceleration="30" SecondsToLive="3" 
+                    Penetration="1" Mass="10">
+      <ContactEffect ParticleEffectName="RocketExplosion" Radius="80" Damage="10" Force="10000"/>
+      <ProximityEffect ParticleEffectName="RocketBooster"/>
+      <DestinationEffect ParticleEffectName="RocketExplosion" Radius="80" Damage="10" Force="10000"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+<!--
   <ProjectileWeapon Name="Flamethrower" ProjectileSpriteName="Flame"
                     FireRate ="300" MaxAmmo="1" AmmoConsumption="0"
                     ProjectilesPerFire="3" Damage="1" ProjectileForce="300"
@@ -37,16 +40,6 @@
                     SplashDamage="0" SplashRadius="0" SplashForce="0"
                     MaxProjectiles="100" ProjectileLife="0.4" 
                     FireParticleEffect="Flamethrower"/>
-
-  <ProjectileWeapon Name="Rocket" ProjectileSpriteName="Rocket"
-                    FireRate ="3" MaxAmmo="30" AmmoConsumption="1"
-                    ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"
-                    Recoil="45000" ProjectileSpeed="10" ProjectileAcceleration="30"
-                    ProjectileSpread="30" DissipateOnHit="true"
-                    SplashDamage="10" SplashRadius="80" SplashForce="100000"
-                    MovementParticleEffect="RocketBooster"
-                    SplashParticleEffect="RocketExplosion"
-                    MaxProjectiles="10" ProjectileLife="3" />
 
   <ProjectileWeapon Name="Swarmer" ProjectileSpriteName="Rocket"
                     FireRate ="10" MaxAmmo="60" AmmoConsumption="1"
@@ -57,6 +50,7 @@
                     MovementParticleEffect="RocketBooster"
                     SplashParticleEffect="RocketExplosion"
                     MaxProjectiles="20" ProjectileLife="3" />
+                    -->
 
   <MeleeWeapon Name="Gravity Gauntlet" 
                     FireRate ="1" MaxAmmo="60" AmmoConsumption="0"

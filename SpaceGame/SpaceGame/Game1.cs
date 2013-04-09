@@ -99,7 +99,7 @@ namespace SpaceGame
             Sprite.Data = DataLoader.LoadSpriteData(Content);
             ParticleGenerator.Data = DataLoader.LoadParticleGeneratorData(Content);
             ParticleEffect.Data = DataLoader.LoadParticleEffectData(Content);
-            ProjectileWeapon2.ProjectileWeaponData = DataLoader.LoadProjectileWeaponData();
+            ProjectileWeapon.DataDict = DataLoader.LoadProjectileWeaponData();
             MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData();
             Spaceman.AstronautData = DataLoader.LoadAstronautData();
             FoodCart.Data = DataLoader.LoadFoodCartData();

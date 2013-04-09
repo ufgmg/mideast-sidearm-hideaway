@@ -28,10 +28,10 @@ namespace SpaceGame.equipment
         #region properties
         public Vector2 Position { get { return _position; } }
         public Vector2 Velocity { get { return _velocity; } }
-        public Vector2 Acceleration { get { return _acceleration; }  }
-        public TimeSpan LifeTime { get { return _lifeTime; }  }
-        public Sprite Sprite { get { return _sprite; }   }
-        public int Penetration { get { return _penetration; } }     
+        public Vector2 Acceleration { get { return _acceleration; } }
+        public TimeSpan LifeTime { get { return _lifeTime; } }
+        public Sprite Sprite { get { return _sprite; } }
+        public int Penetration { get { return _penetration; } }
         public int Mass { get { return _mass; } }
         public State ProjectileState { get { return _state; } }
         public Rectangle HitRect { get { return _hitRect; } }
@@ -77,8 +77,8 @@ namespace SpaceGame.equipment
             _sprite = new Sprite(data.SpriteName);
             _penetration = data.Penetration;
             _mass = data.Mass;
-            _contactEffect = data.ContactEffect;          
-            _proximityEffect = data.ProximityEffect;       
+            _contactEffect = data.ContactEffect;
+            _proximityEffect = data.ProximityEffect;
             _destinationEffect = data.DestinationEffect;
             _distanceLeft = Vector2.Distance(pos, targetDestination);
         }
@@ -177,10 +177,10 @@ namespace SpaceGame.equipment
         public float Acceleration;
         public float SecondsToLive;
         public string SpriteName;
-        public int MaxInstances;
         public int Penetration;     //number of hits before dissipating. Set as -1 for infinite
         public int Mass;            //affects force applied to impacted unit
         public ProjectileEffect ContactEffect;          //effect upon hitting a unit
         public ProjectileEffect ProximityEffect;        //effect upon moving/existing
         public ProjectileEffect DestinationEffect;        //effect upon reaching destination
     }
+}

@@ -39,7 +39,7 @@ namespace SpaceGame.units
             : base(data.PhysicalData)
         {
             if (data.MeleeWeaponName != null)
-                _meleeWeapon = new MeleeWeapon(data.MeleeWeaponName, this, levelBounds);
+                _meleeWeapon = new MeleeWeapon(data.MeleeWeaponName, this);
         }
         #endregion
 

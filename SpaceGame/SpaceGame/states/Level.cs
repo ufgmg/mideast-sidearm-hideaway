@@ -59,8 +59,7 @@ namespace SpaceGame.states
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false, _levelBounds);
             }
             //Test code to set weapons 1-6 to created weapons
-            im.setPrimaryWeapon(new ProjectileWeapon2("Flamethrower", _player, _levelBounds));
-            im.setSecondaryWeapon(new ProjectileWeapon2("Swarmer", _player, _levelBounds));
+            im.setPrimaryWeapon(new ProjectileWeapon("Rocket", _player));
             im.setPrimaryGadget(new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 }));
 
             //Set Weapon holders in level
