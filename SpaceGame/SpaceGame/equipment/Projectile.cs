@@ -85,7 +85,6 @@ namespace SpaceGame.equipment
             _sprite = new Sprite(data.SpriteName);
             _penetration = data.Penetration;
             _mass = data.Mass;
-            //OPTIMIZE: don't instantiate new projectile effects. reference a pool of pre-initialized effects managed elsewhere
             _contactEffect = contactEffect;
             _proximityEffect = proximityEffect;
             _destinationEffect = destinationEffect;
@@ -109,12 +108,14 @@ namespace SpaceGame.equipment
                     _velocity += _acceleration * (float)time.TotalSeconds;
                     _position += _velocity * (float)time.TotalSeconds;
                     _lifeTime -= time;
+                    _hitRect.X = (int)_position.X;
+                    _hitRect.Y = (int)_position.Y;
                     if (_lifeTime < TimeSpan.Zero)
                     {
                         _state = State.Dormant;
                     }
                     _distanceLeft -= _velocity.Length() * (float)time.TotalSeconds;
-                    if (_distanceLeft < 0 && _destinationEffect != null)
+                    if (_distanceLeft < 0 && _destinationEffect != ProjectileEffect.NullEffect)
                     {
                         _state = State.ReachedDestination;
                         _timer = _destinationEffect.Duration;
@@ -158,10 +159,10 @@ namespace SpaceGame.equipment
                 case State.Moving:
                     if (u.HitRect.Intersects(_hitRect))
                     {
-                        if (_penetration > 0)
+                        if (_penetration != -1)
                         {
                             _penetration -= 1;
-                            if (_penetration == 0)
+                            if (_penetration <= 0)
                                 _state = State.JustHit;
                         }
                         u.ApplyImpact(_velocity, _mass);
