@@ -73,10 +73,10 @@ namespace SpaceGame.equipment
         /// <param name="target">target unit</param>
         public void TryApply(Vector2 effectPos, PhysicalUnit target, TimeSpan time)
         {
-            tempVec.X = target.Position.X - effectPos.X;
-            tempVec.Y = target.Position.Y - effectPos.Y;
-            if (tempVec.Length() < _radius)
+            if (utility.XnaHelper.RectangleIntersectsCircle(target.HitRect, effectPos, _radius))
             {
+                tempVec.X = target.Position.X - effectPos.X;
+                tempVec.Y = target.Position.Y - effectPos.Y;
                 Vector2.Normalize(tempVec);
                 float factor = Duration == TimeSpan.Zero ? 1 : (float)time.TotalSeconds / (float)Duration.TotalSeconds;
                 target.ApplyForce(_force * factor * tempVec);

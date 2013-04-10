@@ -32,7 +32,7 @@ namespace SpaceGame.equipment
         public TimeSpan LifeTime { get { return _lifeTime; } }
         public Sprite Sprite { get { return _sprite; } }
         public int Penetration { get { return _penetration; } }
-        public int Mass { get { return _mass; } }
+        public float Mass { get { return _mass; } }
         public State ProjectileState { get { return _state; } }
         public Rectangle HitRect { get { return _hitRect; } }
         #endregion
@@ -45,7 +45,7 @@ namespace SpaceGame.equipment
         TimeSpan _lifeTime;
         Sprite _sprite;
         int _penetration;     //number of hits before dissipating. Set as -1 for infinite
-        int _mass;            //affects force applied to impacted unit
+        float _mass;            //affects force applied to impacted unit
         ProjectileEffect _contactEffect;          //effect upon hitting a unit
         ProjectileEffect _proximityEffect;        //effect upon moving/existing
         ProjectileEffect _destinationEffect;      //effect upon reaching click location
@@ -205,7 +205,7 @@ namespace SpaceGame.equipment
         public float SecondsToLive;
         public string SpriteName;
         public int Penetration;     //number of hits before dissipating. Set as -1 for infinite
-        public int Mass;            //affects force applied to impacted unit
+        public float Mass;            //affects force applied to impacted unit
         public ProjectileEffectData ContactEffect;          //effect upon hitting a unit
         public ProjectileEffectData ProximityEffect;        //effect upon moving/existing
         public ProjectileEffectData DestinationEffect;        //effect upon reaching destination

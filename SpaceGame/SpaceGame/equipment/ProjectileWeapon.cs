@@ -19,6 +19,7 @@ namespace SpaceGame.equipment
 
         #region static
         public static Dictionary<string, ProjectileWeaponData> DataDict;
+        public static Matrix tempMatrix;
         #endregion
 
         #region properties
@@ -27,6 +28,7 @@ namespace SpaceGame.equipment
         #region fields
         string _name;
         int _projectilesPerFire;
+        float _spread;
         ProjectileData _projectileInfo;
         ParticleEffect _fireParticleEffect;
         Projectile[] _projectiles;
@@ -46,10 +48,11 @@ namespace SpaceGame.equipment
             _name = data.Name;
             _projectilesPerFire = data.ProjectilesPerFire;
             _projectileInfo = data.ProjectileInfo;
+            _spread = data.Spread;
 
             _contactEffect = _projectileInfo.ContactEffect == null ?
                 ProjectileEffect.NullEffect : new ProjectileEffect(_projectileInfo.ContactEffect);
-            _proximityEffect = _projectileInfo.ContactEffect == null ?
+            _proximityEffect = _projectileInfo.ProximityEffect == null ?
                  ProjectileEffect.NullEffect : new ProjectileEffect(_projectileInfo.ProximityEffect);
             _destinationEffect = _projectileInfo.DestinationEffect == null ? 
                 ProjectileEffect.NullEffect : new ProjectileEffect(_projectileInfo.DestinationEffect);
@@ -93,7 +96,9 @@ namespace SpaceGame.equipment
                 if (p.ProjectileState == Projectile.State.Dormant
                     && projectilesToSpawn > 0)
                 {
-                    p.Initialize(_owner.Position, _fireDirection,
+                    float rotAngle = XnaHelper.RandomAngle(0, _spread);
+                    Matrix.CreateRotationZ(MathHelper.ToRadians(rotAngle), out tempMatrix);
+                    p.Initialize(_owner.Position, Vector2.Transform(_fireDirection, tempMatrix),
                         _projectileInfo, _targetDestination, _owner.Velocity,
                         _contactEffect, _destinationEffect,
                         _proximityEffect);
@@ -134,6 +139,7 @@ namespace SpaceGame.equipment
     {
         public string Name;
         public float FireRate;
+        public float Spread;
         public int ProjectilesPerFire;
         public ProjectileData ProjectileInfo;
         public string FireParticleEffectName;

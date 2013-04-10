@@ -22,11 +22,18 @@
   -->
 <Weapons>
 
-  <ProjectileWeapon Name="Rocket" FireRate="1.5" ProjectilesPerFire="1">
+  <ProjectileWeapon Name="Rocket" FireRate="1.5" ProjectilesPerFire="1" Spread="30">
     <ProjectileInfo SpriteName="Rocket" Speed="30" Acceleration="3000" SecondsToLive="3" 
-                    Penetration="1" Mass="10">
+                    Penetration="1" Mass="10" >
       <ContactEffect ParticleEffectName="RocketExplosion" Duration="0.1" Radius="100" Damage="30" Force="6000"/>
       <ProximityEffect ParticleEffectName="RocketBooster"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Flamethrower" FireRate="300" ProjectilesPerFire="1" FireParticleEffectName="Flamethrower" Spread="30" >
+    <ProjectileInfo SpriteName="Flame" Speed="600" Acceleration="-12" SecondsToLive="0.4" 
+                    Penetration="100" Mass="0.0" >
+      <ProximityEffect Radius="1" Damage="1" Force="0"/>
     </ProjectileInfo>
   </ProjectileWeapon>
 
@@ -53,7 +60,7 @@
 
   <MeleeWeapon Name="Gravity Gauntlet" 
                     FireRate ="1" MaxAmmo="60" AmmoConsumption="0"
-                    Damage="20" Impact="6000" Recoil="1500" 
+                    Damage="10" Impact="5000" Recoil="1500" 
                     HitArc="30" Range="75"
                     AttackParticleEffect="PunchWave"/>
 </Weapons>

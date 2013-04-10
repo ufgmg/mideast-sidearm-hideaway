@@ -197,7 +197,7 @@ namespace SpaceGame.units
         /// </summary>
         /// <param name="objectVelocity">Velocity of object hitting the unit</param>
         /// <param name="objectMass">mass of object hitting the unit</param>
-        public void ApplyImpact(Vector2 objectVelocity, int objectMass)
+        public void ApplyImpact(Vector2 objectVelocity, float objectMass)
         {
             _velocity = (_velocity * (this.Mass - objectMass) + 2 * objectMass * objectVelocity) /
                                 (this.Mass + objectMass);
