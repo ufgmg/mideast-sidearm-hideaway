@@ -90,10 +90,10 @@ namespace SpaceGame.equipment
                 _particleEffect.Update(gameTime);
         }
 
-        public void SpawnParticles(TimeSpan time, Vector2 pos)
+        public void SpawnParticles(TimeSpan time, Vector2 pos, float angle, Vector2 sourceVelocity)
         {
             if (_particleEffect != null)
-                _particleEffect.Spawn(pos, 0.0f, time, Vector2.Zero);
+                _particleEffect.Spawn(pos, angle, time, sourceVelocity);
         }
 
         public void Draw(SpriteBatch sb)

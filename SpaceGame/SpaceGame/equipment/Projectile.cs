@@ -104,7 +104,7 @@ namespace SpaceGame.equipment
                     break;
 
                 case State.Moving:
-                    _proximityEffect.SpawnParticles(time, _position);
+                    _proximityEffect.SpawnParticles(time, _position, MathHelper.ToDegrees(MathHelper.Pi - Sprite.Angle), _velocity);
                     _velocity += _acceleration * (float)time.TotalSeconds;
                     _position += _velocity * (float)time.TotalSeconds;
                     _lifeTime -= time;
@@ -133,7 +133,7 @@ namespace SpaceGame.equipment
                     {
                         _state = State.Dormant;
                     }
-                    _contactEffect.SpawnParticles(time, _position);
+                    _contactEffect.SpawnParticles(time, _position, 0.0f, Vector2.Zero);
                     break;
 
                 case State.ReachedDestination:
@@ -142,7 +142,7 @@ namespace SpaceGame.equipment
                     {
                         _state = State.Dormant;
                     }
-                    _destinationEffect.SpawnParticles(time, _position);
+                    _destinationEffect.SpawnParticles(time, _position, 0.0f, Vector2.Zero);
                     break;
             }
         }
