@@ -38,9 +38,23 @@
   </ProjectileWeapon>
 
   <ProjectileWeapon Name="Gatling" FireRate="20" ProjectilesPerFire="1" Spread="10" FireParticleEffectName="GatlingEffect">
-    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="2.0" 
+    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="1.5" 
                     Penetration="0" Mass="1.0" >
-      <ProximityEffect Radius="5" Damage="10" Force="0" ParticleEffectName="GatlingBullet"/>
+      <ProximityEffect Radius="5" Damage="10" Force="0" ParticleEffectName="BulletTrace"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Shotgun" FireRate="1" ProjectilesPerFire="16" Spread="30" FireParticleEffectName="ShotgunEffect">
+    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="0.4" 
+                    Penetration="0" Mass="3.0" >
+      <ProximityEffect Radius="5" Damage="15" Force="0" ParticleEffectName="BulletTrace"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="GravityWell" FireRate="0.5" ProjectilesPerFire="1" Spread="0" >
+    <ProjectileInfo SpriteName="GravityWell" Speed="400" Acceleration="5" SecondsToLive="3.0" 
+                    Penetration="-1" Mass="1.0" >
+      <ProximityEffect Radius="150" Damage="0" Force="-300" ParticleEffectName="GravityWell"/>
     </ProjectileInfo>
   </ProjectileWeapon>
 

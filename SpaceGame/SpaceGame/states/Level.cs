@@ -60,7 +60,7 @@ namespace SpaceGame.states
             }
             //Test code to set weapons 1-6 to created weapons
             im.setPrimaryWeapon(new ProjectileWeapon("Gatling", _player));
-            im.setSecondaryWeapon(new ProjectileWeapon("Flamethrower", _player));
+            im.setSecondaryWeapon(new ProjectileWeapon("Shotgun", _player));
             im.setPrimaryGadget(new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 }));
 
             //Set Weapon holders in level

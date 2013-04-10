@@ -19,8 +19,13 @@
     <ParticleGenerator Name="EmptyShells" StartColor="255,255,255,255" Offset="180"/>
   </ParticleEffectData>
 
-  <ParticleEffectData Name="GatlingBullet">
-    <ParticleGenerator Name="BlurPath" StartColor="255,255,155,0" Offset="0" UniqueParticle="GatlingTrace"/>
+  <ParticleEffectData Name="ShotgunEffect">
+    <ParticleGenerator Name="Sparks" SpawnRate="3600" Speed="1000" StartColor="128,255,255,0" Offset="0"/>
+    <ParticleGenerator Name="EmptyShells" SpawnRate="60" StartColor="255,255,255,255" StartScale="5" Offset="180" ParticleRotation="100"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="BulletTrace">
+    <ParticleGenerator Name="BlurPath" StartColor="255,255,155,0" Offset="0" UniqueParticle="BulletTrace"/>
   </ParticleEffectData>
 
   <ParticleEffectData Name="UnicornStand">
@@ -163,5 +168,12 @@
                       SpawnArc="0" SpawnRate="800" ParticleLife="0.3" ParticleLifeVariance="0.0"
                       StartColor="255,255,255,255" EndColor ="0,0,0,0"
                       Reversed="False"/>
+
+  <ParticleGeneratorData Name="GravityWell" 
+                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="360.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="300" ParticleLife="0.3" ParticleLifeVariance="0.5"
+                      StartColor="00,0,0,0" EndColor ="100,148,0,211"
+                      Reversed="True" />
 
 </ParticleEffectDatas>

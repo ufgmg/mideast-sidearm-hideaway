@@ -153,8 +153,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="particles\GatlingTrace.bmp">
-      <Name>GatlingTrace</Name>
+    <Compile Include="particles\BulletTrace.bmp">
+      <Name>BulletTrace</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="spritesheets\GravityWell.bmp">
+      <Name>GravityWell</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
