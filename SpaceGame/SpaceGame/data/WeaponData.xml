@@ -30,22 +30,21 @@
     </ProjectileInfo>
   </ProjectileWeapon>
 
-  <ProjectileWeapon Name="Flamethrower" FireRate="300" ProjectilesPerFire="1" FireParticleEffectName="Flamethrower" Spread="30" >
+  <ProjectileWeapon Name="Flamethrower" FireRate="200" ProjectilesPerFire="1" FireParticleEffectName="Flamethrower" Spread="30" >
     <ProjectileInfo SpriteName="Flame" Speed="600" Acceleration="-12" SecondsToLive="0.4" 
                     Penetration="100" Mass="0.0" >
       <ProximityEffect Radius="1" Damage="1" Force="0"/>
     </ProjectileInfo>
   </ProjectileWeapon>
 
+  <ProjectileWeapon Name="Gatling" FireRate="20" ProjectilesPerFire="1" Spread="10" FireParticleEffectName="GatlingEffect">
+    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="2.0" 
+                    Penetration="0" Mass="1.0" >
+      <ProximityEffect Radius="5" Damage="10" Force="0" ParticleEffectName="GatlingBullet"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
 <!--
-  <ProjectileWeapon Name="Flamethrower" ProjectileSpriteName="Flame"
-                    FireRate ="300" MaxAmmo="1" AmmoConsumption="0"
-                    ProjectilesPerFire="3" Damage="1" ProjectileForce="300"
-                    Recoil="450" ProjectileSpeed="800" ProjectileAcceleration="-12"
-                    ProjectileSpread="20" DissipateOnHit="false"
-                    SplashDamage="0" SplashRadius="0" SplashForce="0"
-                    MaxProjectiles="100" ProjectileLife="0.4" 
-                    FireParticleEffect="Flamethrower"/>
 
   <ProjectileWeapon Name="Swarmer" ProjectileSpriteName="Rocket"
                     FireRate ="10" MaxAmmo="60" AmmoConsumption="1"
