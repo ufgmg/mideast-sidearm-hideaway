@@ -82,7 +82,8 @@ namespace SpaceGame.equipment
             Vector2.Add(ref _velocity, ref sourceVelocity, out _velocity);
             Vector2.Multiply(ref direction, data.Acceleration, out _acceleration);
             _lifeTime = TimeSpan.FromSeconds(data.SecondsToLive);
-            _sprite = new Sprite(data.SpriteName);
+            _sprite.Reset();
+            //_sprite = new Sprite(data.SpriteName);
             _penetration = data.Penetration;
             _mass = data.Mass;
             _contactEffect = contactEffect;

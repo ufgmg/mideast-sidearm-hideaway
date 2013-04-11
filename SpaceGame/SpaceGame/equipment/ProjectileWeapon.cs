@@ -59,8 +59,10 @@ namespace SpaceGame.equipment
 
             _fireParticleEffect = data.FireParticleEffectName == null ? 
                 null : new ParticleEffect(data.FireParticleEffectName);
-            float maxProjectiles = 
-                data.FireRate * data.ProjectileInfo.SecondsToLive * data.ProjectilesPerFire;
+            float maxProjLife = data.ProjectileInfo.SecondsToLive +
+                Math.Max((float)_contactEffect.Duration.TotalSeconds, (float)_destinationEffect.Duration.TotalSeconds);
+            float maxProjectiles = data.FireRate * maxProjLife * data.ProjectilesPerFire;
+            maxProjectiles = Math.Max(maxProjectiles, _projectilesPerFire);
             _projectiles = new Projectile[(int)maxProjectiles + 1];
             for (int i = 0; i < _projectiles.Length; i++)
             {
@@ -91,8 +93,6 @@ namespace SpaceGame.equipment
 
             foreach (Projectile p in _projectiles)
             {
-                p.Update(gameTime);
-
                 if (p.ProjectileState == Projectile.State.Dormant
                     && projectilesToSpawn > 0)
                 {
@@ -104,7 +104,12 @@ namespace SpaceGame.equipment
                         _proximityEffect);
                     projectilesToSpawn--;
                 }
+
+                p.Update(gameTime);
             }
+
+            System.Diagnostics.Debug.Assert(projectilesToSpawn == 0, "did not spawn all projectiles", "Number left: " + projectilesToSpawn, 
+                new object[] {this});
 
             if (_fireParticleEffect != null)
             {
