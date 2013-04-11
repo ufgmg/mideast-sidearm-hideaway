@@ -163,9 +163,9 @@
                       Reversed="False"/>
 
   <ParticleGeneratorData Name="BlurPath" 
-                      Speed="0.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
-                      StartScale ="6.0" ScaleVariance="0.0" EndScale="0.0" 
-                      SpawnArc="0" SpawnRate="800" ParticleLife="0.3" ParticleLifeVariance="0.0"
+                      Speed="50.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
+                      StartScale ="8.0" ScaleVariance="0.0" EndScale="0.0" 
+                      SpawnArc="360" SpawnRate="200" ParticleLife="0.4" ParticleLifeVariance="0.0"
                       StartColor="255,255,255,255" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
