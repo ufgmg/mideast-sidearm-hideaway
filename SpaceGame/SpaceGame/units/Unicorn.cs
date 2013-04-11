@@ -91,6 +91,7 @@ namespace SpaceGame.units
             _state = State.Dormant;
             _gravity = new Gravity(_position, UNICORN_GRAVITY);
             _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
+            _spawnEnable = true;
         }
         #endregion
 
