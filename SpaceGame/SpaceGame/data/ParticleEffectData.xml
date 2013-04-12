@@ -13,6 +13,21 @@
 
 <ParticleEffectDatas>
   <!--Particle Effects-->
+
+  <ParticleEffectData Name="GatlingEffect">
+    <ParticleGenerator Name="Sparks" StartColor="128,255,255,0" Offset="0"/>
+    <ParticleGenerator Name="EmptyShells" StartColor="255,255,255,255" Offset="180"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="ShotgunEffect">
+    <ParticleGenerator Name="Sparks" SpawnRate="3600" Speed="1000" StartColor="128,255,255,0" Offset="0"/>
+    <ParticleGenerator Name="EmptyShells" SpawnRate="60" StartColor="255,255,255,255" StartScale="5" Offset="180" ParticleRotation="100"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="BulletTrace">
+    <ParticleGenerator Name="BlurPath" StartColor="255,255,155,0" Offset="0" UniqueParticle="BulletTrace"/>
+  </ParticleEffectData>
+
   <ParticleEffectData Name="UnicornStand">
     <ParticleGenerator Name="UnicornStand" StartColor="128,255,0,0" Offset="0"/>
     <ParticleGenerator Name="UnicornStand" StartColor="200,255,127,0" Offset="51.4"/>
@@ -131,5 +146,34 @@
                       SpawnArc="360" SpawnRate="90000" ParticleLife="1.0" ParticleLifeVariance="0.8"
                       StartColor="0,255,0,0" EndColor ="0,0,0,0"
                       Reversed="False"/>
+
+  <ParticleGeneratorData Name="EmptyShells" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="0.5" ParticleRotation="500.0" 
+                      StartScale ="3.0" ScaleVariance="0.3" EndScale="0.0" 
+                      SpawnArc="90" SpawnRate="20" ParticleLife="1.0" ParticleLifeVariance="0.8"
+                      StartColor="255,255,255,0" EndColor ="0,0,0,0"
+                      UniqueParticle="EmptyShell"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="Sparks" 
+                      Speed="450.0" SpeedVariance="0.6" DecelerationFactor="2" ParticleRotation="500.0" 
+                      StartScale ="5.0" ScaleVariance="0.3" EndScale="0.0" 
+                      SpawnArc="30" SpawnRate="80" ParticleLife="0.2" ParticleLifeVariance="0.4"
+                      StartColor="255,255,255,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="BlurPath" 
+                      Speed="50.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
+                      StartScale ="8.0" ScaleVariance="0.0" EndScale="0.0" 
+                      SpawnArc="360" SpawnRate="200" ParticleLife="0.4" ParticleLifeVariance="0.0"
+                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="GravityWell" 
+                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="360.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="300" ParticleLife="0.3" ParticleLifeVariance="0.5"
+                      StartColor="00,0,0,0" EndColor ="100,148,0,211"
+                      Reversed="True" />
 
 </ParticleEffectDatas>

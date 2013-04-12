@@ -88,6 +88,11 @@ namespace SpaceGame.utility
                 MathHelper.TwoPi - Math.Abs(RadiansFromVector(v1) - RadiansFromVector(v2)));
         }
 
+        public static bool RectangleIntersectsCircle(Rectangle rect, Vector2 circCenter, float radius)
+        {
+            return RectangleIntersectsArc(rect, circCenter, radius, 0, MathHelper.TwoPi);
+        }
+
         public static bool RectangleIntersectsArc(Rectangle rect, Vector2 arcCenterPoint,
             float arcRadius, float arcCenterAngle, float arcAngle)
         {

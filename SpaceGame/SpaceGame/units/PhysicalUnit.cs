@@ -55,6 +55,9 @@ namespace SpaceGame.units
         #endregion
 
         #region properties
+        public float health { get { return _health; } }
+        public float maxHealth { get { return _maxHealth; } }
+
         public float Mass { get { return _mass + _additionalMass; } }
         Rectangle _hitRect;
 
@@ -197,7 +200,7 @@ namespace SpaceGame.units
         /// </summary>
         /// <param name="objectVelocity">Velocity of object hitting the unit</param>
         /// <param name="objectMass">mass of object hitting the unit</param>
-        public void ApplyImpact(Vector2 objectVelocity, int objectMass)
+        public void ApplyImpact(Vector2 objectVelocity, float objectMass)
         {
             _velocity = (_velocity * (this.Mass - objectMass) + 2 * objectMass * objectVelocity) /
                                 (this.Mass + objectMass);
@@ -233,6 +236,16 @@ namespace SpaceGame.units
                 return true;
             }
             return false;
+        }
+
+        public void FlyToPoint(Vector2 pos, TimeSpan time)
+        {
+            _velocity = (pos - _position) / (float)time.TotalSeconds;
+        }
+
+        public void FlyToPoint(Vector2 pos, TimeSpan time, float speedFactor)
+        {
+            _velocity = speedFactor * (pos - _position) / (float)time.TotalSeconds;
         }
 
         #region Update Logic

@@ -94,7 +94,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="gui\" />
     <Folder Include="hud\" />
   </ItemGroup>
   <ItemGroup>
@@ -134,6 +133,88 @@
     </Compile>
     <Compile Include="spritesheets\Unicorn.png">
       <Name>Unicorn</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="spritesheets\Bullet.png">
+      <Name>Bullet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\EmptyShell.bmp">
+      <Name>EmptyShell</Name>
+	</Compile>
+    <Compile Include="gui\Left Click.png">
+      <Name>Left Click</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Numer 1.png">
+      <Name>Numer 1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Numer 2.png">
+      <Name>Numer 2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Numer 3.png">
+      <Name>Numer 3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Numer 4.png">
+      <Name>Numer 4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Numer 5.png">
+      <Name>Numer 5</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Numer 6.png">
+      <Name>Numer 6</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Right Click.png">
+      <Name>Right Click</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Shift.png">
+      <Name>Shift</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gui\Space Bar.png">
+      <Name>Space Bar</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\BulletTrace.bmp">
+      <Name>BulletTrace</Name>
+	</Compile>
+    <Compile Include="gui\Minimap_&amp;_Health_Bar_00.png">
+      <Name>Minimap_&amp;_Health_Bar_00</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="spritesheets\GravityWell.bmp">
+      <Name>GravityWell</Name>
+	</Compile>
+    <Compile Include="gui\Score_&amp;_Void_Tracker.png">
+      <Name>Score_&amp;_Void_Tracker</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

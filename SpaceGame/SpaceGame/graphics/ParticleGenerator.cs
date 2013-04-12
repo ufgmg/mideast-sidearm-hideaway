@@ -234,7 +234,7 @@ namespace SpaceGame.graphics
             particle.Position = pos;
             float directionAngle = (float)MathHelper.ToRadians((XnaHelper.RandomAngle(angle, _arc)));
             float speed = applyVariance(_particleSpeed, _speedVariance);
-            particle.Velocity = speed * XnaHelper.VectorFromAngle(directionAngle) + sourceVelocity;
+            particle.Velocity = speed * XnaHelper.VectorFromAngle(directionAngle);
             particle.Scale = applyVariance(_particleScale, _scaleVariance);
             particle.Angle = 0.0f;
             particle.LifeTime = TimeSpan.FromSeconds(applyVariance((float)_particleLife.TotalSeconds, _particleLifeVariance));
@@ -255,6 +255,8 @@ namespace SpaceGame.graphics
                 //start at end rotation
                 particle.Angle = _particleRotationSpeed * secondsAlive;
             }
+
+            particle.Velocity += sourceVelocity;
             return particle;
         }
 

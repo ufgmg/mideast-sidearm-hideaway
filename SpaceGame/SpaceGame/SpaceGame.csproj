@@ -110,6 +110,10 @@
     <Compile Include="equipment\Item.cs" />
     <Compile Include="equipment\Gadget.cs" />
     <Compile Include="equipment\MeleeWeapon.cs" />
+    <Compile Include="equipment\Projectile.cs" />
+    <Compile Include="equipment\ProjectileEffect.cs" />
+    <Compile Include="equipment\ProjectileWeapon.cs" />
+    <Compile Include="graphics\hud\GUI.cs" />
     <Compile Include="graphics\hud\RadialBar.cs" />
     <Compile Include="graphics\ParticleEffect.cs" />
     <Compile Include="graphics\ParticleGenerator.cs" />
@@ -136,8 +140,6 @@
     <Compile Include="utility\InventoryManager.cs" />
     <Compile Include="utility\XnaHelper.cs" />
     <Compile Include="equipment\HookShot.cs" />
-    <Compile Include="equipment\ProjectileWeapon.cs" />
-    <Compile Include="equipment\ProjectileWeaponData.cs" />
     <Compile Include="equipment\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>

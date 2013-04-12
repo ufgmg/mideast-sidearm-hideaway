@@ -39,7 +39,7 @@ namespace SpaceGame.units
             : base(data.PhysicalData)
         {
             if (data.MeleeWeaponName != null)
-                _meleeWeapon = new MeleeWeapon(data.MeleeWeaponName, this, levelBounds);
+                _meleeWeapon = new MeleeWeapon(data.MeleeWeaponName, this);
         }
         #endregion
 
@@ -59,10 +59,10 @@ namespace SpaceGame.units
             base.Update(gameTime, levelBounds);
         }
 
-        public void CheckAndApplyWeaponCollision(PhysicalUnit unit)
+        public void CheckAndApplyWeaponCollision(PhysicalUnit unit, TimeSpan time)
         {
             if (_meleeWeapon != null)
-                _meleeWeapon.CheckAndApplyCollision(unit);
+                _meleeWeapon.CheckAndApplyCollision(unit, time);
         }
 
         public override void Draw(SpriteBatch sb)

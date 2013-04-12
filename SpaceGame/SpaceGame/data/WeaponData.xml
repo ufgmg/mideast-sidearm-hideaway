@@ -21,32 +21,44 @@
                           when particle splashes. May be ommitted.
   -->
 <Weapons>
-  <ProjectileWeapon Name="Gun" ProjectileSpriteName="Projectile"
-                    FireRate ="5" MaxAmmo="10" AmmoConsumption="1"
-                    ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"
-                    Recoil="1000" ProjectileSpeed="800" ProjectileAcceleration="0"
-                    ProjectileSpread="30" DissipateOnHit="true"
-                    SplashDamage="0" SplashRadius="0" SplashForce="0"
-                    MaxProjectiles="5" ProjectileLife="1" />
 
-  <ProjectileWeapon Name="Flamethrower" ProjectileSpriteName="Flame"
-                    FireRate ="300" MaxAmmo="1" AmmoConsumption="0"
-                    ProjectilesPerFire="3" Damage="1" ProjectileForce="300"
-                    Recoil="450" ProjectileSpeed="800" ProjectileAcceleration="-12"
-                    ProjectileSpread="20" DissipateOnHit="false"
-                    SplashDamage="0" SplashRadius="0" SplashForce="0"
-                    MaxProjectiles="100" ProjectileLife="0.4" 
-                    FireParticleEffect="Flamethrower"/>
+  <ProjectileWeapon Name="Rocket" FireRate="1.5" ProjectilesPerFire="1" Spread="30">
+    <ProjectileInfo SpriteName="Rocket" Speed="30" Acceleration="3000" SecondsToLive="3" 
+                    Penetration="1" Mass="10" >
+      <ContactEffect ParticleEffectName="RocketExplosion" Duration="0.1" Radius="100" Damage="30" Force="6000"/>
+      <ProximityEffect ParticleEffectName="RocketBooster"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
 
-  <ProjectileWeapon Name="Rocket" ProjectileSpriteName="Rocket"
-                    FireRate ="3" MaxAmmo="30" AmmoConsumption="1"
-                    ProjectilesPerFire="1" Damage="20" ProjectileForce="50000"
-                    Recoil="45000" ProjectileSpeed="10" ProjectileAcceleration="30"
-                    ProjectileSpread="30" DissipateOnHit="true"
-                    SplashDamage="10" SplashRadius="80" SplashForce="100000"
-                    MovementParticleEffect="RocketBooster"
-                    SplashParticleEffect="RocketExplosion"
-                    MaxProjectiles="10" ProjectileLife="3" />
+  <ProjectileWeapon Name="Flamethrower" FireRate="200" ProjectilesPerFire="1" FireParticleEffectName="Flamethrower" Spread="30" >
+    <ProjectileInfo SpriteName="Flame" Speed="600" Acceleration="-12" SecondsToLive="0.4" 
+                    Penetration="100" Mass="0.0" >
+      <ProximityEffect Radius="1" Damage="1" Force="0"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Gatling" FireRate="20" ProjectilesPerFire="1" Spread="10" FireParticleEffectName="GatlingEffect">
+    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="1.5" 
+                    Penetration="0" Mass="1.0" >
+      <ProximityEffect Radius="5" Damage="10" Force="0" ParticleEffectName="BulletTrace"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Shotgun" FireRate="1" ProjectilesPerFire="16" Spread="30" FireParticleEffectName="ShotgunEffect">
+    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="0.4" 
+                    Penetration="0" Mass="3.0" >
+      <ProximityEffect Radius="5" Damage="15" Force="0" ParticleEffectName="BulletTrace"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="GravityWell" FireRate="0.5" ProjectilesPerFire="1" Spread="0" >
+    <ProjectileInfo SpriteName="GravityWell" Speed="400" Acceleration="5" SecondsToLive="3.0" 
+                    Penetration="-1" Mass="1.0" >
+      <ProximityEffect Radius="150" Damage="0" Force="-300" ParticleEffectName="GravityWell"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+<!--
 
   <ProjectileWeapon Name="Swarmer" ProjectileSpriteName="Rocket"
                     FireRate ="10" MaxAmmo="60" AmmoConsumption="1"
@@ -57,10 +69,11 @@
                     MovementParticleEffect="RocketBooster"
                     SplashParticleEffect="RocketExplosion"
                     MaxProjectiles="20" ProjectileLife="3" />
+                    -->
 
   <MeleeWeapon Name="Gravity Gauntlet" 
                     FireRate ="1" MaxAmmo="60" AmmoConsumption="0"
-                    Damage="20" Impact="6000" Recoil="1500" 
+                    Damage="10" Impact="5000" Recoil="1500" 
                     HitArc="30" Range="75"
                     AttackParticleEffect="PunchWave"/>
 </Weapons>

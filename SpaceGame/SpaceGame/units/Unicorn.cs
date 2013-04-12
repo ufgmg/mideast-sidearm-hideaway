@@ -55,6 +55,14 @@ namespace SpaceGame.units
 
         #region properties
         public Gravity Gravity { get { return _gravity; } }
+        public bool SpawnEnable 
+        {
+            get {return _spawnEnable; }
+            set
+            {
+                _state = State.Dormant;
+            }
+        }
         #endregion
 
         #region fields
@@ -66,6 +74,7 @@ namespace SpaceGame.units
         Sprite _sprite;
         Gravity _gravity;
         Rectangle _hitRect;
+        bool _spawnEnable;
         #endregion
 
         #region constructor
@@ -82,6 +91,7 @@ namespace SpaceGame.units
             _state = State.Dormant;
             _gravity = new Gravity(_position, UNICORN_GRAVITY);
             _hitRect = new Rectangle(0, 0, (int)_sprite.Width, (int)_sprite.Height);
+            _spawnEnable = true;
         }
         #endregion
 
@@ -96,7 +106,11 @@ namespace SpaceGame.units
             switch (_state)
             {
                 case State.Dormant:
-                    _timer -= gameTime.ElapsedGameTime;
+                    if (SpawnEnable)
+                    {
+                        _timer -= gameTime.ElapsedGameTime;
+                    }
+
                     if (_timer <= TimeSpan.Zero)
                     {
                         setPosition(blackHolePos, targetPos, levelBounds.Width, levelBounds.Height);

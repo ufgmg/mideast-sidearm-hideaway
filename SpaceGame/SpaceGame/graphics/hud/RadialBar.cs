@@ -14,7 +14,7 @@ namespace SpaceGame.graphics.hud
         #region static
         //how many radians between successive pips
         //lower value -> higher granularity -> smoother appearance
-        float DRAW_FREQUENCY = 0.01f;
+        float DRAW_FREQUENCY = 0.001f;
 
         public static GraphicsDevice GameGraphicsDevice;
 

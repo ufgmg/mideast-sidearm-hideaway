@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -161,33 +162,9 @@ namespace SpaceGame.utility
 
         public static Dictionary<string, ProjectileWeaponData> LoadProjectileWeaponData()
         {
-            return (from wd in XElement.Load(PROJECTILE_WEAPON_PATH).Descendants("ProjectileWeapon")
-                    select new ProjectileWeaponData
-                    {
-                        Name = (string)wd.Attribute("Name"),
-                        ProjectileSpriteName = (string)wd.Attribute("ProjectileSpriteName"),
-                        FireRate = (float)wd.Attribute("FireRate"),
-                        MaxAmmo = (int)wd.Attribute("MaxAmmo"),
-                        AmmoConsumption = (int)wd.Attribute("AmmoConsumption"),
-                        ProjectilesPerFire = (int)wd.Attribute("ProjectilesPerFire"),
-                        Damage = (int)wd.Attribute("Damage"),
-                        ProjectileForce = (float)wd.Attribute("ProjectileForce"),
-                        Recoil = (float)wd.Attribute("Recoil"),
-                        ProjectileSpeed = (float)wd.Attribute("ProjectileSpeed"),
-                        ProjectileAcceleration = (float)wd.Attribute("ProjectileAcceleration"),
-                        ProjectileSpread = (float)wd.Attribute("ProjectileSpread"),
-                        DissipateOnHit = (bool)wd.Attribute("DissipateOnHit"),
-                        MaxProjectiles = (int)wd.Attribute("MaxProjectiles"),
-                        ProjectileLife = TimeSpan.FromSeconds((double)wd.Attribute("ProjectileLife")),
-
-                        SplashDamage = (int)wd.Attribute("SplashDamage"),
-                        SplashRadius = (float)wd.Attribute("SplashRadius"),
-                        SplashForce = (float)wd.Attribute("SplashForce"),
-
-                        FireParticleEffect = (string)wd.Attribute("FireParticleEffect"),
-                        MovementParticleEffect = (string)wd.Attribute("MovementParticleEffect"),
-                        SplashParticleEffect = (string)wd.Attribute("SplashParticleEffect")
-                    }).ToDictionary(t => t.Name);
+            return (from el in XElement.Load(PROJECTILE_WEAPON_PATH).Descendants("ProjectileWeapon")
+                    select ElementToData<ProjectileWeaponData>(el)
+                    ).ToDictionary(t => t.Name); 
         }
 
         public static Dictionary<string, MeleeWeapon.MeleeWeaponData> LoadMeleeWeaponData()
@@ -265,6 +242,32 @@ namespace SpaceGame.utility
         private static Vector2 parseVector(XElement e)
         {
             return new Vector2((float)e.Attribute("X"), (float)e.Attribute("Y"));
+        }
+
+        public static T ElementToData<T>(XElement el)
+        {
+            Type dataType = typeof(T);
+            T data = Activator.CreateInstance<T>();
+
+            foreach (XAttribute at in el.Attributes())
+            {
+                string fieldName = at.Name.LocalName;
+                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
+                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(at.Value, p.FieldType));
+            }
+
+            foreach (XElement subel in el.Elements())
+            {
+                string fieldName = subel.Name.LocalName;
+                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
+                Type elType = p.FieldType;
+                MethodInfo method = typeof(DataLoader).GetMethod("ElementToData");
+                MethodInfo genericMethod = method.MakeGenericMethod(new Type[] {elType});
+                var subData = genericMethod.Invoke(null, new Object[] {subel});
+                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(subData, p.FieldType));
+            }
+
+            return data;
         }
 
     }

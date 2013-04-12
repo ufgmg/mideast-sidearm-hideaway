@@ -29,10 +29,10 @@ namespace SpaceGame.equipment
         //check and apply during weapon.Update()
         protected bool _firing;
         protected Vector2 _fireDirection;
+        protected Vector2 _targetDestination;
 
         protected PhysicalUnit _owner;
 
-        protected Rectangle _levelBounds;
         #endregion
 
         #region constructor
@@ -44,14 +44,13 @@ namespace SpaceGame.equipment
         /// <param name="ammoConsumption">Ammo used per shot. Set to 0 for infinite ammo.</param>
         /// <param name="levelWidth">Width of the level in which this weapon is instantiated.</param>
         /// <param name="levelHeight">Height of the level in which this weapon is instantiated.</param>
-        public Weapon(TimeSpan fireDelay, int maxAmmo, int ammoConsumption, PhysicalUnit owner, Rectangle levelBounds)
+        public Weapon(TimeSpan fireDelay, int maxAmmo, int ammoConsumption, PhysicalUnit owner)
         {
             _fireDelay = fireDelay;
             _maxAmmo = maxAmmo;
             _currentAmmo = maxAmmo;
             _ammoConsumption = ammoConsumption;
             _owner = owner;
-            _levelBounds = levelBounds;
         }
         #endregion
 
@@ -68,6 +67,7 @@ namespace SpaceGame.equipment
             {
                 _firing = true;
                 _fireDirection = XnaHelper.DirectionBetween(firePosition, targetPosition);
+                _targetDestination = targetPosition;
 
                 _currentAmmo -= _ammoConsumption;
                 _tillNextFire = _fireDelay;
@@ -88,7 +88,7 @@ namespace SpaceGame.equipment
         /// Call during the update loop on each unit
         /// </summary>
         /// <param name="unit"></param>
-        public abstract void CheckAndApplyCollision(PhysicalUnit unit);
+        public abstract void CheckAndApplyCollision(PhysicalUnit unit, TimeSpan time);
         //update projectiles and add new projectiles if _firing
         protected abstract void UpdateWeapon(GameTime gameTime);
         public abstract void Draw(SpriteBatch sb);

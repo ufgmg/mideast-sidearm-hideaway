@@ -49,13 +49,13 @@ namespace SpaceGame.equipment
         #endregion
 
         #region constructor
-        public MeleeWeapon(string weaponName, PhysicalUnit owner, Rectangle levelBounds)
-            : this(MeleeWeaponDataDict[weaponName], owner, levelBounds)
+        public MeleeWeapon(string weaponName, PhysicalUnit owner)
+            : this(MeleeWeaponDataDict[weaponName], owner)
         { }
 
-        protected MeleeWeapon(MeleeWeaponData data, PhysicalUnit owner, Rectangle levelBounds)
+        protected MeleeWeapon(MeleeWeaponData data, PhysicalUnit owner)
             :base(TimeSpan.FromSeconds(1.0 / data.FireRate), 
-                  data.MaxAmmo, data.AmmoConsumption, owner, levelBounds)
+                  data.MaxAmmo, data.AmmoConsumption, owner)
         {
             _damage = data.Damage;
             _force = data.Force;
@@ -70,7 +70,7 @@ namespace SpaceGame.equipment
         #endregion
 
         #region methods
-        public override void CheckAndApplyCollision(PhysicalUnit unit)
+        public override void CheckAndApplyCollision(PhysicalUnit unit, TimeSpan time)
         {
             if (!_firing || !unit.Collides)
                 return;     //don't check collisions if not firing

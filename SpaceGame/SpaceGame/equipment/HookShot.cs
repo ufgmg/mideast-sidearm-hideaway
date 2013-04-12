@@ -15,8 +15,8 @@ namespace SpaceGame.equipment
     class HookShot : Weapon
     {
         //spacing between chain links to draw between handle and hook
-        const float DISTANCE_PER_LINK = 30.0f; 
-
+        const float DISTANCE_PER_LINK = 30.0f;
+        const float MAX_RANGE = 1000.0f;
         const float HOOK_SPEED = 10.0f;
         const float HOOK_FORCE = 9000.0f;
         const float FIRE_DELAY = 0.5f;
@@ -42,8 +42,8 @@ namespace SpaceGame.equipment
         #endregion
 
         #region constructor
-        public HookShot(PhysicalUnit owner, Rectangle levelBounds)
-            :base(TimeSpan.FromSeconds(FIRE_DELAY), 1, 0, owner, levelBounds)
+        public HookShot(PhysicalUnit owner)
+            :base(TimeSpan.FromSeconds(FIRE_DELAY), 1, 0, owner)
         {
             _hookState = HookState.Idle;
             _hookSprite = new Sprite("HookClaw");
@@ -70,11 +70,12 @@ namespace SpaceGame.equipment
                     }
                 case (HookState.Fired):
                     {
-                        if (XnaHelper.PointInRect(_hookPosition, _levelBounds) && !(_firing))
+                        if (!(_firing) && 
+                            Vector2.Distance(_hookPosition, _owner.Position) < MAX_RANGE)
                         {
-                        _hookPosition += _hookVelocity;
-                        _hookHitRect.X = (int)_hookPosition.X;
-                        _hookHitRect.Y = (int)_hookPosition.Y;
+                            _hookPosition += _hookVelocity;
+                            _hookHitRect.X = (int)_hookPosition.X;
+                            _hookHitRect.Y = (int)_hookPosition.Y;
                         }
                         else
                         {
@@ -107,7 +108,7 @@ namespace SpaceGame.equipment
 
         }
 
-        public override void CheckAndApplyCollision(PhysicalUnit unit)
+        public override void CheckAndApplyCollision(PhysicalUnit unit, TimeSpan time)
         {
             if (_hookState == HookState.Fired || _hookState == HookState.Retracting)
             { 

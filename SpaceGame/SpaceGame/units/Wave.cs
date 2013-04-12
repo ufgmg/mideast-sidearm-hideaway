@@ -62,6 +62,10 @@ namespace SpaceGame.units
         //set when every enemy in mob has been spawned
         //does not apply to trickle waves
         public bool Active { get; private set; }
+        /// <summary>
+        /// Set to false when level ends to prevent spawning
+        /// </summary>
+        public bool SpawnEnable { get; set; }
         #endregion
 
         #region constructor
@@ -84,7 +88,7 @@ namespace SpaceGame.units
             _activationDelay = _isTrickleWave ? TimeSpan.Zero : TimeSpan.FromSeconds((double)ACTIVATION_DELAY_SECONDS);
             //assign a portal particle effect if it is a burst wave
             _portalEffect = (trickleWave) ? null : new ParticleEffect(PORTAL_EFFECT_NAME1);
-
+            SpawnEnable = true;
             _levelBounds = levelBounds;
         }
         #endregion
@@ -92,6 +96,8 @@ namespace SpaceGame.units
         #region methods
         private void spawn(GameTime gameTime, Vector2 position, Vector2 blackHolePosition)
         {   //count down towards next spawn, spawn if count <= 0
+            if (!SpawnEnable)
+                return;
             if (_spawnedSoFar == _numEnemies && !_isTrickleWave)
                 return;     //non-trickle waves should not respawn enemies
 
@@ -150,7 +156,7 @@ namespace SpaceGame.units
             if (_portalEffect != null)
             {
                 //spawn particles if still spawning enemies
-                if (_spawnedSoFar < _numEnemies)
+                if (_spawnedSoFar < _numEnemies && SpawnEnable)
                 {
                     _portalEffect.Spawn(_spawnLocation, 90.0f + _portalAngle, gameTime.ElapsedGameTime, Vector2.Zero);
                     _portalEffect.Spawn(_spawnLocation, -90.0f + _portalAngle, gameTime.ElapsedGameTime, Vector2.Zero);
@@ -197,12 +203,12 @@ namespace SpaceGame.units
                     unicorns[j].CheckAndApplyCollision(_enemies[i], gameTime);
                 }
                 _enemies[i].CheckAndApplyUnitCollision(player);
-                _enemies[i].CheckAndApplyWeaponCollision(player);
+                _enemies[i].CheckAndApplyWeaponCollision(player, gameTime.ElapsedGameTime);
 
                 _enemies[i].Update(gameTime, player.Position, Vector2.Zero, _levelBounds);
                 blackHole.ApplyToUnit(_enemies[i], gameTime);
-                weapon1.CheckAndApplyCollision(_enemies[i]);
-                weapon2.CheckAndApplyCollision(_enemies[i]);
+                weapon1.CheckAndApplyCollision(_enemies[i], gameTime.ElapsedGameTime);
+                weapon2.CheckAndApplyCollision(_enemies[i], gameTime.ElapsedGameTime);
             }
             //stay active unless it is not a trickle wave and all enemies are destroyed
             Active = Active && (_isTrickleWave || !allDestroyed);

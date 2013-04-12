@@ -9,4 +9,6 @@
   <SpriteData Name="Flame" AssetName="Flame" FrameWidth="4" FrameHeight="4" NumFrames="1" NumStates="1" DefaultScale ="1.0" SecondsPerAnimation="0.03" ZLayer="0" />
   <SpriteData Name="Unicorn" AssetName="Unicorn" FrameWidth="466" FrameHeight="349" NumFrames="1" NumStates="1" DefaultScale ="0.12" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="FoodCart" AssetName="Food_Cart" FrameWidth="897" FrameHeight="574" NumFrames="1" NumStates="1" DefaultScale ="0.13" SecondsPerAnimation="0.5" ZLayer="0" />
+  <SpriteData Name="Bullet" AssetName="Bullet" FrameWidth="3" FrameHeight="15" NumFrames="1" NumStates="1" DefaultScale ="1.00" SecondsPerAnimation="0.5" ZLayer="0" />
+  <SpriteData Name="GravityWell" AssetName="GravityWell" FrameWidth="48" FrameHeight="48" NumFrames="1" NumStates="1" DefaultScale ="0.10" SecondsPerAnimation="0.5" ZLayer="0" />
 </SpriteDatas>

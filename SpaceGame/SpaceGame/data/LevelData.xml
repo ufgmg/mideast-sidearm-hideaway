@@ -2,8 +2,8 @@
 <Levels>
   <Level LevelNumber="1" LevelWidth="1280" LevelHeight="720">
     <Player X="100" Y="100"/>
-    <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="50"/>
-    <Unicorn StartTime="3" EndTime="1000" SpawnTime="3"/>
+    <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="500"/>
+    <Unicorn StartTime="4" EndTime="1000" SpawnTime="8"/>
     <FoodCart StartTime="0" Duration="10"/>
     <Waves>
       <TrickleWave SpawnInterval="3" StartTime="0">
