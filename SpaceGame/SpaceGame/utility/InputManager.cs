@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceGame.utility
 {
-    class InputManager
+    public class InputManager
     {
         #region constants
         const int WHEEL_UNITS_PER_SCROLL = 10;

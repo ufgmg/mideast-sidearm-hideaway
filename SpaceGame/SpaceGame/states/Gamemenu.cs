@@ -17,7 +17,6 @@ namespace SpaceGame.states
         public string infoText { get; set; }
         public string title { get; set; }
         public static SpriteFont spriteFont;
-        
 
         public Gamemenu() : base(false)
         {
@@ -113,6 +112,7 @@ namespace SpaceGame.states
         public void DrawMenu(SpriteBatch spriteBatch, SpriteFont mFont)
         {
             int screenWidth = 1280;
+            spriteBatch.Begin();
             spriteBatch.DrawString(mFont, title, new Vector2(screenWidth / 2 - mFont.MeasureString(title).X / 2, 20), Color.White);
             int yPos = 100;
             for (int i = 0; i < GetNumberOfOptions(); i++)
@@ -125,13 +125,13 @@ namespace SpaceGame.states
                 spriteBatch.DrawString(mFont, GetItem(i), new Vector2(screenWidth / 2 - mFont.MeasureString(GetItem(i)).X / 2, yPos), colour);
                 yPos += 50;
             }
+            spriteBatch.End();
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             DrawMenu(spriteBatch, spriteFont);
         }
-
        
         //method to set selection value to pass up to game1.cs and Game1.cs getSelection, set gamestate.
     }
