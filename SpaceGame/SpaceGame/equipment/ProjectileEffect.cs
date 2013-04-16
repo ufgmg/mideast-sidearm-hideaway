@@ -11,6 +11,13 @@ using SpaceGame.units;
 
 namespace SpaceGame.equipment
 {
+    public enum StatEffect
+    {
+        Fire,
+        Cryo,
+        Shock
+    }
+
     class ProjectileEffectData
     {
         public int Radius;
@@ -18,6 +25,9 @@ namespace SpaceGame.equipment
         public string ParticleEffectName;
         public float Force;
         public float Duration;
+        public float FireEffect;
+        public float ShockEffect;
+        public float CryoEffect;
     }
 
     class ProjectileEffect
@@ -47,6 +57,7 @@ namespace SpaceGame.equipment
         int _damage;
         ParticleEffect _particleEffect;
         float _force;
+        float[] _statEffects;
         #endregion
 
         public ProjectileEffect(ProjectileEffectData data)
@@ -56,6 +67,10 @@ namespace SpaceGame.equipment
             _particleEffect = data.ParticleEffectName == null ?
                 null : new ParticleEffect(data.ParticleEffectName);
             _force = data.Force;
+            _statEffects = new float[Enum.GetNames(typeof(StatEffect)).Count()];
+            _statEffects[(int)StatEffect.Fire] = data.FireEffect;
+            _statEffects[(int)StatEffect.Shock] = data.ShockEffect;
+            _statEffects[(int)StatEffect.Cryo] = data.CryoEffect;
             Duration = TimeSpan.FromSeconds(data.Duration);
         }
 

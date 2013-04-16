@@ -52,6 +52,7 @@ namespace SpaceGame.units
         float _moveForce;
         //fractional speed reduction each frame
         float _decelerationFactor;
+        
         #endregion
 
         #region properties

@@ -40,7 +40,7 @@
   <ProjectileWeapon Name="Gatling" FireRate="20" ProjectilesPerFire="1" Spread="10" FireParticleEffectName="GatlingEffect">
     <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="1.5" 
                     Penetration="0" Mass="1.0" >
-      <ProximityEffect Radius="5" Damage="10" Force="0" ParticleEffectName="BulletTrace"/>
+      <ProximityEffect Radius="5" Damage="10" Force="0" ParticleEffectName="BulletTrace" />
     </ProjectileInfo>
   </ProjectileWeapon>
 
