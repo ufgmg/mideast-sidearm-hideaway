@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using SpaceGame.graphics;
 using SpaceGame.utility;
+using SpaceGame.equipment;
 
 namespace SpaceGame.units
 {
@@ -16,6 +17,10 @@ namespace SpaceGame.units
     /// </summary>
     class PhysicalUnit
     {
+        #region constant
+        const int MAX_STAT_EFFECT = 300;
+        #endregion
+
         #region static members
         //factor of force applied based on distance out of bounds
         const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
@@ -52,7 +57,7 @@ namespace SpaceGame.units
         float _moveForce;
         //fractional speed reduction each frame
         float _decelerationFactor;
-        
+        float[] _statusEffects, _statusResist;
         #endregion
 
         #region properties
@@ -185,6 +190,10 @@ namespace SpaceGame.units
             Position = Vector2.Zero;
             MoveDirection = Vector2.Zero;
             LookDirection = Vector2.Zero;
+
+            _statusResist[(int)equipment.StatEffect.Fire] = pd.FireResist;
+            _statusResist[(int)equipment.StatEffect.Shock] = pd.ShockResist;
+            _statusResist[(int)equipment.StatEffect.Cryo] = pd.CryoResist;
         }
 
         #endregion
@@ -205,6 +214,11 @@ namespace SpaceGame.units
         {
             _velocity = (_velocity * (this.Mass - objectMass) + 2 * objectMass * objectVelocity) /
                                 (this.Mass + objectMass);
+        }
+
+        public void ApplyStatus(float amount, StatEffect statType)
+        {
+            _statusEffects[(int)statType] += amount;
         }
 
         public void ApplyDamage(int Damage)
@@ -297,6 +311,14 @@ namespace SpaceGame.units
             _hitRect.X = (int)Position.X - _hitRect.Width / 2;
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
 
+            //manage stat effects
+            //decrement every stat effect based on status resist
+            for (int i = 0; i < Enum.GetNames(typeof(StatEffect)).Count(); i++)
+            {
+                _statusEffects[i] -= _statusResist[i] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _statusEffects[i] = MathHelper.Clamp(_statusEffects[i], 0, MAX_STAT_EFFECT);
+            }
+
             _sprite.Update(gameTime);
         }
 
@@ -324,6 +346,7 @@ namespace SpaceGame.units
             {
                 _acceleration.Y += OUT_OF_BOUNDS_ACCEL_FACTOR * (levelHeight - BOUND_BUFFER - Position.Y - _hitRect.Height);
             }
+
         }
 
         /// <summary>
