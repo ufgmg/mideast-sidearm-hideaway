@@ -82,13 +82,6 @@ namespace SpaceGame.states
 
             _foodCarts = data.FoodCarts;
 
-
-            //put in how big camera translation area needs to be (70% viewport width/height, centered at screen)
-            //_cameraLock = new Rectangle((int)(_camera.position.X + (_camera.getViewportWidth() * 0.2)), (int)(_camera.position.Y + (_camera.getViewportHeight() * 0.2)), (int)(_camera.getViewportWidth() * 0.6), (int)(_camera.getViewportHeight() * 0.6));
-            
-            _primaryWeapon = new ProjectileWeapon("Rocket", _player);
-            _secondaryWeapon = new ProjectileWeapon("Flamethrower", _player);
-            //_secondaryWeapon = new HookShot(_player, _levelBounds);
             _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
             _primaryGadget = im.getPrimaryGadget();
             
