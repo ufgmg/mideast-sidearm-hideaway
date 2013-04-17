@@ -12,8 +12,6 @@
         <Enemy Name="Goblin"/>
       </TrickleWave> 
       <BurstWave SpawnInterval="0.4" StartTime="5.0" >
-      </TrickleWave>
-        <BurstWave SpawnInterval="0.4" StartTime="0.0" >
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
@@ -25,7 +23,7 @@
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
-      </BurstWave> -->
+      </BurstWave> 
     </Waves>
   </Level>
 

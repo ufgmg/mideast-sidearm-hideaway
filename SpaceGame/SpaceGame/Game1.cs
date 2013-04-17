@@ -35,7 +35,6 @@ namespace SpaceGame
         InputManager _inputManager = new InputManager();
         InventoryManager _weaponManager = new InventoryManager();
         List<Gamestate> _stateStack = new List<Gamestate>();  
-        List<Gamestate> _stateStack = new List<Gamestate>();
 
         public static GameStates gamestate;
 
