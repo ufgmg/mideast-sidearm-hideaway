@@ -10,13 +10,13 @@ namespace SpaceGame.graphics
     class SpriteData
     {
         public string Name;
-        public Texture2D Texture;
+        public string AssetName;
         public int FrameWidth;
         public int FrameHeight;
         public int NumFrames;
         public int NumStates;
         public float DefaultScale;
-        public TimeSpan AnimationRate;
+        public float SecondsPerAnimation;
         public float ZLayer;
     }
 }

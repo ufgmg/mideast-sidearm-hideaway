@@ -109,29 +109,29 @@ namespace SpaceGame
             XnaHelper.PixelTexture = new Texture2D(GraphicsDevice, 1, 1);
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});
 
+            Sprite.Content = Content;   //Sprite gets reference to content so it can load textures
+
             //load data from xml
-            Sprite.Data = DataLoader.LoadSpriteData(Content);
             ParticleGenerator.Data = DataLoader.LoadParticleGeneratorData(Content);
             ParticleEffect.Data = DataLoader.LoadParticleEffectData(Content);
-            ProjectileWeapon.DataDict = 
-                DataLoader.CollectData<ProjectileWeaponData>(
-                    DataLoader.WEAPON_DATA_PATH, "ProjectileWeapon")
-                        .ToDictionary(t => t.Name);
-            MeleeWeapon.MeleeWeaponDataDict = 
-                DataLoader.CollectData<MeleeWeapon.MeleeWeaponData>(
-                    DataLoader.WEAPON_DATA_PATH, "MeleeWeapon")
-                        .ToDictionary(t => t.Name);
-            Spaceman.AstronautData = 
-                DataLoader.CollectData<PhysicalData>(
-                    DataLoader.UNIT_DATA_PATH, "AstronautData").Single<PhysicalData>();
-            FoodCart.Data = 
-                DataLoader.CollectData<PhysicalData>(
-                    DataLoader.UNIT_DATA_PATH, "FoodCartData").Single<PhysicalData>();
-            Enemy.EnemyDataDict = 
-                DataLoader.CollectData<EnemyData>(
-                    DataLoader.UNIT_DATA_PATH, "EnemyData")
-                        .ToDictionary(t => t.Name);
+
+            Sprite.Data = DataLoader.CollectData<SpriteData>(
+                DataLoader.SPRITE_PATH, "SpriteData").ToDictionary(t => t.Name);
+
+            ProjectileWeapon.DataDict = DataLoader.CollectData<ProjectileWeaponData>( 
+                    DataLoader.WEAPON_DATA_PATH, "ProjectileWeapon").ToDictionary(t => t.Name);
                         
+            MeleeWeapon.MeleeWeaponDataDict = DataLoader.CollectData<MeleeWeapon.MeleeWeaponData>(
+                    DataLoader.WEAPON_DATA_PATH, "MeleeWeapon").ToDictionary(t => t.Name);
+                        
+            Spaceman.AstronautData = DataLoader.CollectData<PhysicalData>(
+                    DataLoader.UNIT_DATA_PATH, "AstronautData").Single<PhysicalData>();
+
+            FoodCart.Data = DataLoader.CollectData<PhysicalData>(
+                    DataLoader.UNIT_DATA_PATH, "FoodCartData").Single<PhysicalData>();
+
+            Enemy.EnemyDataDict = DataLoader.CollectData<EnemyData>(
+                    DataLoader.UNIT_DATA_PATH, "EnemyData").ToDictionary(t => t.Name);
 
             Gamemenu.LoadContent(Content);
             _stateStack.Add(new Gamemenu());

@@ -31,6 +31,13 @@ namespace SpaceGame.utility
         public const string WEAPON_DATA_PATH = "data/WeaponData.xml";
         public const string LEVEL_DIRECTORY = "data/LevelData.xml";
 
+        /// <summary>
+        /// Main XML data loading method. All game objects stored in XML should use this method to load.
+        /// </summary>
+        /// <typeparam name="T">Data type to construct</typeparam>
+        /// <param name="xmlPath">Path to XML doc containing data to load</param>
+        /// <param name="elementName">Name of XElements to load from doc</param>
+        /// <returns>An enumeration of all data loaded elements with a matching name</returns>
         public static System.Collections.Generic.IEnumerable<T> CollectData<T>(
             string xmlPath, string elementName)
         {
@@ -40,30 +47,38 @@ namespace SpaceGame.utility
         }
 
         /// <summary>
-        /// get a dict mapping sprite names to spritedata. 
-        /// Run in Game.Initialize and assign to Sprite.DataDict
+        /// Parse a single XElement into an object.
+        /// Tries to parse and cast every XAttribute and assign to the correspondingly named field
+        /// Calls ElementToData recursively on every nested element
         /// </summary>
-        /// <param name="pathToXML"></param>
-        /// <param name="theContent"></param>
-        /// <returns></returns>
-        public static Dictionary<string, SpriteData> LoadSpriteData(ContentManager theContent)
+        /// <typeparam name="T">Type of object to construct from XElement</typeparam>
+        /// <param name="el">XElement to construct object from</param>
+        /// <returns>An object of type T, whose fields have been assigned based on the XElements attributes and sub-elements</returns>
+        private static T ElementToData<T>(XElement el)
         {
-            string spriteFolderPath = "spritesheets/";
-            return (from sd in XElement.Load(SPRITE_PATH).Descendants("SpriteData")
-                           select new SpriteData
-                           {
-                               Name = (string)sd.Attribute("Name"),
-                               Texture = theContent.Load<Texture2D>(spriteFolderPath + (string)sd.Attribute("AssetName")),
-                               FrameWidth = (int)sd.Attribute("FrameWidth"),
-                               FrameHeight = (int)sd.Attribute("FrameHeight"),
-                               NumFrames = (int)sd.Attribute("NumFrames"),
-                               NumStates = (int)sd.Attribute("NumStates"),
-                               DefaultScale = (float)sd.Attribute("DefaultScale"),
-                               AnimationRate = TimeSpan.FromSeconds((double)sd.Attribute("SecondsPerAnimation")),
-                               ZLayer = (float)sd.Attribute("ZLayer")
-                           }).ToDictionary(t => t.Name);
-        }
+            Type dataType = typeof(T);
+            T data = Activator.CreateInstance<T>();
 
+            foreach (XAttribute at in el.Attributes())
+            {
+                string fieldName = at.Name.LocalName;
+                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
+                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(at.Value, p.FieldType));
+            }
+
+            foreach (XElement subel in el.Elements())
+            {
+                string fieldName = subel.Name.LocalName;
+                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
+                Type elType = p.FieldType;
+                MethodInfo method = typeof(DataLoader).GetMethod("ElementToData");
+                MethodInfo genericMethod = method.MakeGenericMethod(new Type[] {elType});
+                var subData = genericMethod.Invoke(null, new Object[] {subel});
+                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(subData, p.FieldType));
+            }
+
+            return data;
+        }
 
         public static Dictionary<string, ParticleGeneratorData> LoadParticleGeneratorData(ContentManager content)
         {
@@ -190,31 +205,6 @@ namespace SpaceGame.utility
             return new Vector2((float)e.Attribute("X"), (float)e.Attribute("Y"));
         }
 
-        public static T ElementToData<T>(XElement el)
-        {
-            Type dataType = typeof(T);
-            T data = Activator.CreateInstance<T>();
-
-            foreach (XAttribute at in el.Attributes())
-            {
-                string fieldName = at.Name.LocalName;
-                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
-                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(at.Value, p.FieldType));
-            }
-
-            foreach (XElement subel in el.Elements())
-            {
-                string fieldName = subel.Name.LocalName;
-                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
-                Type elType = p.FieldType;
-                MethodInfo method = typeof(DataLoader).GetMethod("ElementToData");
-                MethodInfo genericMethod = method.MakeGenericMethod(new Type[] {elType});
-                var subData = genericMethod.Invoke(null, new Object[] {subel});
-                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(subData, p.FieldType));
-            }
-
-            return data;
-        }
 
     }
 }

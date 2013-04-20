@@ -4,12 +4,21 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceGame.graphics
 {
     class Sprite
     {
+        #region constant
+        const string SPRITE_FOLDER_PATH = "spritesheets/";
+        #endregion
+        
+        #region static
+        public static ContentManager Content;
+        #endregion
+
         #region fields
         //data to initialize sprites. Initialize this in Game.Initialize
         public static Dictionary<string, SpriteData> Data;
@@ -128,12 +137,12 @@ namespace SpaceGame.graphics
             _numStates = spriteData.NumStates;
             _defaultScale = spriteData.DefaultScale;
             ScaleFactor = 1.0f;      //use property to set rect
-            _animationInterval = spriteData.AnimationRate;
+            _animationInterval = TimeSpan.FromSeconds(spriteData.SecondsPerAnimation);
             _timeTillNext = _animationInterval;
             initRects();
             Shade = Color.White;
             _zLayer = spriteData.ZLayer;
-            _spriteSheet = spriteData.Texture;
+            _spriteSheet = Content.Load<Texture2D>(SPRITE_FOLDER_PATH + spriteData.AssetName);
         }
 
         private void initRects()
