@@ -113,8 +113,14 @@ namespace SpaceGame
             Sprite.Data = DataLoader.LoadSpriteData(Content);
             ParticleGenerator.Data = DataLoader.LoadParticleGeneratorData(Content);
             ParticleEffect.Data = DataLoader.LoadParticleEffectData(Content);
-            ProjectileWeapon.DataDict = DataLoader.LoadProjectileWeaponData();
-            MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData();
+            ProjectileWeapon.DataDict = 
+                DataLoader.CollectData<ProjectileWeaponData>(
+                    DataLoader.WEAPON_DATA_PATH, "ProjectileWeapon")
+                        .ToDictionary(t => t.Name);
+            MeleeWeapon.MeleeWeaponDataDict = 
+                DataLoader.CollectData<MeleeWeapon.MeleeWeaponData>(
+                    DataLoader.WEAPON_DATA_PATH, "MeleeWeapon")
+                        .ToDictionary(t => t.Name);
             Spaceman.AstronautData = 
                 DataLoader.CollectData<PhysicalData>(
                     DataLoader.UNIT_DATA_PATH, "AstronautData").Single<PhysicalData>();

@@ -28,8 +28,7 @@ namespace SpaceGame.utility
         public const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
         public const string SPRITE_PATH = "data/SpriteData.xml";
         public const string UNIT_DATA_PATH = "data/UnitData.xml";
-        public const string PROJECTILE_WEAPON_PATH = "data/WeaponData.xml";
-        public const string MELEE_WEAPON_PATH = "data/WeaponData.xml";
+        public const string WEAPON_DATA_PATH = "data/WeaponData.xml";
         public const string LEVEL_DIRECTORY = "data/LevelData.xml";
 
         public static System.Collections.Generic.IEnumerable<T> CollectData<T>(
@@ -132,39 +131,6 @@ namespace SpaceGame.utility
 			Debug.Assert(nums.Length == 4);
 			return new Color(byte.Parse(nums[1]), byte.Parse(nums[2]), byte.Parse(nums[3]), byte.Parse(nums[0]));
 		}
-
-        public static Dictionary<string, ProjectileWeaponData> LoadProjectileWeaponData()
-        {
-            return (from el in XElement.Load(PROJECTILE_WEAPON_PATH).Descendants("ProjectileWeapon")
-                    select ElementToData<ProjectileWeaponData>(el)
-                    ).ToDictionary(t => t.Name); 
-        }
-
-        public static Dictionary<string, PhysicalData> LoadEnemyData()
-        {
-            return (from el in XElement.Load(UNIT_DATA_PATH).Descendants("EnemyData")
-                    select ElementToData<PhysicalData>(el)
-                    ).ToDictionary(t => t.Name); 
-        }
-
-        public static Dictionary<string, MeleeWeapon.MeleeWeaponData> LoadMeleeWeaponData()
-        {
-            return (from wd in XElement.Load(MELEE_WEAPON_PATH).Descendants("MeleeWeapon")
-                    select new MeleeWeapon.MeleeWeaponData
-                    {
-                        Name = (string)wd.Attribute("Name"),
-                        FireRate = (float)wd.Attribute("FireRate"),
-                        Range = (float)wd.Attribute("Range"),
-                        Recoil = (float)wd.Attribute("Recoil"),
-                        HitArc = MathHelper.ToRadians((float)wd.Attribute("HitArc")),
-                        MaxAmmo = (int)wd.Attribute("MaxAmmo"),
-                        AmmoConsumption = (int)wd.Attribute("AmmoConsumption"),
-                        Damage = (int)wd.Attribute("Damage"),
-                        Force = (int)wd.Attribute("Impact"),
-                        AttackParticleEffect = (string)wd.Attribute("AttackParticleEffect"),
-                        HitParticleEffect = (string)wd.Attribute("HitParticleEffect")
-                    }).ToDictionary(t => t.Name);
-        }
 
         public static Level.LevelData LoadLevel(int levelNumber)
         {
