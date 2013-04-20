@@ -24,7 +24,6 @@ namespace SpaceGame.utility
     /// </summary>
     static class DataLoader
     {
-        public const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
         public const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
         public const string SPRITE_PATH = "data/SpriteData.xml";
         public const string UNIT_DATA_PATH = "data/UnitData.xml";
@@ -54,7 +53,7 @@ namespace SpaceGame.utility
         /// <typeparam name="T">Type of object to construct from XElement</typeparam>
         /// <param name="el">XElement to construct object from</param>
         /// <returns>An object of type T, whose fields have been assigned based on the XElements attributes and sub-elements</returns>
-        private static T ElementToData<T>(XElement el)
+        public static T ElementToData<T>(XElement el)
         {
             Type dataType = typeof(T);
             T data = Activator.CreateInstance<T>();
@@ -79,37 +78,6 @@ namespace SpaceGame.utility
 
             return data;
         }
-
-        public static Dictionary<string, ParticleGeneratorData> LoadParticleGeneratorData(ContentManager content)
-        {
-            return (from el in XElement.Load(PARTICLE_EFFECT_PATH).Descendants("ParticleGeneratorData")
-                           select parseGeneratorElement(el, content)).ToDictionary(t => t.Name);
-        }
-
-        private static ParticleGeneratorData parseGeneratorElement(XElement el, ContentManager content)
-        {
-            return new ParticleGeneratorData
-            {
-                Name = (string)el.Attribute("Name"),
-                Speed = (float)el.Attribute("Speed"),
-                SpeedVariance = (float)el.Attribute("SpeedVariance"),
-                DecelerationFactor = (float)el.Attribute("DecelerationFactor"),
-                ParticleRotation = (float)el.Attribute("ParticleRotation"),
-                StartScale = (float)el.Attribute("StartScale"),
-                ScaleVariance = (float)el.Attribute("ScaleVariance"),
-                EndScale = (float)el.Attribute("EndScale"),
-                SpawnArc = (float)el.Attribute("SpawnArc"),
-                SpawnRate = (int)el.Attribute("SpawnRate"),
-                ParticleLife = TimeSpan.FromSeconds((double)el.Attribute("ParticleLife")),
-                ParticleLifeVariance = (float)el.Attribute("ParticleLifeVariance"),
-                Reversed = (bool)el.Attribute("Reversed"),
-                StartColor = parseColor((string)el.Attribute("StartColor")),
-                EndColor = parseColor((string)el.Attribute("EndColor")),
-                UniqueParticle = ((string)el.Attribute("UniqueParticle") == null ? null : content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + (string)el.Attribute("UniqueParticle"))),
-                Offset = (el.Attribute("Offset") == null ? 0 : (float)el.Attribute("Offset"))
-            };
-        }
-
 
         public static Dictionary<string, ParticleEffectData> LoadParticleEffectData(ContentManager content)
         {
@@ -137,15 +105,8 @@ namespace SpaceGame.utility
                     originalElement.Add(new XAttribute(at.Name.LocalName, at.Value));
             }
 
-            return parseGeneratorElement(originalElement, content);
+            return ElementToData<ParticleGeneratorData>(originalElement);
         }
-
-        private static Color parseColor(string colorValues)
-        {
-			string[] nums = colorValues.Split(',');
-			Debug.Assert(nums.Length == 4);
-			return new Color(byte.Parse(nums[1]), byte.Parse(nums[2]), byte.Parse(nums[3]), byte.Parse(nums[0]));
-		}
 
         public static Level.LevelData LoadLevel(int levelNumber)
         {
@@ -204,7 +165,6 @@ namespace SpaceGame.utility
         {
             return new Vector2((float)e.Attribute("X"), (float)e.Attribute("Y"));
         }
-
 
     }
 }

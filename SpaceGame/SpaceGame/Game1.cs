@@ -110,9 +110,12 @@ namespace SpaceGame
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});
 
             Sprite.Content = Content;   //Sprite gets reference to content so it can load textures
+            ParticleGenerator.Content = Content;   //ParticleGenerator gets reference to content so it can load textures
 
             //load data from xml
-            ParticleGenerator.Data = DataLoader.LoadParticleGeneratorData(Content);
+            ParticleGenerator.Data = DataLoader.CollectData<ParticleGeneratorData>(
+                DataLoader.PARTICLE_EFFECT_PATH, "ParticleGeneratorData").ToDictionary(t => t.Name);
+
             ParticleEffect.Data = DataLoader.LoadParticleEffectData(Content);
 
             Sprite.Data = DataLoader.CollectData<SpriteData>(
