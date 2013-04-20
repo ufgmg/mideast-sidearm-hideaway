@@ -153,6 +153,7 @@ namespace SpaceGame
                 Gamestate newState = _stateStack.Last().ReplaceState;
                 _stateStack.RemoveAt(_stateStack.Count - 1);
                 _stateStack.Add(newState);
+                _inputManager.SetCameraOffset(Vector2.Zero);    //reset inputmanager camera offset
             }
 
             base.Update(gameTime);
