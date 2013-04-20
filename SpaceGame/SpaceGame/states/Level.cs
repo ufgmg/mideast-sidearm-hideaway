@@ -93,6 +93,7 @@ namespace SpaceGame.states
         #region methods
         public override void Update(GameTime gameTime, InputManager input, InventoryManager im)
         {
+            input.SetCameraOffset(_camera.Position);
             handleInput(input);
             _camera.Update(gameTime, _player.Position);
             //if player is outside static area rectangle, call update on camera to update position of camera until
