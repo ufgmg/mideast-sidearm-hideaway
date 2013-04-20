@@ -100,6 +100,13 @@
                       StartColor="100,0,0,100" EndColor ="00,100,0,0"
                       Reversed="False" />
 
+  <ParticleGeneratorData Name="Burning" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="600" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,255,0,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
   <!-- The following are special particle effects referenced directly by classes (rather than being specified by other xml files.
        The names cannot be changed without modifying the references in the associated classes-->
 

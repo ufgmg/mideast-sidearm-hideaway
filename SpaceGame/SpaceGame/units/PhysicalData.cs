@@ -8,7 +8,7 @@ namespace SpaceGame.units
     public struct PhysicalData
     {
         //stat effect decrease per second
-        const float DEFAULT_STAT_RESIST = 30;
+        public const float DEFAULT_STAT_RESIST = 30;
 
         public String Name;
         public String MovementParticleEffectName;
@@ -17,8 +17,8 @@ namespace SpaceGame.units
         public float MaxSpeed;
         public float DecelerationFactor;
         public float Health;
-        public float FireResist = DEFAULT_STAT_RESIST;
-        public float ShockResist = DEFAULT_STAT_RESIST;
-        public float CryoResist = DEFAULT_STAT_RESIST;
+        public float FireResist;
+        public float ShockResist;
+        public float CryoResist;
     }
 }

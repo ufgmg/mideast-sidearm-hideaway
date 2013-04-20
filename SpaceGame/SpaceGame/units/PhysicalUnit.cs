@@ -18,7 +18,8 @@ namespace SpaceGame.units
     class PhysicalUnit
     {
         #region constant
-        const int MAX_STAT_EFFECT = 300;
+        //status effect constants
+        const float MAX_STAT_EFFECT = 300;
         #endregion
 
         #region static members
@@ -58,6 +59,7 @@ namespace SpaceGame.units
         //fractional speed reduction each frame
         float _decelerationFactor;
         float[] _statusEffects, _statusResist;
+        ParticleEffect _burningParticleEffect;
         #endregion
 
         #region properties
@@ -176,6 +178,7 @@ namespace SpaceGame.units
 
             if (pd.MovementParticleEffectName != null)
                 _movementParticleEffect = new ParticleEffect(pd.MovementParticleEffectName);
+            _burningParticleEffect = new ParticleEffect("Burning");
 
             _mass = pd.Mass;
             _moveForce = pd.MoveForce;
@@ -191,6 +194,8 @@ namespace SpaceGame.units
             MoveDirection = Vector2.Zero;
             LookDirection = Vector2.Zero;
 
+            _statusEffects = new float[Enum.GetNames(typeof(StatEffect)).Count()];
+            _statusResist = new float[Enum.GetNames(typeof(StatEffect)).Count()];
             _statusResist[(int)equipment.StatEffect.Fire] = pd.FireResist;
             _statusResist[(int)equipment.StatEffect.Shock] = pd.ShockResist;
             _statusResist[(int)equipment.StatEffect.Cryo] = pd.CryoResist;
@@ -216,9 +221,15 @@ namespace SpaceGame.units
                                 (this.Mass + objectMass);
         }
 
-        public void ApplyStatus(float amount, StatEffect statType)
+        public void ApplyStatus(float[] effects)
         {
-            _statusEffects[(int)statType] += amount;
+            System.Diagnostics.Debug.Assert(effects.Count() == Enum.GetNames(typeof(StatEffect)).Count(),
+                "Unit.ApplyStatus recieved an array of incorrect size");
+
+            for (int i = 0; i < effects.Count(); i++)
+            {
+                _statusEffects[i] = MathHelper.Clamp(_statusEffects[i] + effects[i], 0, MAX_STAT_EFFECT);
+            }
         }
 
         public void ApplyDamage(int Damage)
@@ -276,6 +287,9 @@ namespace SpaceGame.units
                         if (MoveDirection.Length() > 0)
                             moveThisWay(MoveDirection, gameTime);
 
+                        _burningParticleEffect.IntensityFactor = _statusEffects[(int)StatEffect.Fire] / MAX_STAT_EFFECT;
+                        _burningParticleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, _velocity);
+
                         break;
                     }
 
@@ -308,6 +322,8 @@ namespace SpaceGame.units
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Update(gameTime);
+            _burningParticleEffect.Update(gameTime);
+
             _hitRect.X = (int)Position.X - _hitRect.Width / 2;
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
 
@@ -440,6 +456,7 @@ namespace SpaceGame.units
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);
+            _burningParticleEffect.Draw(sb);
 
             _sprite.Draw(sb, Position);
         }
