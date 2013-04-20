@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpaceGame.units
 {
-    public struct PhysicalData
+    public class PhysicalData
     {
         //stat effect decrease per second
         public const float DEFAULT_STAT_RESIST = 30;
@@ -20,5 +20,12 @@ namespace SpaceGame.units
         public float FireResist;
         public float ShockResist;
         public float CryoResist;
+
+        public PhysicalData()
+        {
+            FireResist = DEFAULT_STAT_RESIST;
+            CryoResist = DEFAULT_STAT_RESIST;
+            ShockResist = DEFAULT_STAT_RESIST;
+        }
     }
 }

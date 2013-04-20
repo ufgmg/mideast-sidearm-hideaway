@@ -115,9 +115,17 @@ namespace SpaceGame
             ParticleEffect.Data = DataLoader.LoadParticleEffectData(Content);
             ProjectileWeapon.DataDict = DataLoader.LoadProjectileWeaponData();
             MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData();
-            Spaceman.AstronautData = DataLoader.LoadAstronautData();
-            FoodCart.Data = DataLoader.LoadFoodCartData();
-            Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
+            Spaceman.AstronautData = 
+                DataLoader.CollectData<PhysicalData>(
+                    DataLoader.UNIT_DATA_PATH, "AstronautData").Single<PhysicalData>();
+            FoodCart.Data = 
+                DataLoader.CollectData<PhysicalData>(
+                    DataLoader.UNIT_DATA_PATH, "FoodCartData").Single<PhysicalData>();
+            Enemy.EnemyDataDict = 
+                DataLoader.CollectData<EnemyData>(
+                    DataLoader.UNIT_DATA_PATH, "EnemyData")
+                        .ToDictionary(t => t.Name);
+                        
 
             Gamemenu.LoadContent(Content);
             _stateStack.Add(new Gamemenu());

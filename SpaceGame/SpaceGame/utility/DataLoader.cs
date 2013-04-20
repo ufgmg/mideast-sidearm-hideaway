@@ -24,13 +24,22 @@ namespace SpaceGame.utility
     /// </summary>
     static class DataLoader
     {
-        const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
-        const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
-        const string SPRITE_PATH = "data/SpriteData.xml";
-        const string UNIT_DATA_PATH = "data/UnitData.xml";
-        const string PROJECTILE_WEAPON_PATH = "data/WeaponData.xml";
-        const string MELEE_WEAPON_PATH = "data/WeaponData.xml";
-        const string LEVEL_DIRECTORY = "data/LevelData.xml";
+        public const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
+        public const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
+        public const string SPRITE_PATH = "data/SpriteData.xml";
+        public const string UNIT_DATA_PATH = "data/UnitData.xml";
+        public const string PROJECTILE_WEAPON_PATH = "data/WeaponData.xml";
+        public const string MELEE_WEAPON_PATH = "data/WeaponData.xml";
+        public const string LEVEL_DIRECTORY = "data/LevelData.xml";
+
+        public static System.Collections.Generic.IEnumerable<T> CollectData<T>(
+            string xmlPath, string elementName)
+        {
+            return (from el in XElement.Load(xmlPath).Descendants(elementName)
+                    select ElementToData<T>(el)
+                    ); 
+        }
+
         /// <summary>
         /// get a dict mapping sprite names to spritedata. 
         /// Run in Game.Initialize and assign to Sprite.DataDict
@@ -56,42 +65,6 @@ namespace SpaceGame.utility
                            }).ToDictionary(t => t.Name);
         }
 
-        public static PhysicalData LoadPhysicalData(XElement unitElement)
-        {
-                   return new PhysicalData
-                           {
-                               Name = (string)unitElement.Attribute("Name"),
-                               MovementParticleEffectName = (string)unitElement.Attribute("MovementParticleEffect"),
-                               Mass = (float)unitElement.Attribute("Mass"),
-                               MoveForce = (float)unitElement.Attribute("MoveForce"),
-                               MaxSpeed = (float)unitElement.Attribute("MaxSpeed"),
-                               DecelerationFactor = (float)unitElement.Attribute("DecelerationFactor"),
-                               Health = (int)unitElement.Attribute("Health")
-                           };
-        }
-
-        public static PhysicalData LoadAstronautData()
-        {
-            XElement element = XElement.Load(UNIT_DATA_PATH).Descendants("AstronautData").Single();
-            return LoadPhysicalData(element);
-        }
-
-        public static PhysicalData LoadFoodCartData()
-        {
-            XElement element = XElement.Load(UNIT_DATA_PATH).Descendants("FoodCartData").Single();
-            return LoadPhysicalData(element);
-        }
-
-        public static Dictionary<string, EnemyData> LoadEnemyData()
-        {
-            return (from enemy in XElement.Load(UNIT_DATA_PATH).Descendants("EnemyData")
-                           select new EnemyData
-                           {
-                               Name = (string)enemy.Attribute("Name"),
-                               PhysicalData = LoadPhysicalData(enemy),
-                               MeleeWeaponName = (string)enemy.Attribute("MeleeWeapon")
-                           }).ToDictionary(t => t.Name);
-        }
 
         public static Dictionary<string, ParticleGeneratorData> LoadParticleGeneratorData(ContentManager content)
         {
@@ -164,6 +137,13 @@ namespace SpaceGame.utility
         {
             return (from el in XElement.Load(PROJECTILE_WEAPON_PATH).Descendants("ProjectileWeapon")
                     select ElementToData<ProjectileWeaponData>(el)
+                    ).ToDictionary(t => t.Name); 
+        }
+
+        public static Dictionary<string, PhysicalData> LoadEnemyData()
+        {
+            return (from el in XElement.Load(UNIT_DATA_PATH).Descendants("EnemyData")
+                    select ElementToData<PhysicalData>(el)
                     ).ToDictionary(t => t.Name); 
         }
 
