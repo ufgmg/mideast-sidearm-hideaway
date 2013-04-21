@@ -8,7 +8,7 @@ namespace SpaceGame.units
     public class PhysicalData
     {
         //stat effect decrease per second
-        public const float DEFAULT_STAT_RESIST = 15;
+        public const float DEFAULT_STAT_RESIST = 20;
 
         public String Name;
         public String MovementParticleEffectName;

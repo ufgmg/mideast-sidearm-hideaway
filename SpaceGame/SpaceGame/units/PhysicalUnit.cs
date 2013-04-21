@@ -289,8 +289,6 @@ namespace SpaceGame.units
                             moveThisWay(MoveDirection, gameTime);
 
                         //handle burning
-                        _burningParticleEffect.IntensityFactor = _statusEffects[(int)StatEffect.Fire] / MAX_STAT_EFFECT;
-                        _burningParticleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, _velocity);
                         ApplyDamage(_statusEffects[(int)StatEffect.Fire] * (float)gameTime.ElapsedGameTime.TotalSeconds * FIRE_DPS);
 
                         break;
@@ -307,6 +305,7 @@ namespace SpaceGame.units
                             _lifeState = LifeState.Destroyed;
                         break;
                     }
+                case LifeState.Destroyed:
                 default:
                     {
                         return;     //don't update anything
@@ -325,6 +324,10 @@ namespace SpaceGame.units
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Update(gameTime);
+
+            //burning visual effect
+            _burningParticleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, _velocity);
+            _burningParticleEffect.IntensityFactor = _statusEffects[(int)StatEffect.Fire] / MAX_STAT_EFFECT;
             _burningParticleEffect.Update(gameTime);
 
             _hitRect.X = (int)Position.X - _hitRect.Width / 2;
@@ -459,7 +462,11 @@ namespace SpaceGame.units
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);
-            _burningParticleEffect.Draw(sb);
+            if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed
+                && _lifeState != LifeState.Dormant)
+            {
+                _burningParticleEffect.Draw(sb);
+            }
 
             _sprite.Draw(sb, Position);
         }

@@ -96,7 +96,7 @@ namespace SpaceGame.equipment
                 Vector2.Normalize(tempVec);
                 float factor = Duration == TimeSpan.Zero ? 1 : (float)time.TotalSeconds / (float)Duration.TotalSeconds;
                 target.ApplyForce(_force * factor * tempVec);
-                //target.ApplyDamage((int)(_damage * factor));
+                target.ApplyDamage((int)(_damage * factor));
                 target.ApplyStatus(_statEffects);
             }
         }
