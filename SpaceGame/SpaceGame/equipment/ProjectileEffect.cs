@@ -43,6 +43,7 @@ namespace SpaceGame.equipment
                 _force = 0,
                 _damage = 0,
                 _particleEffect = null,
+                _statEffects = new float[Enum.GetNames(typeof(StatEffect)).Count()],
                 _radius = 0,
                 Duration = TimeSpan.Zero
             };
@@ -96,6 +97,7 @@ namespace SpaceGame.equipment
                 float factor = Duration == TimeSpan.Zero ? 1 : (float)time.TotalSeconds / (float)Duration.TotalSeconds;
                 target.ApplyForce(_force * factor * tempVec);
                 target.ApplyDamage((int)(_damage * factor));
+                if (_statEffects == null) { System.Diagnostics.Debugger.Break(); }
                 target.ApplyStatus(_statEffects);
             }
         }
