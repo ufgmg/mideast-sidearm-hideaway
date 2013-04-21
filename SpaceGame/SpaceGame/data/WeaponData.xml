@@ -31,9 +31,9 @@
   </ProjectileWeapon>
 
   <ProjectileWeapon Name="Flamethrower" FireRate="200" ProjectilesPerFire="1" FireParticleEffectName="Flamethrower" Spread="30" >
-    <ProjectileInfo SpriteName="Flame" Speed="600" Acceleration="-12" SecondsToLive="0.4" 
+    <ProjectileInfo SpriteName="Flame" Speed="700" Acceleration="-12" SecondsToLive="0.6" 
                     Penetration="100" Mass="0.0" >
-      <ProximityEffect Radius="1" Damage="0" Force="0" FireEffect="2"/>
+      <ProximityEffect Radius="1" Damage="1" Force="0" FireEffect="2"/>
     </ProjectileInfo>
   </ProjectileWeapon>
 

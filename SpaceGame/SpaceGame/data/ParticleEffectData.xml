@@ -94,9 +94,9 @@
                       Reversed="False"/>
 
   <ParticleGeneratorData Name="Flamethrower" 
-                      Speed="600.0" SpeedVariance="0.1" DecelerationFactor="0.1" ParticleRotation="720.0" 
+                      Speed="700.0" SpeedVariance="0.1" DecelerationFactor="0.1" ParticleRotation="720.0" 
                       StartScale ="3.0" ScaleVariance="0.3" EndScale="20.0" 
-                      SpawnArc="20.0" SpawnRate="600" ParticleLife="0.3" ParticleLifeVariance="0.5"
+                      SpawnArc="20.0" SpawnRate="600" ParticleLife="0.40" ParticleLifeVariance="0.5"
                       StartColor="100,0,0,100" EndColor ="00,100,0,0"
                       Reversed="False" />
 
