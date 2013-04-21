@@ -20,7 +20,7 @@ namespace SpaceGame.units
         #region constant
         //status effect constants
         const float MAX_STAT_EFFECT = 100;
-        const float FIRE_DPS = 0.1f;   //damage per second per point of fire effect 
+        const float FIRE_DPS = 0.3f;   //damage per second per point of fire effect 
         #endregion
 
         #region static members
@@ -233,9 +233,9 @@ namespace SpaceGame.units
             }
         }
 
-        public void ApplyDamage(int Damage)
+        public void ApplyDamage(float Damage)
         {
-            if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)
+            if (Damage == 0.0f || _lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)
                 return;
 
             _health -= Damage;
@@ -291,7 +291,7 @@ namespace SpaceGame.units
                         //handle burning
                         _burningParticleEffect.IntensityFactor = _statusEffects[(int)StatEffect.Fire] / MAX_STAT_EFFECT;
                         _burningParticleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, _velocity);
-                        _health -= _statusEffects[(int)StatEffect.Fire] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        ApplyDamage(_statusEffects[(int)StatEffect.Fire] * (float)gameTime.ElapsedGameTime.TotalSeconds * FIRE_DPS);
 
                         break;
                     }
