@@ -21,9 +21,11 @@ namespace SpaceGame.units
         //status effect constants
         const float MAX_STAT_EFFECT = 100;
         const float FIRE_DPS = 0.2f;   //damage per second per point of fire effect 
-        const int FIRE_SPREAD_DISTANCE = 50;   //how far away a unit must be to transfer fire
+        const int FIRE_SPREAD_DISTANCE = 80;   //how far away a unit must be to transfer fire
         //portion of own fire effect transfered to nearby units per second
-        const float FIRE_SPREAD_FACTOR = 0.08f;   
+        const float FIRE_SPREAD_FACTOR = 0.40f;   
+        //portion of transfered fire deducted from transferer
+        const float FIRE_SPREAD_LOSS = 0.0005f;   
         #endregion
 
         #region static members
@@ -439,11 +441,9 @@ namespace SpaceGame.units
             {
                 if (_statusEffects.Fire > other._statusEffects.Fire)
                 {
-                    other.ApplyStatus(new StatEffect() { Fire = FIRE_SPREAD_FACTOR * dist / FIRE_SPREAD_DISTANCE * _statusEffects.Fire });
-                }
-                else
-                {
-                    ApplyStatus(new StatEffect() { Fire = FIRE_SPREAD_FACTOR * dist / FIRE_SPREAD_DISTANCE * other._statusEffects.Fire });
+                    StatEffect transfer = new StatEffect() { Fire = FIRE_SPREAD_FACTOR * dist / FIRE_SPREAD_DISTANCE * _statusEffects.Fire };
+                    other.ApplyStatus(transfer);
+                    ApplyStatus(transfer * -FIRE_SPREAD_LOSS);
                 }
             }
 
