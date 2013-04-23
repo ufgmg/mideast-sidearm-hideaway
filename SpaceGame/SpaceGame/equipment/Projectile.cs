@@ -46,6 +46,7 @@ namespace SpaceGame.equipment
         Sprite _sprite;
         int _penetration;     //number of hits before dissipating. Set as -1 for infinite
         float _mass;            //affects force applied to impacted unit
+        float _angularVelocity;            //radians per second
         ProjectileEffect _contactEffect;          //effect upon hitting a unit
         ProjectileEffect _proximityEffect;        //effect upon moving/existing
         ProjectileEffect _destinationEffect;      //effect upon reaching click location
@@ -92,6 +93,7 @@ namespace SpaceGame.equipment
             _distanceLeft = Vector2.Distance(pos, targetDestination);
             _state = State.Moving;
             _sprite.Angle = utility.XnaHelper.RadiansFromVector(direction);
+            _angularVelocity = MathHelper.ToRadians(data.Rotation);
         }
 
         public void Update(GameTime gameTime)
@@ -111,6 +113,7 @@ namespace SpaceGame.equipment
                     _lifeTime -= time;
                     _hitRect.X = (int)_position.X;
                     _hitRect.Y = (int)_position.Y;
+                    Sprite.Angle += _angularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (_lifeTime < TimeSpan.Zero)
                     {
                         _state = State.Dormant;
@@ -214,6 +217,7 @@ namespace SpaceGame.equipment
         public string SpriteName;
         public int Penetration;     //number of hits before dissipating. Set as -1 for infinite
         public float Mass;            //affects force applied to impacted unit
+        public float Rotation;            //angular velocity (Degrees per second)
         public ProjectileEffectData ContactEffect;          //effect upon hitting a unit
         public ProjectileEffectData ProximityEffect;        //effect upon moving/existing
         public ProjectileEffectData DestinationEffect;        //effect upon reaching destination

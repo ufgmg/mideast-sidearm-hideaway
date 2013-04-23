@@ -331,7 +331,10 @@ namespace SpaceGame.units
             _burningParticleEffect.Update(gameTime);
 
             //cryo visual effect
-            _sprite.Shade = Color.Lerp(Color.White, Color.Blue, _statusEffects.Cryo / MAX_STAT_EFFECT);
+            if (_statusEffects.Cryo > 0 && _lifeState != LifeState.Disabled)
+            {
+                _sprite.Shade = Color.Lerp(Color.White, Color.Blue, _statusEffects.Cryo / MAX_STAT_EFFECT);
+            }
 
             _hitRect.X = (int)Position.X - _hitRect.Width / 2;
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;

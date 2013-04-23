@@ -184,9 +184,9 @@
                       Reversed="False" UniqueParticle="BlueCircle"/>
 
   <ParticleGeneratorData Name="BoomerangBlur" 
-                      Speed="000.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
+                      Speed="00.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
                       StartScale ="20.0" ScaleVariance="0.0" EndScale="20.0" 
-                      SpawnArc="0" SpawnRate="10" ParticleLife="0.8" ParticleLifeVariance="0.0"
+                      SpawnArc="0" SpawnRate="30" ParticleLife="0.8" ParticleLifeVariance="0.0"
                       StartColor="255,255,255,255" EndColor ="0,0,0,0"
                       Reversed="False" UniqueParticle="BoomerangBlur"/>
 

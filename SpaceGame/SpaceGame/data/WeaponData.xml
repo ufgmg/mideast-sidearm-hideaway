@@ -32,7 +32,7 @@
 
   <ProjectileWeapon Name="Boomerang" FireRate="5" ProjectilesPerFire="1" Spread="45">
     <ProjectileInfo SpriteName="Boomerang" Speed="1000" Acceleration="-1000" SecondsToLive="3" 
-                    Penetration="-1" Mass="1" >
+                    Penetration="-1" Mass="1" Rotation="360">
       <ProximityEffect Radius="5" Damage="5" ParticleEffectName="BoomerangBlur"/>
     </ProjectileInfo>
   </ProjectileWeapon>

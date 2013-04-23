@@ -251,7 +251,7 @@ namespace SpaceGame.graphics
             float speed = applyVariance(_particleSpeed, _speedVariance);
             particle.Velocity = speed * XnaHelper.VectorFromAngle(directionAngle);
             particle.Scale = applyVariance(_particleScale, _scaleVariance);
-            particle.Angle = 0.0f;
+            particle.Angle = angle;
             particle.LifeTime = TimeSpan.FromSeconds(applyVariance((float)_particleLife.TotalSeconds, _particleLifeVariance));
 
             if (Reversed)
