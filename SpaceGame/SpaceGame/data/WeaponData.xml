@@ -30,6 +30,13 @@
     </ProjectileInfo>
   </ProjectileWeapon>
 
+  <ProjectileWeapon Name="Boomerang" FireRate="5" ProjectilesPerFire="1" Spread="45">
+    <ProjectileInfo SpriteName="Boomerang" Speed="1000" Acceleration="-1000" SecondsToLive="3" 
+                    Penetration="-1" Mass="1" >
+      <ProximityEffect Radius="5" Damage="5" ParticleEffectName="BoomerangBlur"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
   <ProjectileWeapon Name="Flamethrower" FireRate="200" ProjectilesPerFire="1" FireParticleEffectName="Flamethrower" Spread="30" >
     <ProjectileInfo SpriteName="Flame" Speed="700" Acceleration="-12" SecondsToLive="0.6" 
                     Penetration="100" Mass="0.0" >
