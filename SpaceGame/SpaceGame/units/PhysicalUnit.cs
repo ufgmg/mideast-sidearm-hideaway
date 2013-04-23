@@ -18,6 +18,12 @@ namespace SpaceGame.units
     class PhysicalUnit
     {
         #region constant
+        //factor of force applied based on distance out of bounds
+        const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
+        const float BOUND_BUFFER = 20;
+        //factor of force applied in unit collisions
+        const float COLLISION_FORCE_FACTOR = 10.0f;
+
         //status effect constants
         const float MAX_STAT_EFFECT = 100;
         const float FIRE_DPS = 0.2f;   //damage per second per point of fire effect 
@@ -29,14 +35,10 @@ namespace SpaceGame.units
         #endregion
 
         #region static members
-        //factor of force applied based on distance out of bounds
-        const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
-        const float BOUND_BUFFER = 20;
-        //factor of force applied in unit collisions
-        const float COLLISION_FORCE_FACTOR = 10.0f;
 
         //reusable Vector2 for calculations
         static Vector2 temp;
+        public static Texture2D IceCubeTexture;
         #endregion
         #region fields
         string _unitName;
@@ -163,6 +165,7 @@ namespace SpaceGame.units
             Dormant,        //never been spawned
             Living,
             Stunned,
+            Frozen,         //hit max cryo effect, cannot move
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
             BeingEaten,     //being consumed by black hole
             Destroyed,      //no longer Update or Draw
@@ -291,6 +294,7 @@ namespace SpaceGame.units
                     }
 
                 case LifeState.Disabled:
+                case LifeState.Frozen:
                     {
                         break;
                     }
@@ -333,6 +337,18 @@ namespace SpaceGame.units
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
 
             //manage stat effects
+            if (_statusEffects.Cryo >= MAX_STAT_EFFECT)
+            {
+                _lifeState = LifeState.Frozen;
+                _statusEffects.Fire = 0;    //stop burning if frozen
+            }
+            else if (_lifeState == LifeState.Frozen && _statusEffects.Cryo <= 0)
+            {
+                _lifeState = LifeState.Living;
+                //still cold after defrosting
+                _statusEffects.Cryo = MAX_STAT_EFFECT / 2;
+            }
+
             //decrement every stat effect based on status resist
             _statusEffects -= _statusResist * (float)gameTime.ElapsedGameTime.TotalSeconds;
             _statusEffects.Clamp(0, MAX_STAT_EFFECT);
@@ -478,6 +494,12 @@ namespace SpaceGame.units
             }
 
             _sprite.Draw(sb, Position);
+            if (_lifeState == LifeState.Frozen)
+            {
+                sb.Draw(IceCubeTexture, HitRect, null, 
+                    Color.Lerp(Color.White, Color.Transparent, _statusEffects.Cryo / MAX_STAT_EFFECT), 
+                    0.0f, Vector2.Zero, SpriteEffects.None, 0);
+            }
         }
         #endregion
         #endregion
