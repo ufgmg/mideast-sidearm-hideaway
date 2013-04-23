@@ -176,6 +176,13 @@
                       StartColor="255,255,255,255" EndColor ="0,0,0,0"
                       Reversed="False"/>
 
+  <ParticleGeneratorData Name="FreezeBeam" 
+                      Speed="1000.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
+                      StartScale ="8.0" ScaleVariance="0.0" EndScale="0.0" 
+                      SpawnArc="0" SpawnRate="60" ParticleLife="0.4" ParticleLifeVariance="0.0"
+                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      Reversed="False" UniqueParticle="BlueCircle"/>
+
   <ParticleGeneratorData Name="GravityWell" 
                       Speed="200.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="360.0" 
                       StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 

@@ -105,7 +105,7 @@ namespace SpaceGame.equipment
                     break;
 
                 case State.Moving:
-                    _proximityEffect.SpawnParticles(time, _position, MathHelper.ToDegrees(MathHelper.Pi - Sprite.Angle), _velocity);
+                    _proximityEffect.SpawnParticles(time, _position, MathHelper.ToDegrees(Sprite.Angle - MathHelper.Pi), _velocity);
                     _velocity += _acceleration * (float)time.TotalSeconds;
                     _position += _velocity * (float)time.TotalSeconds;
                     _lifeTime -= time;
@@ -124,8 +124,15 @@ namespace SpaceGame.equipment
                     break;
 
                 case State.JustHit:
-                    _state = State.ApplyContactEffect;
-                    _timer = _contactEffect.Duration;
+                    if (_contactEffect != ProjectileEffect.NullEffect)
+                    {
+                        _state = State.ApplyContactEffect;
+                        _timer = _contactEffect.Duration;
+                    }
+                    else
+                    {
+                        _state = State.Dormant;
+                    }
                     break;
 
                 case State.ApplyContactEffect:

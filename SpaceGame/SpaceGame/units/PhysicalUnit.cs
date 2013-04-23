@@ -25,7 +25,7 @@ namespace SpaceGame.units
         //portion of own fire effect transfered to nearby units per second
         const float FIRE_SPREAD_FACTOR = 0.40f;   
         //portion of transfered fire deducted from transferer
-        const float FIRE_SPREAD_LOSS = 0.0005f;   
+        const float FIRE_SPREAD_LOSS = 0.0002f;   
         #endregion
 
         #region static members
@@ -326,6 +326,9 @@ namespace SpaceGame.units
             _burningParticleEffect.IntensityFactor = _statusEffects.Fire / MAX_STAT_EFFECT;
             _burningParticleEffect.Update(gameTime);
 
+            //cryo visual effect
+            _sprite.Shade = Color.Lerp(Color.White, Color.Blue, _statusEffects.Cryo / MAX_STAT_EFFECT);
+
             _hitRect.X = (int)Position.X - _hitRect.Width / 2;
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
 
@@ -370,7 +373,8 @@ namespace SpaceGame.units
         /// <param name="direction">Direction to move. Should be normalized for normal movement.</param>
         private void moveThisWay(Vector2 direction, GameTime gameTime)
         {
-            ApplyForce(_moveForce * direction);
+            //apply movement force, taking into account cryo effect (which slows)
+            ApplyForce(_moveForce * direction * (1 - _statusEffects.Cryo / MAX_STAT_EFFECT) );
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Spawn(Center, XnaHelper.DegreesFromVector(-direction), gameTime.ElapsedGameTime, _velocity); 
         }
