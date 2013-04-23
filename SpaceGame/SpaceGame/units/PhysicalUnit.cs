@@ -20,7 +20,10 @@ namespace SpaceGame.units
         #region constant
         //status effect constants
         const float MAX_STAT_EFFECT = 100;
-        const float FIRE_DPS = 0.3f;   //damage per second per point of fire effect 
+        const float FIRE_DPS = 0.2f;   //damage per second per point of fire effect 
+        const int FIRE_SPREAD_DISTANCE = 50;   //how far away a unit must be to transfer fire
+        //portion of own fire effect transfered to nearby units per second
+        const float FIRE_SPREAD_FACTOR = 0.2f;   
         #endregion
 
         #region static members
@@ -59,7 +62,7 @@ namespace SpaceGame.units
         float _moveForce;
         //fractional speed reduction each frame
         float _decelerationFactor;
-        float[] _statusEffects, _statusResist;
+        StatEffect _statusEffects, _statusResist;
         ParticleEffect _burningParticleEffect;
         #endregion
 
@@ -195,11 +198,8 @@ namespace SpaceGame.units
             MoveDirection = Vector2.Zero;
             LookDirection = Vector2.Zero;
 
-            _statusEffects = new float[Enum.GetNames(typeof(StatEffect)).Count()];
-            _statusResist = new float[Enum.GetNames(typeof(StatEffect)).Count()];
-            _statusResist[(int)equipment.StatEffect.Fire] = pd.FireResist;
-            _statusResist[(int)equipment.StatEffect.Shock] = pd.ShockResist;
-            _statusResist[(int)equipment.StatEffect.Cryo] = pd.CryoResist;
+            _statusEffects = new StatEffect(0, 0, 0);
+            _statusResist = new StatEffect(pd.FireResist, pd.CryoResist, pd.ShockResist);
         }
 
         #endregion
@@ -222,15 +222,9 @@ namespace SpaceGame.units
                                 (this.Mass + objectMass);
         }
 
-        public void ApplyStatus(float[] effects)
+        public void ApplyStatus(StatEffect effects)
         {
-            System.Diagnostics.Debug.Assert(effects.Count() == Enum.GetNames(typeof(StatEffect)).Count(),
-                "Unit.ApplyStatus recieved an array of incorrect size");
-
-            for (int i = 0; i < effects.Count(); i++)
-            {
-                _statusEffects[i] = MathHelper.Clamp(_statusEffects[i] + effects[i], 0, MAX_STAT_EFFECT);
-            }
+            _statusEffects += effects;
         }
 
         public void ApplyDamage(float Damage)
@@ -289,7 +283,7 @@ namespace SpaceGame.units
                             moveThisWay(MoveDirection, gameTime);
 
                         //handle burning
-                        ApplyDamage(_statusEffects[(int)StatEffect.Fire] * (float)gameTime.ElapsedGameTime.TotalSeconds * FIRE_DPS);
+                        ApplyDamage(_statusEffects.Fire * (float)gameTime.ElapsedGameTime.TotalSeconds * FIRE_DPS);
 
                         break;
                     }
@@ -327,7 +321,7 @@ namespace SpaceGame.units
 
             //burning visual effect
             _burningParticleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, _velocity);
-            _burningParticleEffect.IntensityFactor = _statusEffects[(int)StatEffect.Fire] / MAX_STAT_EFFECT;
+            _burningParticleEffect.IntensityFactor = _statusEffects.Fire / MAX_STAT_EFFECT;
             _burningParticleEffect.Update(gameTime);
 
             _hitRect.X = (int)Position.X - _hitRect.Width / 2;
@@ -335,11 +329,8 @@ namespace SpaceGame.units
 
             //manage stat effects
             //decrement every stat effect based on status resist
-            for (int i = 0; i < Enum.GetNames(typeof(StatEffect)).Count(); i++)
-            {
-                _statusEffects[i] -= _statusResist[i] * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _statusEffects[i] = MathHelper.Clamp(_statusEffects[i], 0, MAX_STAT_EFFECT);
-            }
+            _statusEffects -= _statusResist * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _statusEffects.Clamp(0, MAX_STAT_EFFECT);
 
             _sprite.Update(gameTime);
         }
@@ -441,6 +432,12 @@ namespace SpaceGame.units
         {
             if (!Collides)
                 return;     //don't check collision if unit shouldn't collide
+
+            //check if fire should be transferred
+            float dist = XnaHelper.DistanceBetweenRects(HitRect, other.HitRect);
+            if (dist < FIRE_SPREAD_DISTANCE)
+            {
+            }
 
             if (XnaHelper.RectsCollide(HitRect, other.HitRect))
             {

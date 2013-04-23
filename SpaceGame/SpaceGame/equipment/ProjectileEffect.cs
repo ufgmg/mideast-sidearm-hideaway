@@ -11,17 +11,49 @@ using SpaceGame.units;
 
 namespace SpaceGame.equipment
 {
-    public enum StatEffect
+    struct StatEffect
     {
-        Fire,
-        Cryo,
-        Shock
+        public float Fire, Cryo, Shock;
+        public StatEffect(float fire, float cryo, float shock)
+        {
+            Fire = fire;
+            Cryo = cryo;
+            Shock = shock;
+        }
+
+        public static StatEffect operator + (StatEffect s1, StatEffect s2)
+        {
+            return new StatEffect(s1.Fire + s2.Fire,
+                                  s1.Cryo + s2.Cryo,
+                                  s1.Shock + s2.Shock);
+        }
+
+        public static StatEffect operator - (StatEffect s1, StatEffect s2)
+        {
+            return new StatEffect(s1.Fire - s2.Fire,
+                                  s1.Cryo - s2.Cryo,
+                                  s1.Shock - s2.Shock);
+        }
+
+        public static StatEffect operator * (StatEffect s, float f)
+        {
+            return new StatEffect(s.Fire * f,
+                                  s.Cryo * f,
+                                  s.Shock * f);
+        }
+
+        public void Clamp(float min, float max)
+        {
+            Fire = MathHelper.Clamp(Fire, min, max);
+            Cryo = MathHelper.Clamp(Cryo, min, max);
+            Shock = MathHelper.Clamp(Shock, min, max);
+        }
     }
 
     class ProjectileEffectData
     {
         public int Radius;
-        public int Damage;
+        public float Damage;
         public string ParticleEffectName;
         public float Force;
         public float Duration;
@@ -43,7 +75,7 @@ namespace SpaceGame.equipment
                 _force = 0,
                 _damage = 0,
                 _particleEffect = null,
-                _statEffects = new float[Enum.GetNames(typeof(StatEffect)).Count()],
+                _statEffects = new StatEffect(),
                 _radius = 0,
                 Duration = TimeSpan.Zero
             };
@@ -55,10 +87,10 @@ namespace SpaceGame.equipment
 
         #region fields
         int _radius;
-        int _damage;
+        float _damage;
         ParticleEffect _particleEffect;
         float _force;
-        float[] _statEffects;
+        StatEffect _statEffects;
         #endregion
 
         public ProjectileEffect(ProjectileEffectData data)
@@ -68,10 +100,7 @@ namespace SpaceGame.equipment
             _particleEffect = data.ParticleEffectName == null ?
                 null : new ParticleEffect(data.ParticleEffectName);
             _force = data.Force;
-            _statEffects = new float[Enum.GetNames(typeof(StatEffect)).Count()];
-            _statEffects[(int)StatEffect.Fire] = data.FireEffect;
-            _statEffects[(int)StatEffect.Shock] = data.ShockEffect;
-            _statEffects[(int)StatEffect.Cryo] = data.CryoEffect;
+            _statEffects = new StatEffect(data.FireEffect, data.CryoEffect, data.ShockEffect);
             Duration = TimeSpan.FromSeconds(data.Duration);
         }
 
@@ -96,7 +125,7 @@ namespace SpaceGame.equipment
                 Vector2.Normalize(tempVec);
                 float factor = Duration == TimeSpan.Zero ? 1 : (float)time.TotalSeconds / (float)Duration.TotalSeconds;
                 target.ApplyForce(_force * factor * tempVec);
-                target.ApplyDamage((int)(_damage * factor));
+                target.ApplyDamage((_damage * factor));
                 target.ApplyStatus(_statEffects);
             }
         }
