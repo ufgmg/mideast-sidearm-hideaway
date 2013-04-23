@@ -23,7 +23,7 @@ namespace SpaceGame.units
         const float FIRE_DPS = 0.2f;   //damage per second per point of fire effect 
         const int FIRE_SPREAD_DISTANCE = 50;   //how far away a unit must be to transfer fire
         //portion of own fire effect transfered to nearby units per second
-        const float FIRE_SPREAD_FACTOR = 0.2f;   
+        const float FIRE_SPREAD_FACTOR = 0.08f;   
         #endregion
 
         #region static members
@@ -437,6 +437,14 @@ namespace SpaceGame.units
             float dist = XnaHelper.DistanceBetweenRects(HitRect, other.HitRect);
             if (dist < FIRE_SPREAD_DISTANCE)
             {
+                if (_statusEffects.Fire > other._statusEffects.Fire)
+                {
+                    other.ApplyStatus(new StatEffect() { Fire = FIRE_SPREAD_FACTOR * dist / FIRE_SPREAD_DISTANCE * _statusEffects.Fire });
+                }
+                else
+                {
+                    ApplyStatus(new StatEffect() { Fire = FIRE_SPREAD_FACTOR * dist / FIRE_SPREAD_DISTANCE * other._statusEffects.Fire });
+                }
             }
 
             if (XnaHelper.RectsCollide(HitRect, other.HitRect))
