@@ -147,7 +147,7 @@
   <ItemGroup>
     <Compile Include="particles\EmptyShell.bmp">
       <Name>EmptyShell</Name>
-	</Compile>
+    </Compile>
     <Compile Include="gui\Left Click.png">
       <Name>Left Click</Name>
       <Importer>TextureImporter</Importer>
@@ -202,7 +202,7 @@
   <ItemGroup>
     <Compile Include="particles\BulletTrace.bmp">
       <Name>BulletTrace</Name>
-	</Compile>
+    </Compile>
     <Compile Include="gui\Minimap_&amp;_Health_Bar_00.png">
       <Name>Minimap_&amp;_Health_Bar_00</Name>
       <Importer>TextureImporter</Importer>
@@ -212,9 +212,44 @@
   <ItemGroup>
     <Compile Include="spritesheets\GravityWell.bmp">
       <Name>GravityWell</Name>
-	</Compile>
+    </Compile>
     <Compile Include="gui\Score_&amp;_Void_Tracker.png">
       <Name>Score_&amp;_Void_Tracker</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\BlueCircle.bmp">
+      <Name>BlueCircle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="spritesheets\BlueCircle.bmp">
+      <Name>BlueCircle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="spritesheets\IceCube.bmp">
+      <Name>IceCube</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\BoomerangBlur.png">
+      <Name>BoomerangBlur</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="spritesheets\Boomerang.png">
+      <Name>Boomerang</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

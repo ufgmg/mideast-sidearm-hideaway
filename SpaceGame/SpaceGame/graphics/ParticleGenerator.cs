@@ -13,7 +13,7 @@ using SpaceGame.utility;
 
 namespace SpaceGame.graphics
 {
-    public struct ParticleGeneratorData
+    public class ParticleGeneratorData
     {
         /// <summary>
         /// Key to identify effect data
@@ -38,7 +38,7 @@ namespace SpaceGame.graphics
         /// <summary>
         /// Average lifespan of particle
         /// </summary>
-        public TimeSpan ParticleLife;
+        public float ParticleLife;
         /// <summary>
         /// percent variance in particle life
         /// </summary>
@@ -49,8 +49,9 @@ namespace SpaceGame.graphics
         public float ParticleRotation;
         /// <summary>
         /// Colors through which particles transition during their life
+        /// Represented as a string containing 4 comma-separated values
         /// </summary>
-        public Color StartColor, EndColor;
+        public string StartColor, EndColor;
         /// <summary>
         /// If reversed, particles start at endpoint and move towards spawn point
         /// </summary>
@@ -64,15 +65,20 @@ namespace SpaceGame.graphics
         /// Reference to unique particle texture stored in Content/particles
         /// If ommitted, uses blank pixel
         /// </summary>
-        public Texture2D UniqueParticle;
+        public string UniqueParticle;
     }
 
     public class ParticleGenerator
     {
+        #region constant
+        public const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
+        #endregion
+
         #region static
         //stores all data for particle effects
         public static Dictionary<string, ParticleGeneratorData> Data;
 
+        public static ContentManager Content;
         static Texture2D particleTexture;
         //default texture to draw particles with. Hardcoded single pixel assigned in Game.LoadContent
         public static Texture2D ParticleTexture
@@ -161,30 +167,39 @@ namespace SpaceGame.graphics
             _speedVariance = _particleEffectData.SpeedVariance;
             _particleDecelerationFactor = _particleEffectData.DecelerationFactor;
 
-            _particleTexture = (_particleEffectData.UniqueParticle == null) ? particleTexture : _particleEffectData.UniqueParticle;
+            _particleTexture = (_particleEffectData.UniqueParticle == null) ? 
+                particleTexture : Content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + _particleEffectData.UniqueParticle);
             _textureCenter = new Vector2(_particleTexture.Width / 2.0f, particleTexture.Height / 2.0f); 
 
             _particleScale = _particleEffectData.StartScale / _particleTexture.Width;
+
+            _particleLife = TimeSpan.FromSeconds(_particleEffectData.ParticleLife);
+            _particleLifeVariance = _particleEffectData.ParticleLifeVariance;
+
             _scaleRate = 
                 (((_particleEffectData.EndScale - _particleEffectData.StartScale) / _particleTexture.Width) 
-                / ((float)_particleEffectData.ParticleLife.TotalSeconds));
+                / ((float)_particleLife.TotalSeconds));
             _scaleVariance = _particleEffectData.ScaleVariance;
             _arc = _particleEffectData.SpawnArc;
             _offset = _particleEffectData.Offset;
-            _particleLife = _particleEffectData.ParticleLife;
-            _particleLifeVariance = _particleEffectData.ParticleLifeVariance;
             _particleRotationSpeed = MathHelper.ToRadians(
-                _particleEffectData.ParticleRotation / (float)_particleEffectData.ParticleLife.TotalSeconds);
+                _particleEffectData.ParticleRotation / (float)_particleLife.TotalSeconds);
+
+            byte[] scv = _particleEffectData.StartColor.Split(',')
+                .Select(n => Convert.ToByte(n)).ToArray();
+            byte[] ecv = _particleEffectData.EndColor.Split(',')
+                .Select(n => Convert.ToByte(n)).ToArray();
+
             if (_particleEffectData.Reversed)
             {
-                _startColor = _particleEffectData.EndColor;
-                _endColor = _particleEffectData.StartColor;
+                _startColor = new Color(ecv[1], ecv[2], ecv[3], ecv[0]); 
+                _endColor = new Color(scv[1], scv[2], scv[3], scv[0]);
                 Reversed = true;
             }
             else
             {
-                _startColor = _particleEffectData.StartColor;
-                _endColor = _particleEffectData.EndColor;
+                _startColor = new Color(scv[1], scv[2], scv[3], scv[0]); 
+                _endColor = new Color(ecv[1], ecv[2], ecv[3], ecv[0]);
                 Reversed = false;
             }
 
@@ -236,7 +251,7 @@ namespace SpaceGame.graphics
             float speed = applyVariance(_particleSpeed, _speedVariance);
             particle.Velocity = speed * XnaHelper.VectorFromAngle(directionAngle);
             particle.Scale = applyVariance(_particleScale, _scaleVariance);
-            particle.Angle = 0.0f;
+            particle.Angle = angle;
             particle.LifeTime = TimeSpan.FromSeconds(applyVariance((float)_particleLife.TotalSeconds, _particleLifeVariance));
 
             if (Reversed)

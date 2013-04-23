@@ -24,105 +24,60 @@ namespace SpaceGame.utility
     /// </summary>
     static class DataLoader
     {
-        const string PARTICLE_TEXTURE_DIRECTORY = "particles/";
-        const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
-        const string SPRITE_PATH = "data/SpriteData.xml";
-        const string UNIT_DATA_PATH = "data/UnitData.xml";
-        const string PROJECTILE_WEAPON_PATH = "data/WeaponData.xml";
-        const string MELEE_WEAPON_PATH = "data/WeaponData.xml";
-        const string LEVEL_DIRECTORY = "data/LevelData.xml";
+        public const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
+        public const string SPRITE_PATH = "data/SpriteData.xml";
+        public const string UNIT_DATA_PATH = "data/UnitData.xml";
+        public const string WEAPON_DATA_PATH = "data/WeaponData.xml";
+        public const string LEVEL_DIRECTORY = "data/LevelData.xml";
+
         /// <summary>
-        /// get a dict mapping sprite names to spritedata. 
-        /// Run in Game.Initialize and assign to Sprite.DataDict
+        /// Main XML data loading method. All game objects stored in XML should use this method to load.
         /// </summary>
-        /// <param name="pathToXML"></param>
-        /// <param name="theContent"></param>
-        /// <returns></returns>
-        public static Dictionary<string, SpriteData> LoadSpriteData(ContentManager theContent)
+        /// <typeparam name="T">Data type to construct</typeparam>
+        /// <param name="xmlPath">Path to XML doc containing data to load</param>
+        /// <param name="elementName">Name of XElements to load from doc</param>
+        /// <returns>An enumeration of all data loaded elements with a matching name</returns>
+        public static System.Collections.Generic.IEnumerable<T> CollectData<T>(
+            string xmlPath, string elementName)
         {
-            string spriteFolderPath = "spritesheets/";
-            return (from sd in XElement.Load(SPRITE_PATH).Descendants("SpriteData")
-                           select new SpriteData
-                           {
-                               Name = (string)sd.Attribute("Name"),
-                               Texture = theContent.Load<Texture2D>(spriteFolderPath + (string)sd.Attribute("AssetName")),
-                               FrameWidth = (int)sd.Attribute("FrameWidth"),
-                               FrameHeight = (int)sd.Attribute("FrameHeight"),
-                               NumFrames = (int)sd.Attribute("NumFrames"),
-                               NumStates = (int)sd.Attribute("NumStates"),
-                               DefaultScale = (float)sd.Attribute("DefaultScale"),
-                               AnimationRate = TimeSpan.FromSeconds((double)sd.Attribute("SecondsPerAnimation")),
-                               ZLayer = (float)sd.Attribute("ZLayer")
-                           }).ToDictionary(t => t.Name);
+            return (from el in XElement.Load(xmlPath).Descendants(elementName)
+                    select ElementToData<T>(el)
+                    ); 
         }
 
-        public static PhysicalData LoadPhysicalData(XElement unitElement)
+        /// <summary>
+        /// Parse a single XElement into an object.
+        /// Tries to parse and cast every XAttribute and assign to the correspondingly named field
+        /// Calls ElementToData recursively on every nested element
+        /// </summary>
+        /// <typeparam name="T">Type of object to construct from XElement</typeparam>
+        /// <param name="el">XElement to construct object from</param>
+        /// <returns>An object of type T, whose fields have been assigned based on the XElements attributes and sub-elements</returns>
+        public static T ElementToData<T>(XElement el)
         {
-                   return new PhysicalData
-                           {
-                               Name = (string)unitElement.Attribute("Name"),
-                               MovementParticleEffectName = (string)unitElement.Attribute("MovementParticleEffect"),
-                               Mass = (float)unitElement.Attribute("Mass"),
-                               MoveForce = (float)unitElement.Attribute("MoveForce"),
-                               MaxSpeed = (float)unitElement.Attribute("MaxSpeed"),
-                               DecelerationFactor = (float)unitElement.Attribute("DecelerationFactor"),
-                               Health = (int)unitElement.Attribute("Health")
-                           };
-        }
+            Type dataType = typeof(T);
+            T data = Activator.CreateInstance<T>();
 
-        public static PhysicalData LoadAstronautData()
-        {
-            XElement element = XElement.Load(UNIT_DATA_PATH).Descendants("AstronautData").Single();
-            return LoadPhysicalData(element);
-        }
-
-        public static PhysicalData LoadFoodCartData()
-        {
-            XElement element = XElement.Load(UNIT_DATA_PATH).Descendants("FoodCartData").Single();
-            return LoadPhysicalData(element);
-        }
-
-        public static Dictionary<string, EnemyData> LoadEnemyData()
-        {
-            return (from enemy in XElement.Load(UNIT_DATA_PATH).Descendants("EnemyData")
-                           select new EnemyData
-                           {
-                               Name = (string)enemy.Attribute("Name"),
-                               PhysicalData = LoadPhysicalData(enemy),
-                               MeleeWeaponName = (string)enemy.Attribute("MeleeWeapon")
-                           }).ToDictionary(t => t.Name);
-        }
-
-        public static Dictionary<string, ParticleGeneratorData> LoadParticleGeneratorData(ContentManager content)
-        {
-            return (from el in XElement.Load(PARTICLE_EFFECT_PATH).Descendants("ParticleGeneratorData")
-                           select parseGeneratorElement(el, content)).ToDictionary(t => t.Name);
-        }
-
-        private static ParticleGeneratorData parseGeneratorElement(XElement el, ContentManager content)
-        {
-            return new ParticleGeneratorData
+            foreach (XAttribute at in el.Attributes())
             {
-                Name = (string)el.Attribute("Name"),
-                Speed = (float)el.Attribute("Speed"),
-                SpeedVariance = (float)el.Attribute("SpeedVariance"),
-                DecelerationFactor = (float)el.Attribute("DecelerationFactor"),
-                ParticleRotation = (float)el.Attribute("ParticleRotation"),
-                StartScale = (float)el.Attribute("StartScale"),
-                ScaleVariance = (float)el.Attribute("ScaleVariance"),
-                EndScale = (float)el.Attribute("EndScale"),
-                SpawnArc = (float)el.Attribute("SpawnArc"),
-                SpawnRate = (int)el.Attribute("SpawnRate"),
-                ParticleLife = TimeSpan.FromSeconds((double)el.Attribute("ParticleLife")),
-                ParticleLifeVariance = (float)el.Attribute("ParticleLifeVariance"),
-                Reversed = (bool)el.Attribute("Reversed"),
-                StartColor = parseColor((string)el.Attribute("StartColor")),
-                EndColor = parseColor((string)el.Attribute("EndColor")),
-                UniqueParticle = ((string)el.Attribute("UniqueParticle") == null ? null : content.Load<Texture2D>(PARTICLE_TEXTURE_DIRECTORY + (string)el.Attribute("UniqueParticle"))),
-                Offset = (el.Attribute("Offset") == null ? 0 : (float)el.Attribute("Offset"))
-            };
-        }
+                string fieldName = at.Name.LocalName;
+                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
+                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(at.Value, p.FieldType));
+            }
 
+            foreach (XElement subel in el.Elements())
+            {
+                string fieldName = subel.Name.LocalName;
+                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
+                Type elType = p.FieldType;
+                MethodInfo method = typeof(DataLoader).GetMethod("ElementToData");
+                MethodInfo genericMethod = method.MakeGenericMethod(new Type[] {elType});
+                var subData = genericMethod.Invoke(null, new Object[] {subel});
+                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(subData, p.FieldType));
+            }
+
+            return data;
+        }
 
         public static Dictionary<string, ParticleEffectData> LoadParticleEffectData(ContentManager content)
         {
@@ -150,40 +105,7 @@ namespace SpaceGame.utility
                     originalElement.Add(new XAttribute(at.Name.LocalName, at.Value));
             }
 
-            return parseGeneratorElement(originalElement, content);
-        }
-
-        private static Color parseColor(string colorValues)
-        {
-			string[] nums = colorValues.Split(',');
-			Debug.Assert(nums.Length == 4);
-			return new Color(byte.Parse(nums[1]), byte.Parse(nums[2]), byte.Parse(nums[3]), byte.Parse(nums[0]));
-		}
-
-        public static Dictionary<string, ProjectileWeaponData> LoadProjectileWeaponData()
-        {
-            return (from el in XElement.Load(PROJECTILE_WEAPON_PATH).Descendants("ProjectileWeapon")
-                    select ElementToData<ProjectileWeaponData>(el)
-                    ).ToDictionary(t => t.Name); 
-        }
-
-        public static Dictionary<string, MeleeWeapon.MeleeWeaponData> LoadMeleeWeaponData()
-        {
-            return (from wd in XElement.Load(MELEE_WEAPON_PATH).Descendants("MeleeWeapon")
-                    select new MeleeWeapon.MeleeWeaponData
-                    {
-                        Name = (string)wd.Attribute("Name"),
-                        FireRate = (float)wd.Attribute("FireRate"),
-                        Range = (float)wd.Attribute("Range"),
-                        Recoil = (float)wd.Attribute("Recoil"),
-                        HitArc = MathHelper.ToRadians((float)wd.Attribute("HitArc")),
-                        MaxAmmo = (int)wd.Attribute("MaxAmmo"),
-                        AmmoConsumption = (int)wd.Attribute("AmmoConsumption"),
-                        Damage = (int)wd.Attribute("Damage"),
-                        Force = (int)wd.Attribute("Impact"),
-                        AttackParticleEffect = (string)wd.Attribute("AttackParticleEffect"),
-                        HitParticleEffect = (string)wd.Attribute("HitParticleEffect")
-                    }).ToDictionary(t => t.Name);
+            return ElementToData<ParticleGeneratorData>(originalElement);
         }
 
         public static Level.LevelData LoadLevel(int levelNumber)
@@ -242,32 +164,6 @@ namespace SpaceGame.utility
         private static Vector2 parseVector(XElement e)
         {
             return new Vector2((float)e.Attribute("X"), (float)e.Attribute("Y"));
-        }
-
-        public static T ElementToData<T>(XElement el)
-        {
-            Type dataType = typeof(T);
-            T data = Activator.CreateInstance<T>();
-
-            foreach (XAttribute at in el.Attributes())
-            {
-                string fieldName = at.Name.LocalName;
-                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
-                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(at.Value, p.FieldType));
-            }
-
-            foreach (XElement subel in el.Elements())
-            {
-                string fieldName = subel.Name.LocalName;
-                System.Reflection.FieldInfo p = dataType.GetField(fieldName);
-                Type elType = p.FieldType;
-                MethodInfo method = typeof(DataLoader).GetMethod("ElementToData");
-                MethodInfo genericMethod = method.MakeGenericMethod(new Type[] {elType});
-                var subData = genericMethod.Invoke(null, new Object[] {subel});
-                dataType.GetField(fieldName).SetValue(data, Convert.ChangeType(subData, p.FieldType));
-            }
-
-            return data;
         }
 
     }

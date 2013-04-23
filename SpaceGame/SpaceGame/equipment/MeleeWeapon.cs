@@ -15,14 +15,14 @@ namespace SpaceGame.equipment
     class MeleeWeapon : Weapon
     {
         #region static
-        public struct MeleeWeaponData
+        public class MeleeWeaponData
         {
             public string Name;
             public float FireRate;  //attacks/second
             public int MaxAmmo;
             public int AmmoConsumption;
             public int Damage;
-            public int Force;
+            public int Impact;
             public float Range;
             public float Recoil;
             public float HitArc;
@@ -58,7 +58,7 @@ namespace SpaceGame.equipment
                   data.MaxAmmo, data.AmmoConsumption, owner)
         {
             _damage = data.Damage;
-            _force = data.Force;
+            _force = data.Impact;
             _recoil = data.Recoil;
             _hitArc = data.HitArc;
             _range = data.Range;

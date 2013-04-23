@@ -53,7 +53,7 @@ namespace SpaceGame
             //set resolution TODO: Move this to an XML Configuration File
             graphics.PreferredBackBufferWidth = SCREENWIDTH;
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;
-
+            
             //TODO: replace with custom cursor
             this.IsMouseVisible = true;
 
@@ -106,21 +106,39 @@ namespace SpaceGame
             SpaceGame.graphics.hud.GUI.button6 = Content.Load<Texture2D>("gui/Numer 6");
             SpaceGame.graphics.hud.GUI.voidWheel = Content.Load<Texture2D>("gui/Score_&_Void_Tracker");
 
+            PhysicalUnit.IceCubeTexture = Content.Load<Texture2D>("spritesheets/IceCube");
+
             XnaHelper.PixelTexture = new Texture2D(GraphicsDevice, 1, 1);
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});
 
+            Sprite.Content = Content;   //Sprite gets reference to content so it can load textures
+            ParticleGenerator.Content = Content;   //ParticleGenerator gets reference to content so it can load textures
+
             //load data from xml
-            Sprite.Data = DataLoader.LoadSpriteData(Content);
-            ParticleGenerator.Data = DataLoader.LoadParticleGeneratorData(Content);
+            ParticleGenerator.Data = DataLoader.CollectData<ParticleGeneratorData>(
+                DataLoader.PARTICLE_EFFECT_PATH, "ParticleGeneratorData").ToDictionary(t => t.Name);
+
             ParticleEffect.Data = DataLoader.LoadParticleEffectData(Content);
-            ProjectileWeapon.DataDict = DataLoader.LoadProjectileWeaponData();
-            MeleeWeapon.MeleeWeaponDataDict = DataLoader.LoadMeleeWeaponData();
-            Spaceman.AstronautData = DataLoader.LoadAstronautData();
-            FoodCart.Data = DataLoader.LoadFoodCartData();
-            Enemy.EnemyDataDict = DataLoader.LoadEnemyData();
+
+            Sprite.Data = DataLoader.CollectData<SpriteData>(
+                DataLoader.SPRITE_PATH, "SpriteData").ToDictionary(t => t.Name);
+
+            ProjectileWeapon.DataDict = DataLoader.CollectData<ProjectileWeaponData>( 
+                    DataLoader.WEAPON_DATA_PATH, "ProjectileWeapon").ToDictionary(t => t.Name);
+                        
+            MeleeWeapon.MeleeWeaponDataDict = DataLoader.CollectData<MeleeWeapon.MeleeWeaponData>(
+                    DataLoader.WEAPON_DATA_PATH, "MeleeWeapon").ToDictionary(t => t.Name);
+                        
+            Spaceman.AstronautData = DataLoader.CollectData<PhysicalData>(
+                    DataLoader.UNIT_DATA_PATH, "AstronautData").Single<PhysicalData>();
+
+            FoodCart.Data = DataLoader.CollectData<PhysicalData>(
+                    DataLoader.UNIT_DATA_PATH, "FoodCartData").Single<PhysicalData>();
+
+            Enemy.EnemyDataDict = DataLoader.CollectData<EnemyData>(
+                    DataLoader.UNIT_DATA_PATH, "EnemyData").ToDictionary(t => t.Name);
 
             Gamemenu.LoadContent(Content);
-			
             _stateStack.Add(new Gamemenu());
         }
 
@@ -154,6 +172,7 @@ namespace SpaceGame
                 Gamestate newState = _stateStack.Last().ReplaceState;
                 _stateStack.RemoveAt(_stateStack.Count - 1);
                 _stateStack.Add(newState);
+                _inputManager.SetCameraOffset(Vector2.Zero);    //reset inputmanager camera offset
             }
 
             base.Update(gameTime);
@@ -166,10 +185,10 @@ namespace SpaceGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            
-            spriteBatch.Begin();
+  
+            //spriteBatch.Begin();
             _stateStack.Last().Draw(spriteBatch);
-            spriteBatch.End();
+            //spriteBatch.End();
             base.Draw(gameTime);
         }
     }

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using SpaceGame.graphics;
 using SpaceGame.utility;
+using SpaceGame.equipment;
 
 namespace SpaceGame.units
 {
@@ -16,15 +17,28 @@ namespace SpaceGame.units
     /// </summary>
     class PhysicalUnit
     {
-        #region static members
+        #region constant
         //factor of force applied based on distance out of bounds
         const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
         const float BOUND_BUFFER = 20;
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
 
+        //status effect constants
+        const float MAX_STAT_EFFECT = 100;
+        const float FIRE_DPS = 0.2f;   //damage per second per point of fire effect 
+        const int FIRE_SPREAD_DISTANCE = 80;   //how far away a unit must be to transfer fire
+        //portion of own fire effect transfered to nearby units per second
+        const float FIRE_SPREAD_FACTOR = 0.40f;   
+        //portion of transfered fire deducted from transferer
+        const float FIRE_SPREAD_LOSS = 0.0002f;   
+        #endregion
+
+        #region static members
+
         //reusable Vector2 for calculations
         static Vector2 temp;
+        public static Texture2D IceCubeTexture;
         #endregion
         #region fields
         string _unitName;
@@ -52,6 +66,8 @@ namespace SpaceGame.units
         float _moveForce;
         //fractional speed reduction each frame
         float _decelerationFactor;
+        StatEffect _statusEffects, _statusResist;
+        ParticleEffect _burningParticleEffect;
         #endregion
 
         #region properties
@@ -149,6 +165,7 @@ namespace SpaceGame.units
             Dormant,        //never been spawned
             Living,
             Stunned,
+            Frozen,         //hit max cryo effect, cannot move
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
             BeingEaten,     //being consumed by black hole
             Destroyed,      //no longer Update or Draw
@@ -170,6 +187,7 @@ namespace SpaceGame.units
 
             if (pd.MovementParticleEffectName != null)
                 _movementParticleEffect = new ParticleEffect(pd.MovementParticleEffectName);
+            _burningParticleEffect = new ParticleEffect("Burning");
 
             _mass = pd.Mass;
             _moveForce = pd.MoveForce;
@@ -184,6 +202,9 @@ namespace SpaceGame.units
             Position = Vector2.Zero;
             MoveDirection = Vector2.Zero;
             LookDirection = Vector2.Zero;
+
+            _statusEffects = new StatEffect(0, 0, 0);
+            _statusResist = new StatEffect(pd.FireResist, pd.CryoResist, pd.ShockResist);
         }
 
         #endregion
@@ -206,9 +227,14 @@ namespace SpaceGame.units
                                 (this.Mass + objectMass);
         }
 
-        public void ApplyDamage(int Damage)
+        public void ApplyStatus(StatEffect effects)
         {
-            if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)
+            _statusEffects += effects;
+        }
+
+        public void ApplyDamage(float Damage)
+        {
+            if (Damage == 0.0f || _lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)
                 return;
 
             _health -= Damage;
@@ -261,10 +287,14 @@ namespace SpaceGame.units
                         if (MoveDirection.Length() > 0)
                             moveThisWay(MoveDirection, gameTime);
 
+                        //handle burning
+                        ApplyDamage(_statusEffects.Fire * (float)gameTime.ElapsedGameTime.TotalSeconds * FIRE_DPS);
+
                         break;
                     }
 
                 case LifeState.Disabled:
+                case LifeState.Frozen:
                     {
                         break;
                     }
@@ -275,6 +305,7 @@ namespace SpaceGame.units
                             _lifeState = LifeState.Destroyed;
                         break;
                     }
+                case LifeState.Destroyed:
                 default:
                     {
                         return;     //don't update anything
@@ -293,8 +324,37 @@ namespace SpaceGame.units
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Update(gameTime);
+
+            //burning visual effect
+            _burningParticleEffect.Spawn(Position, 0.0f, gameTime.ElapsedGameTime, _velocity);
+            _burningParticleEffect.IntensityFactor = _statusEffects.Fire / MAX_STAT_EFFECT;
+            _burningParticleEffect.Update(gameTime);
+
+            //cryo visual effect
+            if (_statusEffects.Cryo > 0 && _lifeState != LifeState.Disabled)
+            {
+                _sprite.Shade = Color.Lerp(Color.White, Color.Blue, _statusEffects.Cryo / MAX_STAT_EFFECT);
+            }
+
             _hitRect.X = (int)Position.X - _hitRect.Width / 2;
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
+
+            //manage stat effects
+            if (_statusEffects.Cryo >= MAX_STAT_EFFECT)
+            {
+                _lifeState = LifeState.Frozen;
+                _statusEffects.Fire = 0;    //stop burning if frozen
+            }
+            else if (_lifeState == LifeState.Frozen && _statusEffects.Cryo <= 0)
+            {
+                _lifeState = LifeState.Living;
+                //still cold after defrosting
+                _statusEffects.Cryo = MAX_STAT_EFFECT / 2;
+            }
+
+            //decrement every stat effect based on status resist
+            _statusEffects -= _statusResist * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _statusEffects.Clamp(0, MAX_STAT_EFFECT);
 
             _sprite.Update(gameTime);
         }
@@ -323,6 +383,7 @@ namespace SpaceGame.units
             {
                 _acceleration.Y += OUT_OF_BOUNDS_ACCEL_FACTOR * (levelHeight - BOUND_BUFFER - Position.Y - _hitRect.Height);
             }
+
         }
 
         /// <summary>
@@ -331,7 +392,8 @@ namespace SpaceGame.units
         /// <param name="direction">Direction to move. Should be normalized for normal movement.</param>
         private void moveThisWay(Vector2 direction, GameTime gameTime)
         {
-            ApplyForce(_moveForce * direction);
+            //apply movement force, taking into account cryo effect (which slows)
+            ApplyForce(_moveForce * direction * (1 - _statusEffects.Cryo / MAX_STAT_EFFECT) );
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Spawn(Center, XnaHelper.DegreesFromVector(-direction), gameTime.ElapsedGameTime, _velocity); 
         }
@@ -396,6 +458,18 @@ namespace SpaceGame.units
             if (!Collides)
                 return;     //don't check collision if unit shouldn't collide
 
+            //check if fire should be transferred
+            float dist = XnaHelper.DistanceBetweenRects(HitRect, other.HitRect);
+            if (dist < FIRE_SPREAD_DISTANCE)
+            {
+                if (_statusEffects.Fire > other._statusEffects.Fire)
+                {
+                    StatEffect transfer = new StatEffect() { Fire = FIRE_SPREAD_FACTOR * dist / FIRE_SPREAD_DISTANCE * _statusEffects.Fire };
+                    other.ApplyStatus(transfer);
+                    ApplyStatus(transfer * -FIRE_SPREAD_LOSS);
+                }
+            }
+
             if (XnaHelper.RectsCollide(HitRect, other.HitRect))
             {
                 temp = other._velocity; //temp is a static reusable vector
@@ -416,8 +490,19 @@ namespace SpaceGame.units
 
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);
+            if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed
+                && _lifeState != LifeState.Dormant)
+            {
+                _burningParticleEffect.Draw(sb);
+            }
 
             _sprite.Draw(sb, Position);
+            if (_lifeState == LifeState.Frozen)
+            {
+                sb.Draw(IceCubeTexture, HitRect, null, 
+                    Color.Lerp(Color.White, Color.Transparent, _statusEffects.Cryo / MAX_STAT_EFFECT), 
+                    0.0f, Vector2.Zero, SpriteEffects.None, 0);
+            }
         }
         #endregion
         #endregion

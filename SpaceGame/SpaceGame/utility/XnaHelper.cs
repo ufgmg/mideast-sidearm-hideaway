@@ -8,6 +8,62 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceGame.utility
 {
+    enum Direction {North, East, South, West}
+
+    /// <summary>
+    /// Represents a 2D line segment
+    /// </summary>
+    struct Segment
+    {
+        public float X1, X2, Y1, Y2;
+
+        public Vector2 Start
+        {
+            get { return new Vector2(X1, Y1); }
+            set { X1 = value.X; Y1 = value.Y; }
+        }
+        public Vector2 End
+        {
+            get { return new Vector2(X2, Y2); }
+            set { X2 = value.X; Y2 = value.Y; }
+        }
+
+        public static Segment FromRectangle(Rectangle rect, Direction side)
+        {
+            Segment seg = new Segment();
+            switch (side)
+            {
+                case Direction.North:
+                    seg.X1 = rect.Left; seg.Y1 = rect.Top;
+                    seg.X2 = rect.Right; seg.Y2 = rect.Top;
+                    break;
+                case Direction.East:
+                    seg.X1 = rect.Right; seg.Y1 = rect.Top;
+                    seg.X2 = rect.Right; seg.Y2 = rect.Bottom;
+                    break;
+                case Direction.South:
+                    seg.X1 = rect.Right; seg.Y1 = rect.Bottom;
+                    seg.X2 = rect.Left; seg.Y2 = rect.Bottom;
+                    break;
+                case Direction.West:
+                    seg.X1 = rect.Left; seg.Y1 = rect.Top;
+                    seg.X2 = rect.Left; seg.Y2 = rect.Bottom;
+                    break;
+            }
+            return seg;
+        }
+
+        public static IEnumerable<Segment> RectangleSides(Rectangle rect)
+        {
+            return new List<Segment>() 
+            {
+                FromRectangle(rect, Direction.North), FromRectangle(rect, Direction.East),
+                FromRectangle(rect, Direction.South), FromRectangle(rect, Direction.West),
+            };
+            
+        }
+    }
+
     static class XnaHelper
     {
         public static Texture2D PixelTexture;
@@ -126,6 +182,11 @@ namespace SpaceGame.utility
             return (0.0f <= u1 && u1 <= 1.0f && 0.0f <= u2 && u2 <= 1.0f);
         }
 
+        public static bool SegmentsIntersect(Segment s1, Segment s2)
+        {
+            return SegmentsIntersect(s1.X1, s1.Y1, s1.X2, s1.Y2, s2.X1, s2.Y1, s1.X2, s2.Y2);
+        }
+
         /// <summary>
         /// return shortest vector between a point and a line segment
         /// </summary>
@@ -148,6 +209,41 @@ namespace SpaceGame.utility
                 return p - w;    //beyond w end of segment
             tempVec1 = v + t * (w - v);     //projection onto segment
             return p - tempVec1;
+        }
+
+        public static float DistanceToSegment(Vector2 point, Segment segment)
+        {
+            return shortestVectorToSegment(segment.Start, segment.End, point).Length();
+        }
+
+        public static float DistanceBetweenSegments(Segment s1, Segment s2)
+        {
+            if (SegmentsIntersect(s1, s2))
+            {
+                return 0;
+            }
+
+            return Math.Min(DistanceToSegment(s1.Start, s2),
+                   Math.Min(DistanceToSegment(s1.End, s2),
+                   Math.Min(DistanceToSegment(s2.Start, s1), 
+                            DistanceToSegment(s2.End, s1))));
+        }
+
+        public static float DistanceBetweenRects(Rectangle r1, Rectangle r2)
+        {
+            if (r1.Intersects(r2))
+                return 0;
+
+            float min = float.MaxValue;
+            foreach (Segment s1 in Segment.RectangleSides(r1))
+            {
+                foreach (Segment s2 in Segment.RectangleSides(r2))
+                {
+                    min = Math.Min(min, DistanceBetweenSegments(s1, s2));
+                }
+            }
+
+            return min;
         }
 
         private static void solveQuadratic(float a, float b, float c, out float result1, out float result2)

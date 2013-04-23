@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Levels>
-  <Level LevelNumber="1" LevelWidth="1280" LevelHeight="720">
+  <Level LevelNumber="1" LevelWidth="3880" LevelHeight="3020">
     <Player X="100" Y="100"/>
     <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="500"/>
     <Unicorn StartTime="4" EndTime="1000" SpawnTime="8"/>

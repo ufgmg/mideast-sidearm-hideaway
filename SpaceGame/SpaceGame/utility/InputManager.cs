@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceGame.utility
 {
-    class InputManager
+    public class InputManager
     {
         #region constants
         const int WHEEL_UNITS_PER_SCROLL = 10;
@@ -22,6 +22,7 @@ namespace SpaceGame.utility
         //- for scroll down, + for scroll up
         int _scrollCounter;
         bool _scrollUp, _scrollDown;
+        Vector2 _cameraOffset;  //use to calculate absolute mouse position
         #endregion
 
         #region properties
@@ -140,7 +141,10 @@ namespace SpaceGame.utility
         }
         public Vector2 MouseLocation
         {
-            get { return new Vector2(currentMouseState.X, currentMouseState.Y); }
+            get 
+            { 
+                return new Vector2(currentMouseState.X + _cameraOffset.X, currentMouseState.Y + _cameraOffset.Y); 
+            }
         }
         public bool Exit
         {
@@ -200,6 +204,11 @@ namespace SpaceGame.utility
         #region methods
         public InputManager()
         { }
+
+        public void SetCameraOffset(Vector2 offset)
+        {
+            _cameraOffset = offset;
+        }
 
         public void Update()
         {

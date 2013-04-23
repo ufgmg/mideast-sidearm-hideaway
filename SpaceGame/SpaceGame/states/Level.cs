@@ -38,7 +38,12 @@ namespace SpaceGame.states
         Unicorn[] _unicorns;
         FoodCart[] _foodCarts;
         Rectangle _levelBounds;
+
         GUI userInterface;
+        Rectangle _cameraLock;
+        Camera2D _camera;
+
+
         #endregion
 
         #region constructor
@@ -50,6 +55,7 @@ namespace SpaceGame.states
             _player = new Spaceman(data.PlayerStartLocation);
             _blackHole = data.BlackHole;
             _waves = new Wave[data.TrickleWaveData.Length + data.BurstWaveData.Length];
+            _camera = new Camera2D(_player.Position, _levelBounds.Width, _levelBounds.Height);
             //construct waves
             for (int i = 0; i < data.TrickleWaveData.Length; i++)
             { 
@@ -60,8 +66,8 @@ namespace SpaceGame.states
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false, _levelBounds);
             }
             //Test code to set weapons 1-6 to created weapons
-            im.setPrimaryWeapon(new ProjectileWeapon("Gatling", _player));
-            im.setSecondaryWeapon(new ProjectileWeapon("Shotgun", _player));
+            im.setPrimaryWeapon(new ProjectileWeapon("FreezeRay", _player));
+            im.setSecondaryWeapon(new ProjectileWeapon("Boomerang", _player));
             im.setPrimaryGadget(new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 }));
 
             //Set Weapon holders in level
@@ -87,8 +93,23 @@ namespace SpaceGame.states
         #region methods
         public override void Update(GameTime gameTime, InputManager input, InventoryManager im)
         {
+            input.SetCameraOffset(_camera.Position);
             handleInput(input);
+            _camera.Update(gameTime, _player.Position);
+            //if player is outside static area rectangle, call update on camera to update position of camera until
+            //the player is in the static area rectangle or the camera reaches the _levelbounds, in which case,
+            //the camera does not move in that direction (locks)
 
+            /*
+            if ((_player.HitRect.Bottom > _cameraLock.Bottom && _player.HitRect.Top < _cameraLock.Top &&
+            _player.HitRect.Right < _cameraLock.Right && _player.HitRect.Left > _cameraLock.Left) && (player is in level bounds)
+            {
+             * _camera.Update(gameTime);
+             * _cameraLock.X = (int)(_camera.position.X + (_camera.getViewportWidth() * 0.2));
+             * _cameraLock.Y = (int)(_camera.position.Y + (_camera.getViewportHeight() * 0.2));
+             * 
+            }*/
+           
             if (_primaryGadget.Active)
                 gameTime = new GameTime(gameTime.TotalGameTime, 
                     TimeSpan.FromSeconds((float)gameTime.ElapsedGameTime.TotalSeconds / 2));
@@ -101,6 +122,7 @@ namespace SpaceGame.states
             _primaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
+
             if (_blackHole.State == BlackHole.BlackHoleState.Overdrive)
             {
                 foreach (Wave w in _waves)
@@ -112,7 +134,7 @@ namespace SpaceGame.states
                     u.SpawnEnable = false;
                 }
             }
-
+          
             for (int i = 0; i < _waves.Length; i++)
             {
                 _waves[i].Update(gameTime, _player, _blackHole, _primaryWeapon, _secondaryWeapon, _unicorns);
@@ -184,23 +206,34 @@ namespace SpaceGame.states
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, _camera.TransformMatrix());
+            
             _blackHole.Draw(spriteBatch);
             _player.Draw(spriteBatch);
             _primaryWeapon.Draw(spriteBatch);
             _secondaryWeapon.Draw(spriteBatch);
+			
             foreach (FoodCart cart in _foodCarts)
             {
                 cart.Draw(spriteBatch);
             }
+
             foreach (Wave wave in _waves)
             {
                 wave.Draw(spriteBatch);
             }
+			
             foreach (Unicorn unicorn in _unicorns)
             {
                 unicorn.Draw(spriteBatch);
             }
+            spriteBatch.End();
+
+            spriteBatch.Begin();
             userInterface.draw(spriteBatch);
+            spriteBatch.End();
+
         }
         #endregion
     }

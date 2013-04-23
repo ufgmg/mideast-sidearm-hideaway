@@ -11,4 +11,6 @@
   <SpriteData Name="FoodCart" AssetName="Food_Cart" FrameWidth="897" FrameHeight="574" NumFrames="1" NumStates="1" DefaultScale ="0.13" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="Bullet" AssetName="Bullet" FrameWidth="3" FrameHeight="15" NumFrames="1" NumStates="1" DefaultScale ="1.00" SecondsPerAnimation="0.5" ZLayer="0" />
   <SpriteData Name="GravityWell" AssetName="GravityWell" FrameWidth="48" FrameHeight="48" NumFrames="1" NumStates="1" DefaultScale ="0.10" SecondsPerAnimation="0.5" ZLayer="0" />
+  <SpriteData Name="FreezeRay" AssetName="BlueCircle" FrameWidth="24" FrameHeight="24" NumFrames="1" NumStates="1" DefaultScale ="0.10" SecondsPerAnimation="0.5" ZLayer="0" />
+  <SpriteData Name="Boomerang" AssetName="Boomerang" FrameWidth="48" FrameHeight="48" NumFrames="1" NumStates="1" DefaultScale ="0.40" SecondsPerAnimation="0.5" ZLayer="0" />
 </SpriteDatas>
