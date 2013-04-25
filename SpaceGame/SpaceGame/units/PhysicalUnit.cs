@@ -51,7 +51,7 @@ namespace SpaceGame.units
         //amount of health ice fragments have relative to unit
         const float FRAGMENT_HEALTH_FACTOR = 0.5f;
         //max velocity of an ice fragment (px/second)
-        const float FRAGMENT_MAX_VELOCITY = 200.0f;
+        const float FRAGMENT_MAX_VELOCITY = 400.0f;
         //max angular velocity of an ice fragment (radians/second)
         const float FRAGMENT_MAX_ANGULAR_VELOCITY = 6.0f;
         #endregion
@@ -262,7 +262,8 @@ namespace SpaceGame.units
 
         public void ApplyDamage(float Damage)
         {
-            if (Damage == 0.0f || _lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)
+            if (Damage == 0.0f || _lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten
+                || _lifeState == LifeState.Shattered)
                 return;
 
             if (_lifeState == LifeState.Frozen)
@@ -360,8 +361,8 @@ namespace SpaceGame.units
                         for (int y = 0; y < ICE_DIVISIONS; y++)
                             for (int x = 0; x < ICE_DIVISIONS; x++)
                             {
-                                _fragments[x, y].Angle += _fragments[x, y].AngularVelocity;
-                                _fragments[x, y].Position += _fragments[x, y].Velocity;
+                                _fragments[x, y].Angle += _fragments[x, y].AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].Position += _fragments[x, y].Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                             }
                         return;
                     }
@@ -471,6 +472,8 @@ namespace SpaceGame.units
 
         public void Respawn(Vector2 newPosition)
         {
+            System.Diagnostics.Debug.Assert(_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant,
+                "Error: Tried to respawn an enemy that was not destroyed or dormant");
             Position = newPosition;
             _lifeState = LifeState.Living;
             Reset();
@@ -556,7 +559,9 @@ namespace SpaceGame.units
                 for (int y = 0 ; y < ICE_DIVISIONS ; y++)
                     for (int x = 0; x < ICE_DIVISIONS; x++)
                     {
-                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, _fragments[y, x].Position, _fragments[y, x].Angle);
+                        XnaHelper.DrawRect(Color.Blue, new Rectangle((int)_fragments[y,x].Position.X - 10,
+                                            (int)_fragments[y, x].Position.Y - 10, 20, 20), sb);
+                        //_sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, _fragments[y, x].Position, _fragments[y, x].Angle);
                     }
                 return;
             }

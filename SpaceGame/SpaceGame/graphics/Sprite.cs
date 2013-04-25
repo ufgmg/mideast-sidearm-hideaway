@@ -252,8 +252,8 @@ namespace SpaceGame.graphics
             tempRect.Y += tempRect.Height * row / numDivisions;
             tempRect.Width /= numDivisions;
             tempRect.Height /= numDivisions;
-            Rectangle r = new Rectangle(position.X - W, position.Y, 
-            SpaceGame.utility.XnaHelper.DrawRect(Color.Blue, tempRect, batch);
+            //Rectangle r = new Rectangle(position.X - W, position.Y, 
+            //SpaceGame.utility.XnaHelper.DrawRect(Color.Blue, tempRect, batch);
             //batch.Draw(_spriteSheet, position, tempRect, Shade, angle, _textureCenter, Scale, SpriteEffects.None, _zLayer);
         }
 
