@@ -17,6 +17,7 @@ namespace SpaceGame.graphics
         
         #region static
         public static ContentManager Content;
+        static Rectangle tempRect;   //temporary rectangle for cross instance use
         #endregion
 
         #region fields
@@ -111,6 +112,8 @@ namespace SpaceGame.graphics
         public Vector2 Center {get {return new Vector2(_size.Center.X, _size.Center.Y);}}
         public float Height { get { return _size.Bottom; } }
         public float Width { get { return _size.Right; } }
+        public float FrameHeight { get { return _frameHeight; } }
+        public float FrameWidth { get { return _frameWidth; } }
         public TimeSpan FullAnimationTime
         {
             get 
@@ -240,6 +243,18 @@ namespace SpaceGame.graphics
             else
                 batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
                     Scale, SpriteEffects.None, _zLayer);
+        }
+
+        public void DrawFragment(SpriteBatch batch, int row, int col, int numDivisions, Vector2 position, float angle)
+        {
+            tempRect = _rects[_currentState, _currentFrame];
+            tempRect.X += tempRect.Width * col / numDivisions;
+            tempRect.Y += tempRect.Height * row / numDivisions;
+            tempRect.Width /= numDivisions;
+            tempRect.Height /= numDivisions;
+            Rectangle r = new Rectangle(position.X - W, position.Y, 
+            SpaceGame.utility.XnaHelper.DrawRect(Color.Blue, tempRect, batch);
+            //batch.Draw(_spriteSheet, position, tempRect, Shade, angle, _textureCenter, Scale, SpriteEffects.None, _zLayer);
         }
 
         #endregion

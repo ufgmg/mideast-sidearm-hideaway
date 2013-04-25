@@ -17,6 +17,17 @@ namespace SpaceGame.units
     /// </summary>
     class PhysicalUnit
     {
+        #region classes/structs
+        struct IceFragment
+        {
+            public Vector2 Position;
+            public Vector2 Velocity;
+            public float Angle;
+            public float AngularVelocity;
+            public float Health;
+        }
+        #endregion
+
         #region constant
         //factor of force applied based on distance out of bounds
         const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
@@ -32,12 +43,24 @@ namespace SpaceGame.units
         const float FIRE_SPREAD_FACTOR = 0.40f;   
         //portion of transfered fire deducted from transferer
         const float FIRE_SPREAD_LOSS = 0.0002f;   
+        //factor of max health used to represent frozen integrity
+        //damage is dealt to this while frozen - shatter if < 0
+        const float ICE_INTEGRITY_FACTOR = 0.5f;
+        //number of vertical and horizontal divisions when shattering
+        const int ICE_DIVISIONS = 3;
+        //amount of health ice fragments have relative to unit
+        const float FRAGMENT_HEALTH_FACTOR = 0.5f;
+        //max velocity of an ice fragment (px/second)
+        const float FRAGMENT_MAX_VELOCITY = 200.0f;
+        //max angular velocity of an ice fragment (radians/second)
+        const float FRAGMENT_MAX_ANGULAR_VELOCITY = 6.0f;
         #endregion
 
         #region static members
 
-        //reusable Vector2 for calculations
+        //reusable Vector2 and rect for calculations
         static Vector2 temp;
+        static Rectangle tempRec;
         public static Texture2D IceCubeTexture;
         #endregion
         #region fields
@@ -68,6 +91,8 @@ namespace SpaceGame.units
         float _decelerationFactor;
         StatEffect _statusEffects, _statusResist;
         ParticleEffect _burningParticleEffect;
+        float _iceIntegrity;
+        IceFragment[,] _fragments;
         #endregion
 
         #region properties
@@ -138,7 +163,7 @@ namespace SpaceGame.units
         //behavioral properties
         public bool Collides
         {
-            get { return _lifeState == LifeState.Living || _lifeState == LifeState.Disabled; }
+            get { return Updates && (_lifeState != LifeState.Ghost); }
         }
         public bool Updates
         {
@@ -166,6 +191,7 @@ namespace SpaceGame.units
             Living,
             Stunned,
             Frozen,         //hit max cryo effect, cannot move
+            Shattered,      //shattered into fragments after being frozen
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
             BeingEaten,     //being consumed by black hole
             Destroyed,      //no longer Update or Draw
@@ -205,6 +231,8 @@ namespace SpaceGame.units
 
             _statusEffects = new StatEffect(0, 0, 0);
             _statusResist = new StatEffect(pd.FireResist, pd.CryoResist, pd.ShockResist);
+
+            _fragments = new IceFragment[ICE_DIVISIONS, ICE_DIVISIONS];
         }
 
         #endregion
@@ -237,6 +265,16 @@ namespace SpaceGame.units
             if (Damage == 0.0f || _lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)
                 return;
 
+            if (_lifeState == LifeState.Frozen)
+            {   //attempt to shatter ice
+                _iceIntegrity -= Damage;
+                if (_iceIntegrity < 0)
+                {
+                    shatter();
+                }
+                return;
+            }
+
             _health -= Damage;
             if (_health <= 0)
             {
@@ -246,6 +284,21 @@ namespace SpaceGame.units
             }
             else
                 _sprite.Flash(Color.Orange, TimeSpan.FromSeconds(0.1), 3);
+        }
+
+        private void shatter()
+        {
+            _lifeState = LifeState.Shattered;
+            for (int row = 0; row < ICE_DIVISIONS; row++)
+                for (int col = 0 ; col < ICE_DIVISIONS ; col++)
+                {
+                    _fragments[row, col].Health = maxHealth * ICE_INTEGRITY_FACTOR;
+                    _fragments[row, col].Position.X = Position.X + (0.5f + _sprite.Width * (float)col / ICE_DIVISIONS);
+                    _fragments[row, col].Position.Y = Position.Y + (0.5f + _sprite.Height * (float)row / ICE_DIVISIONS);
+                    XnaHelper.RandomizeVector(ref _fragments[row,col].Velocity, 0, FRAGMENT_MAX_VELOCITY, 0, FRAGMENT_MAX_VELOCITY);
+                    _fragments[row, col].Angle = 0f;
+                    _fragments[row, col].AngularVelocity = XnaHelper.RandomAngle(0.0f, FRAGMENT_MAX_ANGULAR_VELOCITY);
+                }
         }
 
         /// <summary>
@@ -277,7 +330,6 @@ namespace SpaceGame.units
         #region Update Logic
         public virtual void Update(GameTime gameTime, Rectangle levelBounds)
         {
-
             switch(_lifeState)
             {
                 case LifeState.Living:
@@ -292,11 +344,26 @@ namespace SpaceGame.units
 
                         break;
                     }
-
                 case LifeState.Disabled:
                 case LifeState.Frozen:
                     {
+                        if (_statusEffects.Cryo <= 0)
+                        {
+                            _lifeState = LifeState.Living;
+                            //still cold after defrosting
+                            _statusEffects.Cryo = MAX_STAT_EFFECT / 2;
+                        }
                         break;
+                    }
+                case LifeState.Shattered:
+                    {
+                        for (int y = 0; y < ICE_DIVISIONS; y++)
+                            for (int x = 0; x < ICE_DIVISIONS; x++)
+                            {
+                                _fragments[x, y].Angle += _fragments[x, y].AngularVelocity;
+                                _fragments[x, y].Position += _fragments[x, y].Velocity;
+                            }
+                        return;
                     }
                 case LifeState.BeingEaten:
                     {
@@ -340,16 +407,11 @@ namespace SpaceGame.units
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
 
             //manage stat effects
-            if (_statusEffects.Cryo >= MAX_STAT_EFFECT)
+            if (_statusEffects.Cryo >= MAX_STAT_EFFECT && _lifeState != LifeState.Frozen)
             {
                 _lifeState = LifeState.Frozen;
+                _iceIntegrity = maxHealth * ICE_INTEGRITY_FACTOR;
                 _statusEffects.Fire = 0;    //stop burning if frozen
-            }
-            else if (_lifeState == LifeState.Frozen && _statusEffects.Cryo <= 0)
-            {
-                _lifeState = LifeState.Living;
-                //still cold after defrosting
-                _statusEffects.Cryo = MAX_STAT_EFFECT / 2;
             }
 
             //decrement every stat effect based on status resist
@@ -488,6 +550,17 @@ namespace SpaceGame.units
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
                 return;     //dont draw destroyed or not yet spawned sprites
 
+            //special shattered drawing logic
+            if (_lifeState == LifeState.Shattered)
+            {
+                for (int y = 0 ; y < ICE_DIVISIONS ; y++)
+                    for (int x = 0; x < ICE_DIVISIONS; x++)
+                    {
+                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, _fragments[y, x].Position, _fragments[y, x].Angle);
+                    }
+                return;
+            }
+
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);
             if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed
@@ -500,7 +573,7 @@ namespace SpaceGame.units
             if (_lifeState == LifeState.Frozen)
             {
                 sb.Draw(IceCubeTexture, HitRect, null, 
-                    Color.Lerp(Color.White, Color.Transparent, _statusEffects.Cryo / MAX_STAT_EFFECT), 
+                    Color.Lerp(Color.Transparent, Color.White, _statusEffects.Cryo / MAX_STAT_EFFECT), 
                     0.0f, Vector2.Zero, SpriteEffects.None, 0);
             }
         }
