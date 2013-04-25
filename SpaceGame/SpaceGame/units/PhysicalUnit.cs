@@ -54,6 +54,8 @@ namespace SpaceGame.units
         const float FRAGMENT_MAX_VELOCITY = 400.0f;
         //max angular velocity of an ice fragment (radians/second)
         const float FRAGMENT_MAX_ANGULAR_VELOCITY = 6.0f;
+        //how much of unit velocity to transfer to fragments on shatter
+        const float FRAGMENT_VELOCITY_FACTOR = 0.3f;
         #endregion
 
         #region static members
@@ -296,7 +298,10 @@ namespace SpaceGame.units
                     _fragments[row, col].Health = maxHealth * ICE_INTEGRITY_FACTOR;
                     _fragments[row, col].Position.X = Position.X + (0.5f + _sprite.Width * (float)col / ICE_DIVISIONS);
                     _fragments[row, col].Position.Y = Position.Y + (0.5f + _sprite.Height * (float)row / ICE_DIVISIONS);
-                    XnaHelper.RandomizeVector(ref _fragments[row,col].Velocity, 0, FRAGMENT_MAX_VELOCITY, 0, FRAGMENT_MAX_VELOCITY);
+                    XnaHelper.RandomizeVector(ref _fragments[row,col].Velocity, -FRAGMENT_MAX_VELOCITY, FRAGMENT_MAX_VELOCITY, 
+                                                -FRAGMENT_MAX_VELOCITY, FRAGMENT_MAX_VELOCITY);
+                    Vector2.Add(ref _fragments[row, col].Velocity, ref _velocity, out _fragments[row, col].Velocity);
+                    Vector2.Multiply(ref _fragments[row, col].Velocity, FRAGMENT_VELOCITY_FACTOR, out _fragments[row, col].Velocity);
                     _fragments[row, col].Angle = 0f;
                     _fragments[row, col].AngularVelocity = XnaHelper.RandomAngle(0.0f, FRAGMENT_MAX_ANGULAR_VELOCITY);
                 }
@@ -559,9 +564,7 @@ namespace SpaceGame.units
                 for (int y = 0 ; y < ICE_DIVISIONS ; y++)
                     for (int x = 0; x < ICE_DIVISIONS; x++)
                     {
-                        XnaHelper.DrawRect(Color.Blue, new Rectangle((int)_fragments[y,x].Position.X - 10,
-                                            (int)_fragments[y, x].Position.Y - 10, 20, 20), sb);
-                        //_sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, _fragments[y, x].Position, _fragments[y, x].Angle);
+                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, _fragments[y, x].Position, _fragments[y, x].Angle);
                     }
                 return;
             }
