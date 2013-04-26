@@ -527,6 +527,29 @@ namespace SpaceGame.units
         {
             if (!Collides)
                 return;     //don't check collision if unit shouldn't collide
+            //special shattered collision detection
+            if (_lifeState == LifeState.Shattered)
+            {
+                tempRec.Width = _hitRect.Width / ICE_DIVISIONS;
+                tempRec.Height = _hitRect.Height / ICE_DIVISIONS;
+                for (int i = 0; i < ICE_DIVISIONS ; i++)
+                    for (int j = 0; j < ICE_DIVISIONS; j++)
+                    {
+                        tempRec.X = (int)(_fragments[i,j].Position.X - tempRec.Width / 2);
+                        tempRec.Y = (int)(_fragments[i,j].Position.Y - tempRec.Height / 2);
+                        if (tempRec.Intersects(other.HitRect))
+                        {
+                            Vector2 fVel = _fragments[i, j].Velocity;
+                            float fMass = (float)Mass / (ICE_DIVISIONS * ICE_DIVISIONS);
+                            temp = other.Velocity;
+                            other._velocity = (other._velocity * (other.Mass - fMass) + 2 * fMass * fVel) /
+                                                (fMass + other.Mass);
+                            _fragments[i,j].Velocity = (fVel * (fMass - other.Mass) + 2 * other.Mass * temp) /
+                                                (fMass + other.Mass);
+                        }
+                    }
+                return; //ignore normal collision detection
+            }
 
             //check if fire should be transferred
             float dist = XnaHelper.DistanceBetweenRects(HitRect, other.HitRect);
@@ -558,13 +581,20 @@ namespace SpaceGame.units
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
                 return;     //dont draw destroyed or not yet spawned sprites
 
+
             //special shattered drawing logic
             if (_lifeState == LifeState.Shattered)
             {
-                for (int y = 0 ; y < ICE_DIVISIONS ; y++)
+                tempRec.Width = _hitRect.Width / ICE_DIVISIONS;
+                tempRec.Height = _hitRect.Height / ICE_DIVISIONS;
+
+                for (int y = 0; y < ICE_DIVISIONS; y++)
                     for (int x = 0; x < ICE_DIVISIONS; x++)
                     {
                         _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, _fragments[y, x].Position, _fragments[y, x].Angle);
+                        tempRec.X = (int)(_fragments[y,x].Position.X - tempRec.Width / 2);
+                        tempRec.Y = (int)(_fragments[y,x].Position.Y - tempRec.Height / 2);
+                        XnaHelper.DrawRect(Color.Red, tempRec, sb);
                     }
                 return;
             }
@@ -580,8 +610,8 @@ namespace SpaceGame.units
             _sprite.Draw(sb, Position);
             if (_lifeState == LifeState.Frozen)
             {
-                sb.Draw(IceCubeTexture, HitRect, null, 
-                    Color.Lerp(Color.Transparent, Color.White, _statusEffects.Cryo / MAX_STAT_EFFECT), 
+                sb.Draw(IceCubeTexture, HitRect, null,
+                    Color.Lerp(Color.Transparent, Color.White, _statusEffects.Cryo / MAX_STAT_EFFECT),
                     0.0f, Vector2.Zero, SpriteEffects.None, 0);
             }
         }

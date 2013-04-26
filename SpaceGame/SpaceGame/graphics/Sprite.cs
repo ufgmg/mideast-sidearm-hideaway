@@ -252,7 +252,7 @@ namespace SpaceGame.graphics
             tempRect.Y += tempRect.Height * row / numDivisions;
             tempRect.Width /= numDivisions;
             tempRect.Height /= numDivisions;
-            batch.Draw(_spriteSheet, position, tempRect, Shade, angle, _textureCenter, Scale * 2, SpriteEffects.None, _zLayer);
+            batch.Draw(_spriteSheet, position, tempRect, Shade, angle, _textureCenter / numDivisions, Scale * 2, SpriteEffects.None, _zLayer);
         }
 
         #endregion
