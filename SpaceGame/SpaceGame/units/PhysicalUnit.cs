@@ -56,6 +56,8 @@ namespace SpaceGame.units
         const float FRAGMENT_MAX_ANGULAR_VELOCITY = 6.0f;
         //how much of unit velocity to transfer to fragments on shatter
         const float FRAGMENT_VELOCITY_FACTOR = 0.3f;
+        //How much integrity ice fragments lose per second (how fast ice fragments melt)
+        const float FRAGMENT_MELT_RATE = 10;
         #endregion
 
         #region static members
@@ -63,7 +65,6 @@ namespace SpaceGame.units
         //reusable Vector2 and rect for calculations
         static Vector2 temp;
         static Rectangle tempRec;
-        public static Texture2D IceCubeTexture;
         #endregion
         #region fields
         string _unitName;
@@ -295,7 +296,7 @@ namespace SpaceGame.units
             for (int row = 0; row < ICE_DIVISIONS; row++)
                 for (int col = 0 ; col < ICE_DIVISIONS ; col++)
                 {
-                    _fragments[row, col].Health = maxHealth * ICE_INTEGRITY_FACTOR;
+                    _fragments[row, col].Health = maxHealth * ICE_INTEGRITY_FACTOR * _statusEffects.Cryo / MAX_STAT_EFFECT;
                     _fragments[row, col].Position.X = Position.X + (0.5f + _sprite.Width * (float)col / ICE_DIVISIONS);
                     _fragments[row, col].Position.Y = Position.Y + (0.5f + _sprite.Height * (float)row / ICE_DIVISIONS);
                     XnaHelper.RandomizeVector(ref _fragments[row,col].Velocity, -FRAGMENT_MAX_VELOCITY, FRAGMENT_MAX_VELOCITY, 
@@ -368,6 +369,7 @@ namespace SpaceGame.units
                             {
                                 _fragments[x, y].Angle += _fragments[x, y].AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 _fragments[x, y].Position += _fragments[x, y].Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].Health -= FRAGMENT_MELT_RATE * (float)gameTime.ElapsedGameTime.TotalSeconds;
                             }
                         return;
                     }
@@ -468,7 +470,19 @@ namespace SpaceGame.units
 
         public void ApplyGravity(Gravity gravity, GameTime theGameTime)
         {
-            Vector2 direction = gravity.Position - Position;
+            Vector2 direction;
+            if (_lifeState == LifeState.Shattered)
+            {
+                for (int y = 0; y < ICE_DIVISIONS; y++)
+                    for (int x = 0; x < ICE_DIVISIONS; x++)
+                    {
+                        direction = gravity.Position - _fragments[y,x].Position;
+                        direction.Normalize();
+                        _fragments[y, x].Velocity += direction * gravity.Magnitude 
+                            * (float)Math.Pow(theGameTime.ElapsedGameTime.TotalSeconds, 2);
+                    }
+            }
+            direction = gravity.Position - Position;
             //float distance = direction.Length();
             direction.Normalize();
             //_acceleration += gravity.Magnitude * direction * (float)theGameTime.ElapsedGameTime.TotalSeconds / (distance * 0.01f);
@@ -576,6 +590,7 @@ namespace SpaceGame.units
         #endregion
 
         #region Draw Logic
+        float debug;
         public virtual void Draw(SpriteBatch sb)
         {
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
@@ -591,10 +606,10 @@ namespace SpaceGame.units
                 for (int y = 0; y < ICE_DIVISIONS; y++)
                     for (int x = 0; x < ICE_DIVISIONS; x++)
                     {
-                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, _fragments[y, x].Position, _fragments[y, x].Angle);
                         tempRec.X = (int)(_fragments[y,x].Position.X - tempRec.Width / 2);
                         tempRec.Y = (int)(_fragments[y,x].Position.Y - tempRec.Height / 2);
-                        XnaHelper.DrawRect(Color.Red, tempRec, sb);
+                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, tempRec, _fragments[y, x].Angle, _fragments[y,x].Health / (maxHealth * ICE_INTEGRITY_FACTOR));
+                        _sprite.DrawIce(sb, tempRec, _fragments[y, x].Angle, _fragments[y,x].Health / (maxHealth * ICE_INTEGRITY_FACTOR));
                     }
                 return;
             }
@@ -608,11 +623,13 @@ namespace SpaceGame.units
             }
 
             _sprite.Draw(sb, Position);
+
             if (_lifeState == LifeState.Frozen)
             {
-                sb.Draw(IceCubeTexture, HitRect, null,
-                    Color.Lerp(Color.Transparent, Color.White, _statusEffects.Cryo / MAX_STAT_EFFECT),
-                    0.0f, Vector2.Zero, SpriteEffects.None, 0);
+                tempRec = HitRect;
+                tempRec.X += (int)(HitRect.Width / 2);
+                tempRec.Y += (int)(HitRect.Height / 2);
+                _sprite.DrawIce(sb, tempRec, _sprite.Angle, _statusEffects.Cryo / MAX_STAT_EFFECT);
             }
         }
         #endregion

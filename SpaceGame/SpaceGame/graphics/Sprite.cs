@@ -13,11 +13,23 @@ namespace SpaceGame.graphics
     {
         #region constant
         const string SPRITE_FOLDER_PATH = "spritesheets/";
+        const float ICE_OPACITY_FACTOR = 0.5f;
         #endregion
         
         #region static
         public static ContentManager Content;
         static Rectangle tempRect;   //temporary rectangle for cross instance use
+        public static Texture2D IceCubeTexture
+        {
+            get {return iceCubeTexture;}
+            set 
+            { 
+                iceCubeTexture = value;
+                iceCubeTextureCenter = new Vector2(iceCubeTexture.Width / 2, iceCubeTexture.Height / 2);
+            }
+        }
+        static Texture2D iceCubeTexture;
+        static Vector2 iceCubeTextureCenter;
         #endregion
 
         #region fields
@@ -245,14 +257,22 @@ namespace SpaceGame.graphics
                     Scale, SpriteEffects.None, _zLayer);
         }
 
-        public void DrawFragment(SpriteBatch batch, int row, int col, int numDivisions, Vector2 position, float angle)
+        public void DrawFragment(SpriteBatch batch, int row, int col, int numDivisions, Rectangle drawRect, float angle, float opacity)
         {
             tempRect = _rects[_currentState, _currentFrame];
             tempRect.X += tempRect.Width * col / numDivisions;
             tempRect.Y += tempRect.Height * row / numDivisions;
             tempRect.Width /= numDivisions;
             tempRect.Height /= numDivisions;
-            batch.Draw(_spriteSheet, position, tempRect, Shade, angle, _textureCenter / numDivisions, Scale * 2, SpriteEffects.None, _zLayer);
+            batch.Draw(_spriteSheet, drawRect, tempRect, Color.Lerp(Color.Transparent, Color.White, opacity),
+                angle, _textureCenter / numDivisions, SpriteEffects.None, _zLayer);
+        }
+
+        public void DrawIce(SpriteBatch batch, Rectangle rect, float angle, float opacity)
+        {
+            batch.Draw(IceCubeTexture, rect, null,
+                Color.Lerp(Color.Transparent, Color.White, opacity * ICE_OPACITY_FACTOR),
+                angle, iceCubeTextureCenter, SpriteEffects.None, 0);
         }
 
         #endregion
