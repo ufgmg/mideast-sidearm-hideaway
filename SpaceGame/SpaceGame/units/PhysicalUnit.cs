@@ -25,6 +25,8 @@ namespace SpaceGame.units
             public float Angle;
             public float AngularVelocity;
             public float Health;
+            public float ScaleFactor;
+            public bool BeingEaten;
         }
         #endregion
 
@@ -34,6 +36,9 @@ namespace SpaceGame.units
         const float BOUND_BUFFER = 20;
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
+
+        //how fast units scale down when being eaten by black hole
+        const float BLACK_HOLE_EAT_SCALE_FACTOR = 1.5f;
 
         //status effect constants
         const float MAX_STAT_EFFECT = 100;
@@ -305,23 +310,36 @@ namespace SpaceGame.units
                     Vector2.Multiply(ref _fragments[row, col].Velocity, FRAGMENT_VELOCITY_FACTOR, out _fragments[row, col].Velocity);
                     _fragments[row, col].Angle = 0f;
                     _fragments[row, col].AngularVelocity = XnaHelper.RandomAngle(0.0f, FRAGMENT_MAX_ANGULAR_VELOCITY);
+                    _fragments[row, col].ScaleFactor = 1f;
                 }
         }
 
         /// <summary>
         /// Attempt to absorb unit into black hole. 
         /// </summary>
-        /// <returns>Whether unit was successfully eaten</returns>
-        public virtual bool EatByBlackHole()
+        /// <returns>Amount of mass eaten
+        public virtual float EatByBlackHole(Vector2 blackHolePos, float blackHoleRadius)
         {
+            if (_lifeState == LifeState.Shattered)      //special handling
+            {
+                for (int row = 0; row < ICE_DIVISIONS; row++)
+                    for (int col = 0; col < ICE_DIVISIONS; col++)
+                    {
+                        if (Vector2.Distance(_fragments[row, col].Position, blackHolePos) < blackHoleRadius)
+                        {
+                            _fragments[row, col].BeingEaten = true;
+                        }
+                    }
+            }
+
             if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed 
-                && _lifeState != LifeState.Ghost)
+                && _lifeState != LifeState.Ghost && blackHoleRadius > (Center - blackHolePos).Length())
             {
                 _lifeState = LifeState.BeingEaten;
                 _angularVelocity = 4 * MathHelper.TwoPi;
-                return true;
+                return Mass;
             }
-            return false;
+            return 0;
         }
 
         public void FlyToPoint(Vector2 pos, TimeSpan time)
@@ -370,12 +388,17 @@ namespace SpaceGame.units
                                 _fragments[x, y].Angle += _fragments[x, y].AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 _fragments[x, y].Position += _fragments[x, y].Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 _fragments[x, y].Health -= FRAGMENT_MELT_RATE * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                if (_fragments[x, y].BeingEaten)
+                                {
+                                    _fragments[x, y].ScaleFactor -= BLACK_HOLE_EAT_SCALE_FACTOR * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                    _fragments[x, y].Health = _fragments[x, y].ScaleFactor < 0 ? 0 : _fragments[x, y].Health;
+                                }
                             }
                         return;
                     }
                 case LifeState.BeingEaten:
                     {
-                        _sprite.ScaleFactor -= 1.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        _sprite.ScaleFactor -= BLACK_HOLE_EAT_SCALE_FACTOR * (float)gameTime.ElapsedGameTime.TotalSeconds;
                         if (_sprite.ScaleFactor <= 0)
                             _lifeState = LifeState.Destroyed;
                         break;
@@ -590,7 +613,6 @@ namespace SpaceGame.units
         #endregion
 
         #region Draw Logic
-        float debug;
         public virtual void Draw(SpriteBatch sb)
         {
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
