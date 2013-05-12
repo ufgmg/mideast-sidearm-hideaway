@@ -27,6 +27,7 @@ namespace SpaceGame.units
             public float Health;
             public float ScaleFactor;
             public bool BeingEaten;
+            public bool Active;
         }
         #endregion
 
@@ -54,7 +55,7 @@ namespace SpaceGame.units
         //number of vertical and horizontal divisions when shattering
         const int ICE_DIVISIONS = 3;
         //amount of health ice fragments have relative to unit
-        const float FRAGMENT_HEALTH_FACTOR = 0.5f;
+        const float FRAGMENT_HEALTH = 20;
         //max velocity of an ice fragment (px/second)
         const float FRAGMENT_MAX_VELOCITY = 400.0f;
         //max angular velocity of an ice fragment (radians/second)
@@ -62,7 +63,10 @@ namespace SpaceGame.units
         //how much of unit velocity to transfer to fragments on shatter
         const float FRAGMENT_VELOCITY_FACTOR = 0.3f;
         //How much integrity ice fragments lose per second (how fast ice fragments melt)
-        const float FRAGMENT_MELT_RATE = 10;
+        const float FRAGMENT_MELT_RATE = 3;
+        //How much integrity ice fragments lose per second while black hole is eating
+        const float FRAGMENT_EAT_RATE = 90;
+        const float FRAGMENT_SCALE_FACTOR = 2.0f;
         #endregion
 
         #region static members
@@ -301,7 +305,7 @@ namespace SpaceGame.units
             for (int row = 0; row < ICE_DIVISIONS; row++)
                 for (int col = 0 ; col < ICE_DIVISIONS ; col++)
                 {
-                    _fragments[row, col].Health = maxHealth * ICE_INTEGRITY_FACTOR * _statusEffects.Cryo / MAX_STAT_EFFECT;
+                    _fragments[row, col].Health = FRAGMENT_HEALTH * _statusEffects.Cryo / MAX_STAT_EFFECT;
                     _fragments[row, col].Position.X = Position.X + (0.5f + _sprite.Width * (float)col / ICE_DIVISIONS);
                     _fragments[row, col].Position.Y = Position.Y + (0.5f + _sprite.Height * (float)row / ICE_DIVISIONS);
                     XnaHelper.RandomizeVector(ref _fragments[row,col].Velocity, -FRAGMENT_MAX_VELOCITY, FRAGMENT_MAX_VELOCITY, 
@@ -311,6 +315,7 @@ namespace SpaceGame.units
                     _fragments[row, col].Angle = 0f;
                     _fragments[row, col].AngularVelocity = XnaHelper.RandomAngle(0.0f, FRAGMENT_MAX_ANGULAR_VELOCITY);
                     _fragments[row, col].ScaleFactor = 1f;
+                    _fragments[row, col].Active = true;
                 }
         }
 
@@ -388,10 +393,10 @@ namespace SpaceGame.units
                                 _fragments[x, y].Angle += _fragments[x, y].AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 _fragments[x, y].Position += _fragments[x, y].Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 _fragments[x, y].Health -= FRAGMENT_MELT_RATE * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].ScaleFactor = _fragments[x,y].Health / FRAGMENT_HEALTH * FRAGMENT_SCALE_FACTOR;
                                 if (_fragments[x, y].BeingEaten)
                                 {
-                                    _fragments[x, y].ScaleFactor -= BLACK_HOLE_EAT_SCALE_FACTOR * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                                    _fragments[x, y].Health = _fragments[x, y].ScaleFactor < 0 ? 0 : _fragments[x, y].Health;
+                                    _fragments[x, y].Health -= FRAGMENT_EAT_RATE * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 }
                             }
                         return;
@@ -622,16 +627,17 @@ namespace SpaceGame.units
             //special shattered drawing logic
             if (_lifeState == LifeState.Shattered)
             {
-                tempRec.Width = _hitRect.Width / ICE_DIVISIONS;
-                tempRec.Height = _hitRect.Height / ICE_DIVISIONS;
-
+                float integrityFactor;
                 for (int y = 0; y < ICE_DIVISIONS; y++)
                     for (int x = 0; x < ICE_DIVISIONS; x++)
                     {
+                        integrityFactor = _fragments[y,x].Health / (FRAGMENT_HEALTH);
                         tempRec.X = (int)(_fragments[y,x].Position.X - tempRec.Width / 2);
                         tempRec.Y = (int)(_fragments[y,x].Position.Y - tempRec.Height / 2);
-                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, tempRec, _fragments[y, x].Angle, _fragments[y,x].Health / (maxHealth * ICE_INTEGRITY_FACTOR));
-                        _sprite.DrawIce(sb, tempRec, _fragments[y, x].Angle, _fragments[y,x].Health / (maxHealth * ICE_INTEGRITY_FACTOR));
+                        tempRec.Width = (int)(_hitRect.Width * _fragments[y,x].ScaleFactor / ICE_DIVISIONS);
+                        tempRec.Height = (int)(_hitRect.Height  * _fragments[y,x].ScaleFactor / ICE_DIVISIONS);
+                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, tempRec, _fragments[y, x].Angle, integrityFactor);
+                        _sprite.DrawIce(sb, tempRec, _fragments[y, x].Angle, integrityFactor);
                     }
                 return;
             }
