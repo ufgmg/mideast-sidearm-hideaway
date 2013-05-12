@@ -66,7 +66,7 @@ namespace SpaceGame.units
         const float FRAGMENT_MELT_RATE = 3;
         //How much integrity ice fragments lose per second while black hole is eating
         const float FRAGMENT_EAT_RATE = 90;
-        const float FRAGMENT_SCALE_FACTOR = 2.0f;
+        const float FRAGMENT_SCALE_FACTOR = 1.8f;
         #endregion
 
         #region static members
