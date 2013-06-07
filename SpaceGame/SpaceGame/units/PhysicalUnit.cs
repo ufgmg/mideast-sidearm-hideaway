@@ -48,6 +48,10 @@ namespace SpaceGame.units
         const float FIRE_SPREAD_FACTOR = 0.40f;   
         //portion of transfered fire deducted from transferer
         const float FIRE_SPREAD_LOSS = 0.0002f;   
+        //how much fire effect causes panic (random movement)
+        const float FIRE_PANIC_THRESHOLD = 20.0f;
+        //how often to change direction while panicking
+        const float PANIC_DIRECTION_CHANGE_FREQUENCY = 0.5f;
         //factor of max health used to represent frozen integrity
         //damage is dealt to this while frozen - shatter if < 0
         const float ICE_INTEGRITY_FACTOR = 0.5f;
@@ -104,6 +108,7 @@ namespace SpaceGame.units
         ParticleEffect _burningParticleEffect;
         float _iceIntegrity;
         IceFragment[,] _fragments;
+        TimeSpan _panicTimer;   //time till next direction switch
         #endregion
 
         #region properties
@@ -168,8 +173,18 @@ namespace SpaceGame.units
         public LifeState UnitLifeState { get { return _lifeState; } }
 
         //determine behavior for next update
-        public Vector2 MoveDirection { get; set; }
-        public Vector2 LookDirection { get; set; }
+        Vector2 _moveDirection;
+        Vector2 _lookDirection;
+        public Vector2 MoveDirection
+        {
+            get { return _moveDirection; }
+            set { _moveDirection = Panicked ? _moveDirection : value; }
+        }
+        public Vector2 LookDirection
+        {
+            get { return _lookDirection; }
+            set { _lookDirection = Panicked ? _lookDirection : value; }
+        }
 
         //behavioral properties
         public bool Collides
@@ -179,6 +194,10 @@ namespace SpaceGame.units
         public bool Updates
         {
             get { return !(_lifeState == LifeState.Dormant || _lifeState == LifeState.Destroyed); }
+        }
+        public bool Panicked
+        {
+            get { return _statusEffects.Fire > FIRE_PANIC_THRESHOLD; }
         }
         #endregion
 
@@ -364,6 +383,16 @@ namespace SpaceGame.units
                 case LifeState.Living:
                 case LifeState.Ghost:
                     {
+                        if (Panicked)
+                        {
+                            _panicTimer -= gameTime.ElapsedGameTime;
+                            if (_panicTimer <= TimeSpan.Zero)
+                            {
+                                _panicTimer = TimeSpan.FromSeconds(PANIC_DIRECTION_CHANGE_FREQUENCY);
+                                XnaHelper.RandomizeVector(ref _moveDirection, -1, 1, -1, 1);
+                                _lookDirection = _moveDirection;
+                            }
+                        }
                         lookThisWay(LookDirection);
                         if (MoveDirection.Length() > 0)
                             moveThisWay(MoveDirection, gameTime);
