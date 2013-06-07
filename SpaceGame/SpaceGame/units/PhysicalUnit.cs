@@ -20,8 +20,7 @@ namespace SpaceGame.units
         #region classes/structs
         struct IceFragment
         {
-            public Vector2 Position;
-            public Vector2 Velocity;
+            public Vector2 Position, Velocity, Acceleration;
             public float Angle;
             public float AngularVelocity;
             public float Health;
@@ -392,6 +391,8 @@ namespace SpaceGame.units
                             {
                                 _fragments[x, y].Angle += _fragments[x, y].AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 _fragments[x, y].Position += _fragments[x, y].Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].Velocity += _fragments[x, y].Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].Acceleration = Vector2.Zero;
                                 _fragments[x, y].Health -= FRAGMENT_MELT_RATE * (float)gameTime.ElapsedGameTime.TotalSeconds;
                                 _fragments[x, y].ScaleFactor = _fragments[x,y].Health / FRAGMENT_HEALTH * FRAGMENT_SCALE_FACTOR;
                                 XnaHelper.ClampVector(ref _fragments[x, y].Velocity, FRAGMENT_MAX_VELOCITY, out _fragments[x, y].Velocity);
@@ -507,8 +508,7 @@ namespace SpaceGame.units
                     {
                         direction = gravity.Position - _fragments[y,x].Position;
                         direction.Normalize();
-                        _fragments[y, x].Velocity += direction * gravity.Magnitude 
-                            * (float)Math.Pow(theGameTime.ElapsedGameTime.TotalSeconds, 2);
+                        _fragments[y, x].Acceleration += direction * gravity.Magnitude * (float)theGameTime.ElapsedGameTime.TotalSeconds;
                     }
             }
             direction = gravity.Position - Position;
