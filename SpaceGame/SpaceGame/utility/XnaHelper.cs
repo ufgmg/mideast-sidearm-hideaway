@@ -131,6 +131,19 @@ namespace SpaceGame.utility
             Vector2.Transform(ref tempVec1, ref tempMatrix, out outVector);
         }
 
+        public static void ClampVector(ref Vector2 inVec, float maxLen, out Vector2 outVec)
+        {
+            float factor = inVec.Length() / maxLen;
+            if (factor > 1)
+            {
+                Vector2.Divide(ref inVec, factor, out outVec);
+            }
+            else
+            {
+                outVec = inVec;
+            }
+        }
+
         /// <summary>
         /// Get the absolute value of the inner angle (radians) between the two vectors
         /// </summary>

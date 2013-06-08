@@ -193,7 +193,6 @@ namespace SpaceGame.equipment
             }
         }
 
-
         public void Draw(SpriteBatch sb)
         {
             if (_state == State.Dormant)

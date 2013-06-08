@@ -17,12 +17,28 @@ namespace SpaceGame.units
     /// </summary>
     class PhysicalUnit
     {
+        #region classes/structs
+        struct IceFragment
+        {
+            public Vector2 Position, Velocity, Acceleration;
+            public float Angle;
+            public float AngularVelocity;
+            public float Health;
+            public float ScaleFactor;
+            public bool BeingEaten;
+            public bool Active;
+        }
+        #endregion
+
         #region constant
         //factor of force applied based on distance out of bounds
         const float OUT_OF_BOUNDS_ACCEL_FACTOR = 30;
         const float BOUND_BUFFER = 20;
         //factor of force applied in unit collisions
         const float COLLISION_FORCE_FACTOR = 10.0f;
+
+        //how fast units scale down when being eaten by black hole
+        const float BLACK_HOLE_EAT_SCALE_FACTOR = 1.5f;
 
         //status effect constants
         const float MAX_STAT_EFFECT = 100;
@@ -32,13 +48,35 @@ namespace SpaceGame.units
         const float FIRE_SPREAD_FACTOR = 0.40f;   
         //portion of transfered fire deducted from transferer
         const float FIRE_SPREAD_LOSS = 0.0002f;   
+        //how much fire effect causes panic (random movement)
+        const float FIRE_PANIC_THRESHOLD = 20.0f;
+        //how often to change direction while panicking
+        const float PANIC_DIRECTION_CHANGE_FREQUENCY = 0.5f;
+        //factor of max health used to represent frozen integrity
+        //damage is dealt to this while frozen - shatter if < 0
+        const float ICE_INTEGRITY_FACTOR = 0.5f;
+        //number of vertical and horizontal divisions when shattering
+        const int ICE_DIVISIONS = 3;
+        //amount of health ice fragments have relative to unit
+        const float FRAGMENT_HEALTH = 20;
+        //max velocity of an ice fragment (px/second)
+        const float FRAGMENT_MAX_VELOCITY = 400.0f;
+        //max angular velocity of an ice fragment (radians/second)
+        const float FRAGMENT_MAX_ANGULAR_VELOCITY = 6.0f;
+        //how much of unit velocity to transfer to fragments on shatter
+        const float FRAGMENT_VELOCITY_FACTOR = 0.3f;
+        //How much integrity ice fragments lose per second (how fast ice fragments melt)
+        const float FRAGMENT_MELT_RATE = 3;
+        //How much integrity ice fragments lose per second while black hole is eating
+        const float FRAGMENT_EAT_RATE = 90;
+        const float FRAGMENT_SCALE_FACTOR = 1.8f;
         #endregion
 
         #region static members
 
-        //reusable Vector2 for calculations
+        //reusable Vector2 and rect for calculations
         static Vector2 temp;
-        public static Texture2D IceCubeTexture;
+        static Rectangle tempRec;
         #endregion
         #region fields
         string _unitName;
@@ -68,6 +106,9 @@ namespace SpaceGame.units
         float _decelerationFactor;
         StatEffect _statusEffects, _statusResist;
         ParticleEffect _burningParticleEffect;
+        float _iceIntegrity;
+        IceFragment[,] _fragments;
+        TimeSpan _panicTimer;   //time till next direction switch
         #endregion
 
         #region properties
@@ -132,17 +173,31 @@ namespace SpaceGame.units
         public LifeState UnitLifeState { get { return _lifeState; } }
 
         //determine behavior for next update
-        public Vector2 MoveDirection { get; set; }
-        public Vector2 LookDirection { get; set; }
+        Vector2 _moveDirection;
+        Vector2 _lookDirection;
+        public Vector2 MoveDirection
+        {
+            get { return _moveDirection; }
+            set { _moveDirection = Panicked ? _moveDirection : value; }
+        }
+        public Vector2 LookDirection
+        {
+            get { return _lookDirection; }
+            set { _lookDirection = Panicked ? _lookDirection : value; }
+        }
 
         //behavioral properties
         public bool Collides
         {
-            get { return _lifeState == LifeState.Living || _lifeState == LifeState.Disabled; }
+            get { return Updates && (_lifeState != LifeState.Ghost); }
         }
         public bool Updates
         {
             get { return !(_lifeState == LifeState.Dormant || _lifeState == LifeState.Destroyed); }
+        }
+        public bool Panicked
+        {
+            get { return _statusEffects.Fire > FIRE_PANIC_THRESHOLD; }
         }
         #endregion
 
@@ -166,6 +221,7 @@ namespace SpaceGame.units
             Living,
             Stunned,
             Frozen,         //hit max cryo effect, cannot move
+            Shattered,      //shattered into fragments after being frozen
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
             BeingEaten,     //being consumed by black hole
             Destroyed,      //no longer Update or Draw
@@ -205,6 +261,8 @@ namespace SpaceGame.units
 
             _statusEffects = new StatEffect(0, 0, 0);
             _statusResist = new StatEffect(pd.FireResist, pd.CryoResist, pd.ShockResist);
+
+            _fragments = new IceFragment[ICE_DIVISIONS, ICE_DIVISIONS];
         }
 
         #endregion
@@ -234,8 +292,19 @@ namespace SpaceGame.units
 
         public void ApplyDamage(float Damage)
         {
-            if (Damage == 0.0f || _lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten)
+            if (Damage == 0.0f || _lifeState == LifeState.Destroyed || _lifeState == LifeState.BeingEaten
+                || _lifeState == LifeState.Shattered)
                 return;
+
+            if (_lifeState == LifeState.Frozen)
+            {   //attempt to shatter ice
+                _iceIntegrity -= Damage;
+                if (_iceIntegrity < 0)
+                {
+                    shatter();
+                }
+                return;
+            }
 
             _health -= Damage;
             if (_health <= 0)
@@ -248,20 +317,52 @@ namespace SpaceGame.units
                 _sprite.Flash(Color.Orange, TimeSpan.FromSeconds(0.1), 3);
         }
 
+        private void shatter()
+        {
+            _lifeState = LifeState.Shattered;
+            for (int row = 0; row < ICE_DIVISIONS; row++)
+                for (int col = 0 ; col < ICE_DIVISIONS ; col++)
+                {
+                    _fragments[row, col].Health = FRAGMENT_HEALTH * _statusEffects.Cryo / MAX_STAT_EFFECT;
+                    _fragments[row, col].Position.X = Position.X + (0.5f + _sprite.Width * (float)col / ICE_DIVISIONS);
+                    _fragments[row, col].Position.Y = Position.Y + (0.5f + _sprite.Height * (float)row / ICE_DIVISIONS);
+                    XnaHelper.RandomizeVector(ref _fragments[row,col].Velocity, -FRAGMENT_MAX_VELOCITY, FRAGMENT_MAX_VELOCITY, 
+                                                -FRAGMENT_MAX_VELOCITY, FRAGMENT_MAX_VELOCITY);
+                    Vector2.Add(ref _fragments[row, col].Velocity, ref _velocity, out _fragments[row, col].Velocity);
+                    Vector2.Multiply(ref _fragments[row, col].Velocity, FRAGMENT_VELOCITY_FACTOR, out _fragments[row, col].Velocity);
+                    _fragments[row, col].Angle = 0f;
+                    _fragments[row, col].AngularVelocity = XnaHelper.RandomAngle(0.0f, FRAGMENT_MAX_ANGULAR_VELOCITY);
+                    _fragments[row, col].ScaleFactor = 1f;
+                    _fragments[row, col].Active = true;
+                }
+        }
+
         /// <summary>
         /// Attempt to absorb unit into black hole. 
         /// </summary>
-        /// <returns>Whether unit was successfully eaten</returns>
-        public virtual bool EatByBlackHole()
+        /// <returns>Amount of mass eaten
+        public virtual float EatByBlackHole(Vector2 blackHolePos, float blackHoleRadius)
         {
+            if (_lifeState == LifeState.Shattered)      //special handling
+            {
+                for (int row = 0; row < ICE_DIVISIONS; row++)
+                    for (int col = 0; col < ICE_DIVISIONS; col++)
+                    {
+                        if (Vector2.Distance(_fragments[row, col].Position, blackHolePos) < blackHoleRadius)
+                        {
+                            _fragments[row, col].BeingEaten = true;
+                        }
+                    }
+            }
+
             if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed 
-                && _lifeState != LifeState.Ghost)
+                && _lifeState != LifeState.Ghost && blackHoleRadius > (Center - blackHolePos).Length())
             {
                 _lifeState = LifeState.BeingEaten;
                 _angularVelocity = 4 * MathHelper.TwoPi;
-                return true;
+                return Mass;
             }
-            return false;
+            return 0;
         }
 
         public void FlyToPoint(Vector2 pos, TimeSpan time)
@@ -277,12 +378,21 @@ namespace SpaceGame.units
         #region Update Logic
         public virtual void Update(GameTime gameTime, Rectangle levelBounds)
         {
-
             switch(_lifeState)
             {
                 case LifeState.Living:
                 case LifeState.Ghost:
                     {
+                        if (Panicked)
+                        {
+                            _panicTimer -= gameTime.ElapsedGameTime;
+                            if (_panicTimer <= TimeSpan.Zero)
+                            {
+                                _panicTimer = TimeSpan.FromSeconds(PANIC_DIRECTION_CHANGE_FREQUENCY);
+                                XnaHelper.RandomizeVector(ref _moveDirection, -1, 1, -1, 1);
+                                _lookDirection = _moveDirection;
+                            }
+                        }
                         lookThisWay(LookDirection);
                         if (MoveDirection.Length() > 0)
                             moveThisWay(MoveDirection, gameTime);
@@ -292,15 +402,39 @@ namespace SpaceGame.units
 
                         break;
                     }
-
                 case LifeState.Disabled:
                 case LifeState.Frozen:
                     {
+                        if (_statusEffects.Cryo <= 0)
+                        {
+                            _lifeState = LifeState.Living;
+                            //still cold after defrosting
+                            _statusEffects.Cryo = MAX_STAT_EFFECT / 2;
+                        }
                         break;
+                    }
+                case LifeState.Shattered:
+                    {
+                        for (int y = 0; y < ICE_DIVISIONS; y++)
+                            for (int x = 0; x < ICE_DIVISIONS; x++)
+                            {
+                                _fragments[x, y].Angle += _fragments[x, y].AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].Position += _fragments[x, y].Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].Velocity += _fragments[x, y].Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].Acceleration = Vector2.Zero;
+                                _fragments[x, y].Health -= FRAGMENT_MELT_RATE * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                _fragments[x, y].ScaleFactor = _fragments[x,y].Health / FRAGMENT_HEALTH * FRAGMENT_SCALE_FACTOR;
+                                XnaHelper.ClampVector(ref _fragments[x, y].Velocity, FRAGMENT_MAX_VELOCITY, out _fragments[x, y].Velocity);
+                                if (_fragments[x, y].BeingEaten)
+                                {
+                                    _fragments[x, y].Health -= FRAGMENT_EAT_RATE * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                }
+                            }
+                        return;
                     }
                 case LifeState.BeingEaten:
                     {
-                        _sprite.ScaleFactor -= 1.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        _sprite.ScaleFactor -= BLACK_HOLE_EAT_SCALE_FACTOR * (float)gameTime.ElapsedGameTime.TotalSeconds;
                         if (_sprite.ScaleFactor <= 0)
                             _lifeState = LifeState.Destroyed;
                         break;
@@ -340,16 +474,11 @@ namespace SpaceGame.units
             _hitRect.Y = (int)Position.Y - _hitRect.Height / 2;
 
             //manage stat effects
-            if (_statusEffects.Cryo >= MAX_STAT_EFFECT)
+            if (_statusEffects.Cryo >= MAX_STAT_EFFECT && _lifeState != LifeState.Frozen)
             {
                 _lifeState = LifeState.Frozen;
+                _iceIntegrity = maxHealth * ICE_INTEGRITY_FACTOR;
                 _statusEffects.Fire = 0;    //stop burning if frozen
-            }
-            else if (_lifeState == LifeState.Frozen && _statusEffects.Cryo <= 0)
-            {
-                _lifeState = LifeState.Living;
-                //still cold after defrosting
-                _statusEffects.Cryo = MAX_STAT_EFFECT / 2;
             }
 
             //decrement every stat effect based on status resist
@@ -400,7 +529,18 @@ namespace SpaceGame.units
 
         public void ApplyGravity(Gravity gravity, GameTime theGameTime)
         {
-            Vector2 direction = gravity.Position - Position;
+            Vector2 direction;
+            if (_lifeState == LifeState.Shattered)
+            {
+                for (int y = 0; y < ICE_DIVISIONS; y++)
+                    for (int x = 0; x < ICE_DIVISIONS; x++)
+                    {
+                        direction = gravity.Position - _fragments[y,x].Position;
+                        direction.Normalize();
+                        _fragments[y, x].Acceleration += direction * gravity.Magnitude * (float)theGameTime.ElapsedGameTime.TotalSeconds;
+                    }
+            }
+            direction = gravity.Position - Position;
             //float distance = direction.Length();
             direction.Normalize();
             //_acceleration += gravity.Magnitude * direction * (float)theGameTime.ElapsedGameTime.TotalSeconds / (distance * 0.01f);
@@ -409,6 +549,8 @@ namespace SpaceGame.units
 
         public void Respawn(Vector2 newPosition)
         {
+            System.Diagnostics.Debug.Assert(_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant,
+                "Error: Tried to respawn an enemy that was not destroyed or dormant");
             Position = newPosition;
             _lifeState = LifeState.Living;
             Reset();
@@ -457,6 +599,29 @@ namespace SpaceGame.units
         {
             if (!Collides)
                 return;     //don't check collision if unit shouldn't collide
+            //special shattered collision detection
+            if (_lifeState == LifeState.Shattered)
+            {
+                tempRec.Width = _hitRect.Width / ICE_DIVISIONS;
+                tempRec.Height = _hitRect.Height / ICE_DIVISIONS;
+                for (int i = 0; i < ICE_DIVISIONS ; i++)
+                    for (int j = 0; j < ICE_DIVISIONS; j++)
+                    {
+                        tempRec.X = (int)(_fragments[i,j].Position.X - tempRec.Width / 2);
+                        tempRec.Y = (int)(_fragments[i,j].Position.Y - tempRec.Height / 2);
+                        if (tempRec.Intersects(other.HitRect))
+                        {
+                            Vector2 fVel = _fragments[i, j].Velocity;
+                            float fMass = (float)Mass / (ICE_DIVISIONS * ICE_DIVISIONS);
+                            temp = other.Velocity;
+                            other._velocity = (other._velocity * (other.Mass - fMass) + 2 * fMass * fVel) /
+                                                (fMass + other.Mass);
+                            _fragments[i,j].Velocity = (fVel * (fMass - other.Mass) + 2 * other.Mass * temp) /
+                                                (fMass + other.Mass);
+                        }
+                    }
+                return; //ignore normal collision detection
+            }
 
             //check if fire should be transferred
             float dist = XnaHelper.DistanceBetweenRects(HitRect, other.HitRect);
@@ -488,6 +653,25 @@ namespace SpaceGame.units
             if (_lifeState == LifeState.Destroyed || _lifeState == LifeState.Dormant)
                 return;     //dont draw destroyed or not yet spawned sprites
 
+
+            //special shattered drawing logic
+            if (_lifeState == LifeState.Shattered)
+            {
+                float integrityFactor;
+                for (int y = 0; y < ICE_DIVISIONS; y++)
+                    for (int x = 0; x < ICE_DIVISIONS; x++)
+                    {
+                        integrityFactor = _fragments[y,x].Health / (FRAGMENT_HEALTH);
+                        tempRec.X = (int)(_fragments[y,x].Position.X - tempRec.Width / 2);
+                        tempRec.Y = (int)(_fragments[y,x].Position.Y - tempRec.Height / 2);
+                        tempRec.Width = (int)(_hitRect.Width * _fragments[y,x].ScaleFactor / ICE_DIVISIONS);
+                        tempRec.Height = (int)(_hitRect.Height  * _fragments[y,x].ScaleFactor / ICE_DIVISIONS);
+                        _sprite.DrawFragment(sb, y, x, ICE_DIVISIONS, tempRec, _fragments[y, x].Angle, integrityFactor);
+                        _sprite.DrawIce(sb, tempRec, _fragments[y, x].Angle, integrityFactor);
+                    }
+                return;
+            }
+
             if (_movementParticleEffect != null)
                 _movementParticleEffect.Draw(sb);
             if (_lifeState != LifeState.BeingEaten && _lifeState != LifeState.Destroyed
@@ -497,11 +681,13 @@ namespace SpaceGame.units
             }
 
             _sprite.Draw(sb, Position);
+
             if (_lifeState == LifeState.Frozen)
             {
-                sb.Draw(IceCubeTexture, HitRect, null, 
-                    Color.Lerp(Color.White, Color.Transparent, _statusEffects.Cryo / MAX_STAT_EFFECT), 
-                    0.0f, Vector2.Zero, SpriteEffects.None, 0);
+                tempRec = HitRect;
+                tempRec.X += (int)(HitRect.Width / 2);
+                tempRec.Y += (int)(HitRect.Height / 2);
+                _sprite.DrawIce(sb, tempRec, _sprite.Angle, _statusEffects.Cryo / MAX_STAT_EFFECT);
             }
         }
         #endregion

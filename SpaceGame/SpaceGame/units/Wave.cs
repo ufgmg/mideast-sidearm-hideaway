@@ -183,13 +183,10 @@ namespace SpaceGame.units
             bool allDestroyed = true;   //check if all enemies destroyed
             for (int i = _enemies.Length - 1; i >= 0; i--)
             {
-                if (_enemies[i].UnitLifeState == PhysicalUnit.LifeState.Destroyed)
+                if (!_enemies[i].Updates)
                     continue;   //don't update units that shouldn't be updated
 
                 allDestroyed = false;       //found one that isn't destroyed
-
-                if (!_enemies[i].Updates)
-                    continue;   //don't update units that shouldn't be updated
 
                 for (int j = i - 1; j >= 0; j--)
                 {

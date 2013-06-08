@@ -66,8 +66,8 @@ namespace SpaceGame.states
                 _waves[i + data.TrickleWaveData.Length] = new Wave(data.BurstWaveData[i], false, _levelBounds);
             }
             //Test code to set weapons 1-6 to created weapons
-            im.setPrimaryWeapon(new ProjectileWeapon("FreezeRay", _player));
-            im.setSecondaryWeapon(new ProjectileWeapon("Boomerang", _player));
+            im.setPrimaryWeapon(new ProjectileWeapon("Flamethrower", _player));
+            im.setSecondaryWeapon(new ProjectileWeapon("FreezeRay", _player));
             im.setPrimaryGadget(new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 }));
 
             //Set Weapon holders in level
@@ -207,7 +207,7 @@ namespace SpaceGame.states
         public override void Draw(SpriteBatch spriteBatch)
         {
             
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, _camera.TransformMatrix());
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, _camera.TransformMatrix());
             
             _blackHole.Draw(spriteBatch);
             _player.Draw(spriteBatch);

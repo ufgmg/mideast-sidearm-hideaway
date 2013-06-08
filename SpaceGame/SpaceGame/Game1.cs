@@ -106,7 +106,7 @@ namespace SpaceGame
             SpaceGame.graphics.hud.GUI.button6 = Content.Load<Texture2D>("gui/Numer 6");
             SpaceGame.graphics.hud.GUI.voidWheel = Content.Load<Texture2D>("gui/Score_&_Void_Tracker");
 
-            PhysicalUnit.IceCubeTexture = Content.Load<Texture2D>("spritesheets/IceCube");
+            Sprite.IceCubeTexture = Content.Load<Texture2D>("spritesheets/IceCube");
 
             XnaHelper.PixelTexture = new Texture2D(GraphicsDevice, 1, 1);
             XnaHelper.PixelTexture.SetData<Color>(new Color[] {Color.White});

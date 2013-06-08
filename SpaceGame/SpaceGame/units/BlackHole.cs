@@ -34,6 +34,7 @@ namespace SpaceGame.units
 
         #region properties
         public Vector2 Position;
+        public float Radius { get { return _radius; } }
         public Gravity Gravity { get; private set; }
         public BlackHoleState State { get { return _state; } }
         #endregion
@@ -124,6 +125,7 @@ namespace SpaceGame.units
         /// <param name="unit">unit to affect. Should be called after updating unit</param>
         public void ApplyToUnit(PhysicalUnit unit, GameTime gameTime)
         {
+            float massEaten;
             if (_state != BlackHoleState.Pulling && _state != BlackHoleState.Overdrive)
                 return;
             if (_state == BlackHoleState.Pulling)
@@ -134,18 +136,15 @@ namespace SpaceGame.units
             {
                 unit.FlyToPoint(Position, _overdriveTimer, 2.0f);
             }
-            
-            if ((Position - unit.Center).Length() <= _radius)
-            {   //try to eat unit
-                if (unit.EatByBlackHole())
+
+            if ((massEaten = unit.EatByBlackHole(Position, _radius)) > 0)
+            {
+                _capacityUsed += massEaten;
+                _particleEffect.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
+                Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
+                if (_capacityUsed > _totalCapacity)
                 {
-                    _capacityUsed += unit.Mass;
-                    _particleEffect.IntensityFactor = 1.0f + _capacityUsed / _totalCapacity;
-                    Gravity.MagnitudeFactor = (1.0f + _capacityUsed / _totalCapacity);
-                    if (_capacityUsed > _totalCapacity)
-                    {
-                        goOverdrive();
-                    }
+                    goOverdrive();
                 }
             }
         }
