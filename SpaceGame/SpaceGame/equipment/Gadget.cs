@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 
 using SpaceGame.units;
 using SpaceGame.graphics;
+using SpaceGame.states;
 
 namespace SpaceGame.equipment
 {
@@ -16,37 +17,34 @@ namespace SpaceGame.equipment
     /// </summary>
     class Gadget
     {
-        #region classes
-        public class GadgetData
-        {
-            public float MaxEnergy;
-            public string ParticleEffectName;
-        }
-
-        #endregion
-
         #region fields
         //While active, a gadget consumes 1 energy/millisecond
         public float Energy { get; private set; }
         public float MaxEnergy { get; private set; }
         public bool Active { get; private set; }
         ParticleEffect _activeParticleEffect;
+
+        GadgetAction _gadgetAction;
         #endregion
 
         #region constructor
-        public Gadget(GadgetData data)
+        public Gadget(float maxEnergy, GadgetAction action, string particleEffectName)
         {
-            MaxEnergy = data.MaxEnergy;
+            MaxEnergy = maxEnergy;
             Energy = MaxEnergy;
-            if (data.ParticleEffectName != null)
-                _activeParticleEffect = new ParticleEffect(data.ParticleEffectName);
+            _gadgetAction = action;
+            if (particleEffectName != null)
+            {
+                _activeParticleEffect = new ParticleEffect(particleEffectName);
+            }
         }
         #endregion
 
         #region methods
         public virtual void Trigger()
         {
-            Active = !Active;
+            Active = Energy > 0 ? !Active : false;
+            _gadgetAction();
         }
 
         public virtual void Update(GameTime gameTime)
