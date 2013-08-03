@@ -6,5 +6,5 @@
   Action: Name of method in Level class to run on activation
   -->
 <Weapons>
-  <GadgetData Name="Stopwatch" Immediate="false" EnergyConsumption="25" Action="TimeSlowAction"/>
+  <GadgetData Name="Stopwatch" Immediate="false" EnergyConsumption="50" Action="TimeSlowAction"/>
 </Weapons>

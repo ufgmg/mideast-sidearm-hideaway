@@ -70,19 +70,28 @@ namespace SpaceGame.equipment
         #region methods
         public virtual void Trigger()
         {
-            Active = Energy > 0 ? !Active : false;
-            _gadgetAction();
+            if (_immediate && _energy > _energyConsumption)
+            {
+                _gadgetAction(true);
+                _energy -= _energyConsumption;
+            }
+            else if (_energy > 0)
+            {
+                Active = !Active;
+                _gadgetAction(Active);
+            }
         }
 
         public virtual void Update(GameTime gameTime)
         {
             if (Active)
             {
-                Energy -= (float)gameTime.TotalGameTime.Seconds;
+                Energy -= _energyConsumption * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Energy <= 0)
             {
                 Active = false;
+                _gadgetAction(false);
             }
         }
         #endregion

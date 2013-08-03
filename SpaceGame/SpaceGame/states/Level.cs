@@ -15,7 +15,7 @@ using SpaceGame.equipment;
 namespace SpaceGame.states
 {
     //each gadget is associated with an action that affects the game
-    public delegate void GadgetAction();
+    public delegate void GadgetAction(bool active);
 
     class Level : Gamestate
     {
@@ -244,9 +244,9 @@ namespace SpaceGame.states
         #endregion
 
         #region gadget actions
-        public void TimeSlowAction()
+        public void TimeSlowAction(bool active)
         {
-            _timeSlowed = !_timeSlowed;
+            _timeSlowed = active;
         }
         #endregion
     }
