@@ -375,6 +375,11 @@ namespace SpaceGame.units
             _velocity = speedFactor * (pos - _position) / (float)time.TotalSeconds;
         }
 
+        public void Teleport(Vector2 destination)
+        {
+            _position = destination;
+        }
+
         #region Update Logic
         public virtual void Update(GameTime gameTime, Rectangle levelBounds)
         {

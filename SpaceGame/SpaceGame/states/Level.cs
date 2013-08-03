@@ -45,6 +45,7 @@ namespace SpaceGame.states
         Unicorn[] _unicorns;
         FoodCart[] _foodCarts;
         Rectangle _levelBounds;
+        Vector2 _mousePos;
 
         GUI userInterface;
         Rectangle _cameraLock;
@@ -75,7 +76,7 @@ namespace SpaceGame.states
             //Test code to set weapons 1-6 to created weapons
             im.setPrimaryWeapon(new ProjectileWeapon("Flamethrower", _player));
             im.setSecondaryWeapon(new ProjectileWeapon("FreezeRay", _player));
-            im.setPrimaryGadget(new Gadget("Stopwatch", this));
+            im.setPrimaryGadget(new Gadget("Teleporter", this));
 
             //Set Weapon holders in level
             _primaryWeapon = im.getPrimaryWeapon();
@@ -99,6 +100,7 @@ namespace SpaceGame.states
         #region methods
         public override void Update(GameTime gameTime, InputManager input, InventoryManager im)
         {
+            _mousePos = input.MouseLocation;
             input.SetCameraOffset(_camera.Position);
             handleInput(input);
             _camera.Update(gameTime, _player.Position);
@@ -247,6 +249,10 @@ namespace SpaceGame.states
         public void TimeSlowAction(bool active)
         {
             _timeSlowed = active;
+        }
+        public void TeleportAction(bool active)
+        {
+            _player.Teleport(_mousePos);
         }
         #endregion
     }
