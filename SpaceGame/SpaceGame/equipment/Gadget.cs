@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using Microsoft.Xna.Framework;
 
@@ -11,33 +12,59 @@ using SpaceGame.states;
 
 namespace SpaceGame.equipment
 {
+    class GadgetData
+    {
+        public string Name;
+        public bool Immediate;
+        public float EnergyConsumption;
+        public string Action;
+    }
+
     /// <summary>
     /// Gadget the player can equip and turn on to create special effects
     /// consumes energy while turned on
     /// </summary>
     class Gadget
     {
-        #region fields
-        //While active, a gadget consumes 1 energy/millisecond
-        public float Energy { get; private set; }
-        public float MaxEnergy { get; private set; }
-        public bool Active { get; private set; }
-        ParticleEffect _activeParticleEffect;
+        #region const
+        const float c_maxGadgetEnergy = 100.0f;
+        #endregion
 
+        #region static
+        public static Dictionary<string, GadgetData> GadgetDataDict;
+        #endregion
+
+        #region properties
+        public float Energy
+        {
+            get { return _energy; }
+            set { _energy = MathHelper.Clamp(value, 0.0f, c_maxGadgetEnergy); }
+        }
+        public bool Active { get; private set; }
+        #endregion
+
+        #region fields
+        public string Name;
+        float _energy, _energyConsumption;
+        //if immediate, triggering causes an instant effect
+        //otherwise, triggering turns a persistent effect on/off
+        bool _immediate;
         GadgetAction _gadgetAction;
         #endregion
 
         #region constructor
-        public Gadget(float maxEnergy, GadgetAction action, string particleEffectName)
+        public Gadget(string name, Level level)
+            : this(GadgetDataDict[name], level)
+        { }
+
+        protected Gadget(GadgetData data, Level level)
         {
-            MaxEnergy = maxEnergy;
-            Energy = MaxEnergy;
-            _gadgetAction = action;
-            if (particleEffectName != null)
-            {
-                _activeParticleEffect = new ParticleEffect(particleEffectName);
-            }
+            _energy = c_maxGadgetEnergy;
+            _energyConsumption = data.EnergyConsumption;
+            _gadgetAction = Delegate.CreateDelegate(typeof(GadgetAction), level, data.Action) as GadgetAction;
+            _immediate = data.Immediate;
         }
+
         #endregion
 
         #region methods
@@ -56,10 +83,6 @@ namespace SpaceGame.equipment
             if (Energy <= 0)
             {
                 Active = false;
-            }
-            if (_activeParticleEffect != null)
-            {
-                _activeParticleEffect.Update(gameTime);
             }
         }
         #endregion
