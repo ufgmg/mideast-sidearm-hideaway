@@ -7,5 +7,5 @@
   -->
 <Weapons>
   <GadgetData Name="Stopwatch" Immediate="false" EnergyConsumption="50" Action="TimeSlowAction"/>
-  <GadgetData Name="Teleporter" Immediate="true" EnergyConsumption="50" Action="TeleportAction"/>
+  <GadgetData Name="Teleporter" Immediate="true" EnergyConsumption="20" Action="TeleportAction"/>
 </Weapons>

@@ -70,6 +70,7 @@ namespace SpaceGame.units
         //How much integrity ice fragments lose per second while black hole is eating
         const float FRAGMENT_EAT_RATE = 90;
         const float FRAGMENT_SCALE_FACTOR = 1.8f;
+
         #endregion
 
         #region static members
@@ -225,7 +226,7 @@ namespace SpaceGame.units
             Disabled,       //health <= 0 , float aimlessly, no attempt to move
             BeingEaten,     //being consumed by black hole
             Destroyed,      //no longer Update or Draw
-            Ghost           //keep updating and drawing, but don't collide or apply gravity
+            Ghost,          //keep updating and drawing, but don't collide or apply gravity
         }
 
         protected LifeState _lifeState;
@@ -377,7 +378,8 @@ namespace SpaceGame.units
 
         public void Teleport(Vector2 destination)
         {
-            _position = destination;
+            _sprite.PlayTeleportEffect(Position);
+            Position = destination;
         }
 
         #region Update Logic
