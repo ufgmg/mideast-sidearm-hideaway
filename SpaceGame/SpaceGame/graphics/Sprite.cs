@@ -15,7 +15,7 @@ namespace SpaceGame.graphics
         const string SPRITE_FOLDER_PATH = "spritesheets/";
         const float ICE_OPACITY_FACTOR = 0.5f;
         //time it takes to complete a teleport
-        const float c_teleportTime = 0.2f;
+        const float c_teleportTime = 0.25f;
         //visual stretching of sprite during teleport
         const float c_teleportDialation = 2.0f;
         #endregion
@@ -264,16 +264,21 @@ namespace SpaceGame.graphics
             SpriteEffects effects = (FlipH ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (FlipV ? SpriteEffects.FlipVertically : SpriteEffects.None);
             if (_teleportTimer > 0)
             {
-                /*
                 //draw previous location
-                tempRect.Width = Width * _teleportTimer / c_teleportTime;   //width gets smaller
-                tempRect.Height = Height * (1 + c_teleportDialation -
-                */
-                batch.Draw(_spriteSheet, _teleportStartPos, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter,
-                    Scale * _teleportTimer / c_teleportTime, effects, _zLayer);
+                tempRect.Width = (int)(Width * _teleportTimer / c_teleportTime);   //width gets smaller
+                tempRect.Height = (int)(Height * (1 + c_teleportDialation * (1 - _teleportTimer / c_teleportTime)));
+                tempRect.X = (int)(_teleportStartPos.X);
+                tempRect.Y = (int)(_teleportStartPos.Y);
 
-                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter,
-                    Scale * (1.0f - _teleportTimer / c_teleportTime), effects, _zLayer);
+                batch.Draw(_spriteSheet, tempRect, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, effects, _zLayer);
+                    
+                //draw current location
+                tempRect.Width = (int)(Width * (1 - _teleportTimer / c_teleportTime));   //width grows back to normal
+                tempRect.Height = (int)(Height * (1 + c_teleportDialation * _teleportTimer / c_teleportTime));
+                tempRect.X = (int)(position.X);
+                tempRect.Y = (int)(position.Y);
+
+                batch.Draw(_spriteSheet, tempRect, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, effects, _zLayer);
             }
             else
             {
