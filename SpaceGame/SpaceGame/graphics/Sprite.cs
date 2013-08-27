@@ -14,6 +14,10 @@ namespace SpaceGame.graphics
         #region constant
         const string SPRITE_FOLDER_PATH = "spritesheets/";
         const float ICE_OPACITY_FACTOR = 0.5f;
+        //time it takes to complete a teleport
+        const float c_teleportTime = 0.25f;
+        //visual stretching of sprite during teleport
+        const float c_teleportDialation = 2.0f;
         #endregion
         
         #region static
@@ -73,6 +77,8 @@ namespace SpaceGame.graphics
         Color _flashColor;
         int _flashCounter = 0;
         TimeSpan _currentFlashTime, _halfFlashTime;
+        float _teleportTimer;
+        Vector2 _teleportStartPos;
         #endregion
 
         #region properties
@@ -209,13 +215,19 @@ namespace SpaceGame.graphics
                     _currentFlashTime = TimeSpan.Zero;
                     _flashCounter -= 1;
                     if (_flashCounter == 0)
+                    {
                         _shade = Color.White;
+                    }
                 }
                 else
                 {
                     _shade = Color.Lerp(_flashColor, Color.White, (float)(_currentFlashTime - _halfFlashTime).TotalSeconds / (float)_halfFlashTime.TotalSeconds);
                 }
+            }
 
+            if (_teleportTimer > 0)
+            {
+                _teleportTimer -= (float)theGameTime.ElapsedGameTime.TotalSeconds;
             }
 
         }
@@ -226,6 +238,12 @@ namespace SpaceGame.graphics
             AnimationOver = false;
             AnimationState = animationNumber % _numStates;
             _currentFrame = 0;
+        }
+
+        public void PlayTeleportEffect(Vector2 startPos)
+        {
+            _teleportStartPos = startPos;
+            _teleportTimer = c_teleportTime;
         }
 
         public void Flash(Color color, TimeSpan timePerFlash, int numFlashes)
@@ -243,18 +261,30 @@ namespace SpaceGame.graphics
 
         public void Draw(SpriteBatch batch, Vector2 position, float rotation)
         {
-            if (FlipH && FlipV)
-                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
-                    Scale, SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically, _zLayer);
-            else if (FlipV)
-                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
-                    Scale, SpriteEffects.FlipVertically, _zLayer);
-            else if (FlipH)
-                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
-                    Scale, SpriteEffects.FlipHorizontally, _zLayer);
+            SpriteEffects effects = (FlipH ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (FlipV ? SpriteEffects.FlipVertically : SpriteEffects.None);
+            if (_teleportTimer > 0)
+            {
+                //draw previous location
+                tempRect.Width = (int)(Width * _teleportTimer / c_teleportTime);   //width gets smaller
+                tempRect.Height = (int)(Height * (1 + c_teleportDialation * (1 - _teleportTimer / c_teleportTime)));
+                tempRect.X = (int)(_teleportStartPos.X);
+                tempRect.Y = (int)(_teleportStartPos.Y);
+
+                batch.Draw(_spriteSheet, tempRect, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, effects, _zLayer);
+                    
+                //draw current location
+                tempRect.Width = (int)(Width * (1 - _teleportTimer / c_teleportTime));   //width grows back to normal
+                tempRect.Height = (int)(Height * (1 + c_teleportDialation * _teleportTimer / c_teleportTime));
+                tempRect.X = (int)(position.X);
+                tempRect.Y = (int)(position.Y);
+
+                batch.Draw(_spriteSheet, tempRect, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, effects, _zLayer);
+            }
             else
-                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter, 
-                    Scale, SpriteEffects.None, _zLayer);
+            {
+                batch.Draw(_spriteSheet, position, _rects[_currentState, _currentFrame], Shade, rotation, _textureCenter,
+                    Scale, effects, _zLayer);
+            }
         }
 
         public void DrawFragment(SpriteBatch batch, int row, int col, int numDivisions, Rectangle drawRect, float angle, float opacity)

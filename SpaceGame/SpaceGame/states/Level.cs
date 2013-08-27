@@ -14,6 +14,9 @@ using SpaceGame.equipment;
 
 namespace SpaceGame.states
 {
+    //each gadget is associated with an action that affects the game
+    public delegate void GadgetAction(bool active);
+
     class Level : Gamestate
     {
         #region classes
@@ -29,6 +32,10 @@ namespace SpaceGame.states
         }
         #endregion
 
+        #region constants
+        const float c_timeSlowFactor = 0.5f;
+        #endregion
+
         #region fields
         Spaceman _player;
         BlackHole _blackHole;
@@ -38,12 +45,13 @@ namespace SpaceGame.states
         Unicorn[] _unicorns;
         FoodCart[] _foodCarts;
         Rectangle _levelBounds;
+        Vector2 _mousePos;
 
         GUI userInterface;
         Rectangle _cameraLock;
         Camera2D _camera;
 
-
+        bool _timeSlowed;
         #endregion
 
         #region constructor
@@ -68,7 +76,7 @@ namespace SpaceGame.states
             //Test code to set weapons 1-6 to created weapons
             im.setPrimaryWeapon(new ProjectileWeapon("Flamethrower", _player));
             im.setSecondaryWeapon(new ProjectileWeapon("FreezeRay", _player));
-            im.setPrimaryGadget(new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 }));
+            im.setPrimaryGadget(new Gadget("Teleporter", this));
 
             //Set Weapon holders in level
             _primaryWeapon = im.getPrimaryWeapon();
@@ -82,7 +90,6 @@ namespace SpaceGame.states
 
             _foodCarts = data.FoodCarts;
 
-            _primaryGadget = new Gadget(new Gadget.GadgetData { MaxEnergy = 1000 });
             _primaryGadget = im.getPrimaryGadget();
             
             userInterface = new GUI(_player, _blackHole);
@@ -93,6 +100,7 @@ namespace SpaceGame.states
         #region methods
         public override void Update(GameTime gameTime, InputManager input, InventoryManager im)
         {
+            _mousePos = input.MouseLocation;
             input.SetCameraOffset(_camera.Position);
             handleInput(input);
             _camera.Update(gameTime, _player.Position);
@@ -110,7 +118,7 @@ namespace SpaceGame.states
              * 
             }*/
            
-            if (_primaryGadget.Active)
+            if (_timeSlowed)
                 gameTime = new GameTime(gameTime.TotalGameTime, 
                     TimeSpan.FromSeconds((float)gameTime.ElapsedGameTime.TotalSeconds / 2));
 
@@ -234,6 +242,17 @@ namespace SpaceGame.states
             userInterface.draw(spriteBatch);
             spriteBatch.End();
 
+        }
+        #endregion
+
+        #region gadget actions
+        public void TimeSlowAction(bool active)
+        {
+            _timeSlowed = active;
+        }
+        public void TeleportAction(bool active)
+        {
+            _player.Teleport(_mousePos);
         }
         #endregion
     }

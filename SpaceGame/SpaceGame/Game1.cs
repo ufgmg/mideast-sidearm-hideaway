@@ -138,6 +138,9 @@ namespace SpaceGame
             Enemy.EnemyDataDict = DataLoader.CollectData<EnemyData>(
                     DataLoader.UNIT_DATA_PATH, "EnemyData").ToDictionary(t => t.Name);
 
+            Gadget.GadgetDataDict = DataLoader.CollectData<GadgetData>(
+                    DataLoader.GADGET_DATA_PATH, "GadgetData").ToDictionary(t => t.Name);
+
             Gamemenu.LoadContent(Content);
             _stateStack.Add(new Gamemenu());
         }

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Name: Resource name used to reference gadget in code
+  Immediate: If true, instantly consume energy and perform effect upon use. If false, turn on/off when used and apply persistent effect
+  EnergyConsumption: Energy consumed per use (for immediate) or per second (for persistent)
+  Action: Name of method in Level class to run on activation
+  -->
+<Weapons>
+  <GadgetData Name="Stopwatch" Immediate="false" EnergyConsumption="50" Action="TimeSlowAction"/>
+  <GadgetData Name="Teleporter" Immediate="true" EnergyConsumption="20" Action="TeleportAction"/>
+</Weapons>

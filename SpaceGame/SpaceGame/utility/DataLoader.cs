@@ -27,6 +27,7 @@ namespace SpaceGame.utility
         public const string PARTICLE_EFFECT_PATH = "data/ParticleEffectData.xml";
         public const string SPRITE_PATH = "data/SpriteData.xml";
         public const string UNIT_DATA_PATH = "data/UnitData.xml";
+        public const string GADGET_DATA_PATH = "data/GadgetData.xml";
         public const string WEAPON_DATA_PATH = "data/WeaponData.xml";
         public const string LEVEL_DIRECTORY = "data/LevelData.xml";
 
