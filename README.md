@@ -4,9 +4,9 @@
 
 ### Backstory
 
-You are a lone space traveler whose ship has been impaired. Unfortunately, the
-parts you need to repair your ship have fallen into the black hole, and you
-have no way to get them out.
+You are a freelance space scientist whose ship has been impaired.
+Unfortunately, the parts you need to repair your ship have fallen into
+the black hole, and you have no way to get them out.
 
 ### Gameplay synopsis
 
