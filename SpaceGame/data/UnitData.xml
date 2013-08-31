@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!--Define parameters for physical units
+Name: Key to access data
+MovementParticleEffect: Name of particle effect to play when unit moves. May be ommitted.
+Mass: mass of unit. Affects response to forces
+MoveForce: Magnitude of force applied per second while unit is trying to move itself
+MaxSpeed: Cap on magnitude of unit velocity
+DecelerationFactor: Percent decrease in speed per second. Every frame, speed = speed * (1 - deceleration_factor) * elapsed_seconds
+Health: How much damage a unit can take before dying
+-->
+<UnitData>
+  <AstronautData Name="Spaceman" MovementParticleEffectName ="SpacemanThruster" Mass ="10" MoveForce ="10000" MaxSpeed="500" DecelerationFactor="1.00" Health ="100"/>
+
+  <EnemyData Name="Goblin" MeleeWeaponName="Gravity Gauntlet">
+    <PhysicalData Name="Goblin" Mass="8" MoveForce ="6000" MaxSpeed="400" DecelerationFactor="0.50" Health ="40" />
+  </EnemyData>
+
+  <FoodCartData Name="FoodCart" MovementParticleEffectName="SpacemanThruster" Mass ="40" MoveForce ="60000" MaxSpeed="200" DecelerationFactor="0.50" Health ="500" />
+</UnitData>

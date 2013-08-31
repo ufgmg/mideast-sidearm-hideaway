@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!-- A particle Effect is a combination of Particle Generators-->
+<!-- Speed is given in pixels/second-->
+<!-- Variance represents a percentage variance in a given value.
+     For example, SpeedVariance="0.3" means that particle speeds can vary within 30% of the Speed value-->
+<!-- Deceleration factor is the percent reduction in speed over 1 second-->
+<!-- ParticleRotation is the angle (degrees) through which a particle rotates during its entire life-->
+<!-- Spawn arc is the angle (degrees) through which particles will spawn.
+      Example: SpawnArc="30.0" means that particles will spawn between -30 and 30 degrees of the particle effect direction-->
+<!-- Spawn Rate is number of particles spawned per second-->
+<!--Particle life is how long each particle lasts, in seconds-->
+<!-- Colors are defined as "A,R,G,B"-->
+
+<ParticleEffectDatas>
+  <!--Particle Effects-->
+
+  <ParticleEffectData Name="GatlingEffect">
+    <ParticleGenerator Name="Sparks" StartColor="128,255,255,0" Offset="0"/>
+    <ParticleGenerator Name="EmptyShells" StartColor="255,255,255,255" Offset="180"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="ShotgunEffect">
+    <ParticleGenerator Name="Sparks" SpawnRate="3600" Speed="1000" StartColor="128,255,255,0" Offset="0"/>
+    <ParticleGenerator Name="EmptyShells" SpawnRate="60" StartColor="255,255,255,255" StartScale="5" Offset="180" ParticleRotation="100"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="BulletTrace">
+    <ParticleGenerator Name="BlurPath" StartColor="255,255,155,0" Offset="0" UniqueParticle="BulletTrace"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="RocketExplosion">
+    <ParticleGenerator Name="Explosion" StartColor="255,255,0,0" />
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="Cryosplosion">
+    <ParticleGenerator Name="Explosion" StartColor="255,0,0,255" Speed="600" SpawnRate="8600" ParticleLife="0.3"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="CryoTrace">
+    <ParticleGenerator Name="BlurPath" StartColor="255,0,0,255" Offset="0"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="UnicornStand">
+    <ParticleGenerator Name="UnicornStand" StartColor="128,255,0,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="200,255,127,0" Offset="51.4"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="64,255,255,0" Offset="102.8"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,0,255,0" Offset="157.2"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,0,0,255" Offset="208.6"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,75,0,130" Offset="260"/>
+    <ParticleGenerator Name="UnicornStand" StartColor="128,143,0,255" Offset="311.4"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="UnicornCharge">
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,0,0" Offset="-90"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,127,0" Offset="-60"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,255,255,0" Offset="-30"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,0,255,0" Offset="-0"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,0,0,255" Offset="30"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,75,0,130" Offset="60"/>
+    <ParticleGenerator Name="UnicornCharge" StartColor="128,143,0,255" Offset="90"/>
+  </ParticleEffectData>
+
+  <ParticleEffectData Name="UnicornExplode">
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,255,0,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,255,127,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,255,255,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,0,255,0" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,0,0,255" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,75,0,130" Offset="0"/>
+    <ParticleGenerator Name="UnicornExplode" StartColor="0,143,0,255" Offset="0"/>
+  </ParticleEffectData>
+
+
+  <ParticleEffectData Name="BlackHoleEffect">
+    <ParticleGenerator Name="BlackHoleEffect1"/>
+    <ParticleGenerator Name="BlackHoleEffect2"/>
+  </ParticleEffectData>
+
+  <!-- Particle Generators-->
+  <ParticleGeneratorData Name="SpacemanThruster" 
+                      Speed="250.0" SpeedVariance="0.3" DecelerationFactor="1.0" ParticleRotation="720.0" 
+                      StartScale ="5.0" ScaleVariance="0.3" EndScale="40.0" 
+                      SpawnArc="30.0" SpawnRate="50" ParticleLife="0.3" ParticleLifeVariance="0.5"
+                      StartColor="255,255,0,0" EndColor ="0,50,50,50"
+                      Reversed="False" />
+
+  <ParticleGeneratorData Name="PunchWave" 
+                      Speed="1400.0" SpeedVariance="0.1" DecelerationFactor="3.0" ParticleRotation="0.0" 
+                      StartScale ="1.0" ScaleVariance="0.1" EndScale="20.0" 
+                      SpawnArc="90.0" SpawnRate="1800" ParticleLife="0.05" ParticleLifeVariance="0.0"
+                      StartColor="255,0,0,255" EndColor ="0,0,0,255"
+                      Reversed="False" />
+
+  <ParticleGeneratorData Name="RocketBooster" 
+                      Speed="100.0" SpeedVariance="0.3" DecelerationFactor="3.0" ParticleRotation="360.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="30.0" SpawnRate="50" ParticleLife="0.4" ParticleLifeVariance="0.5"
+                      StartColor="255,255,0,0" EndColor ="0,50,50,50"
+                      Reversed="False" />
+
+  <ParticleGeneratorData Name="Explosion" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="600" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="Flamethrower" 
+                      Speed="700.0" SpeedVariance="0.1" DecelerationFactor="0.1" ParticleRotation="720.0" 
+                      StartScale ="3.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="20.0" SpawnRate="600" ParticleLife="0.40" ParticleLifeVariance="0.5"
+                      StartColor="100,0,0,100" EndColor ="00,100,0,0"
+                      Reversed="False" />
+
+  <ParticleGeneratorData Name="Burning" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="4.0" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="600" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,255,0,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <!-- The following are special particle effects referenced directly by classes (rather than being specified by other xml files.
+       The names cannot be changed without modifying the references in the associated classes-->
+
+  <ParticleGeneratorData Name="BlackHoleEffect1" 
+                      Speed="55.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="360.0" 
+                      StartScale ="3.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="360.0" SpawnRate="100" ParticleLife="0.6" ParticleLifeVariance="0.5"
+                      StartColor="00,0,0,0" EndColor ="100,148,0,211"
+                      Reversed="True" />
+
+  <ParticleGeneratorData Name="BlackHoleEffect2" 
+                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="-100.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="40.0" 
+                      SpawnArc="360.0" SpawnRate="200" ParticleLife="0.6" ParticleLifeVariance="0.5"
+                      StartColor="00,0,0,0" EndColor ="100,148,0,211"
+                      UniqueParticle="HollowSquare2"
+                      Reversed="True" />
+
+  <ParticleGeneratorData Name="SpawnPortal1" 
+                      Speed="600.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="90.0" 
+                      StartScale ="5.0" ScaleVariance="0.3" EndScale="30.0" 
+                      SpawnArc="90.0" SpawnRate="200" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,0,255,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornStand" 
+                      Speed="900.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="720.0" 
+                      StartScale ="6.0" ScaleVariance="0.3" EndScale="40.0" 
+                      SpawnArc="51.4" SpawnRate="100" ParticleLife="0.2" ParticleLifeVariance="0.3"
+                      StartColor="255,255,0,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornCharge" 
+                      Speed="400.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="100.0" 
+                      StartScale ="20" ScaleVariance="0.3" EndScale="10.0" 
+                      SpawnArc="0.0" SpawnRate="200" ParticleLife="1" ParticleLifeVariance="0.3"
+                      StartColor="255,0,0,0" EndColor ="0,0,0,0"
+                      UniqueParticle="HollowSquare2"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="UnicornExplode" 
+                      Speed="300.0" SpeedVariance="0.6" DecelerationFactor="1" ParticleRotation="720.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="10.0" 
+                      SpawnArc="360" SpawnRate="90000" ParticleLife="1.0" ParticleLifeVariance="0.8"
+                      StartColor="0,255,0,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="EmptyShells" 
+                      Speed="300.0" SpeedVariance="0.3" DecelerationFactor="0.5" ParticleRotation="500.0" 
+                      StartScale ="3.0" ScaleVariance="0.3" EndScale="0.0" 
+                      SpawnArc="90" SpawnRate="20" ParticleLife="1.0" ParticleLifeVariance="0.8"
+                      StartColor="255,255,255,0" EndColor ="0,0,0,0"
+                      UniqueParticle="EmptyShell"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="Sparks" 
+                      Speed="450.0" SpeedVariance="0.6" DecelerationFactor="2" ParticleRotation="500.0" 
+                      StartScale ="5.0" ScaleVariance="0.3" EndScale="0.0" 
+                      SpawnArc="30" SpawnRate="80" ParticleLife="0.2" ParticleLifeVariance="0.4"
+                      StartColor="255,255,255,0" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="BlurPath" 
+                      Speed="50.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
+                      StartScale ="8.0" ScaleVariance="0.0" EndScale="0.0" 
+                      SpawnArc="360" SpawnRate="200" ParticleLife="0.4" ParticleLifeVariance="0.0"
+                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      Reversed="False"/>
+
+  <ParticleGeneratorData Name="FreezeBeam" 
+                      Speed="1000.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
+                      StartScale ="8.0" ScaleVariance="0.0" EndScale="0.0" 
+                      SpawnArc="0" SpawnRate="60" ParticleLife="0.4" ParticleLifeVariance="0.0"
+                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      Reversed="False" UniqueParticle="BlueCircle"/>
+
+  <ParticleGeneratorData Name="BoomerangBlur" 
+                      Speed="00.0" SpeedVariance="0.0" DecelerationFactor="10" ParticleRotation="0.0" 
+                      StartScale ="20.0" ScaleVariance="0.0" EndScale="20.0" 
+                      SpawnArc="0" SpawnRate="30" ParticleLife="0.8" ParticleLifeVariance="0.0"
+                      StartColor="255,255,255,255" EndColor ="0,0,0,0"
+                      Reversed="False" UniqueParticle="BoomerangBlur"/>
+
+  <ParticleGeneratorData Name="GravityWell" 
+                      Speed="200.0" SpeedVariance="0.3" DecelerationFactor="0.0" ParticleRotation="360.0" 
+                      StartScale ="1.0" ScaleVariance="0.3" EndScale="20.0" 
+                      SpawnArc="360.0" SpawnRate="300" ParticleLife="0.3" ParticleLifeVariance="0.5"
+                      StartColor="00,0,0,0" EndColor ="100,148,0,211"
+                      Reversed="True" />
+
+</ParticleEffectDatas>

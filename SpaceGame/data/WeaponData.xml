@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Name: Resource name used to reference weapon in code
+  ProjectileSpriteName: String used to reference Sprite defined in SpriteData.xml
+  FireRate: # of projectiles fireable per second
+  MaxAmmo: Maximum ammo (must be > 0, even for infinite ammo)
+  AmmoConsumption: Ammo consumed per shot (must be >= 0, use 0 for infinite ammo)
+  ProjectilesPerFire: Number of projectiles fired per shot
+  Damage: Damage dealt by direct projectile contact
+  ProjectileForce: Force dealt by direct projectile contact
+  Recoil: Force applied to owner on fire in opposite direction of fire angle
+  ProjectileSpeed/Acceleration: Speed/Acceleration of projectiles (px/s, px/s^2)
+  ProjectileSpread: Inaccuracy of projectiles from fire direction in degrees
+  DissipateOnHit: Whether projectile dissipates after hitting an enemy ("true" or "false")
+  SplashDamage: Area damage dealt
+  SplashForce: Force dealt by splash effect
+  SplashRadius: Range of Splash effect. Set as 0 for no splash effect
+  MovementParticleEffect: String reference to effect in ParticleEffects.xml to be played 
+                          while particle is moving. May be ommitted.
+  SplashParticleEffect: String reference to effect in ParticleEffects.xml to be played 
+                          when particle splashes. May be ommitted.
+  -->
+<Weapons>
+
+  <ProjectileWeapon Name="Rocket" FireRate="2.0" ProjectilesPerFire="1" Spread="0">
+    <ProjectileInfo SpriteName="Rocket" Speed="300" Acceleration="3000" SecondsToLive="3" 
+                    Penetration="1" Mass="10" >
+      <ContactEffect ParticleEffectName="RocketExplosion" Duration="0.1" Radius="100" Damage="30" Force="6000"/>
+      <ProximityEffect ParticleEffectName="RocketBooster"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Boomerang" FireRate="5" ProjectilesPerFire="1" Spread="45">
+    <ProjectileInfo SpriteName="Boomerang" Speed="1000" Acceleration="-1000" SecondsToLive="3" 
+                    Penetration="-1" Mass="1" Rotation="360">
+      <ProximityEffect Radius="5" Damage="5" ParticleEffectName="BoomerangBlur"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Flamethrower" FireRate="200" ProjectilesPerFire="1" FireParticleEffectName="Flamethrower" Spread="30" >
+    <ProjectileInfo SpriteName="Flame" Speed="700" Acceleration="-12" SecondsToLive="0.6" 
+                    Penetration="100" Mass="0.0" >
+      <ProximityEffect Radius="1" Damage="0.5" Force="0" FireEffect="2"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Gatling" FireRate="20" ProjectilesPerFire="1" Spread="10" FireParticleEffectName="GatlingEffect">
+    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="1.5" 
+                    Penetration="0" Mass="1.0" >
+      <ProximityEffect Radius="5" Damage="10" Force="0" ParticleEffectName="BulletTrace" />
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="FreezeRay" FireRate="60" ProjectilesPerFire="1" Spread="0" >
+    <ProjectileInfo SpriteName="FreezeRay" Speed="2500" Acceleration="0" SecondsToLive="1.0" 
+                    Penetration="0" Mass="0" >
+      <ProximityEffect Radius="5" Damage="0" Force="0" ParticleEffectName="FreezeBeam" CryoEffect="10"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="Shotgun" FireRate="1" ProjectilesPerFire="16" Spread="30" FireParticleEffectName="ShotgunEffect">
+    <ProjectileInfo SpriteName="Bullet" Speed="2500" Acceleration="0" SecondsToLive="0.4" 
+                    Penetration="0" Mass="3.0" >
+      <ProximityEffect Radius="5" Damage="15" Force="0" ParticleEffectName="BulletTrace"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <ProjectileWeapon Name="GravityWell" FireRate="0.5" ProjectilesPerFire="1" Spread="0" >
+    <ProjectileInfo SpriteName="GravityWell" Speed="400" Acceleration="5" SecondsToLive="3.0" 
+                    Penetration="-1" Mass="1.0" >
+      <ProximityEffect Radius="150" Damage="0" Force="-300" ParticleEffectName="GravityWell"/>
+    </ProjectileInfo>
+  </ProjectileWeapon>
+
+  <!-- Consumable Weapons -->
+  <ThrowableWeapon Name="Cryonade" FireRate="0.5" ProjectilesPerFire="1" Spread="0" UsesPerStack="3">
+    <ProjectileInfo SpriteName="Cryonade" Speed="800" Acceleration="-320" SecondsToLive="2.5" 
+                    Penetration="-1" Mass="5.0" >
+      <ProximityEffect ParticleEffectName="CryoTrace"/>
+      <DestinationEffect ParticleEffectName="Cryosplosion" Radius="250" CryoEffect="100"/>
+    </ProjectileInfo>
+  </ThrowableWeapon>
+
+
+  <MeleeWeapon Name="Gravity Gauntlet" 
+               FireRate ="1" HitArc="30" Range="75" Damage="10" Impact="5000" Recoil="1500" 
+               AttackParticleEffect="PunchWave"/>
+</Weapons>

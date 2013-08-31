@@ -1,9 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceGame", "SpaceGame\SpaceGame\SpaceGame.csproj", "{84638698-E2B6-4DAA-AA37-C3B64FC3CD94}"
-EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "SpaceGameContent", "SpaceGame\SpaceGameContent\SpaceGameContent.contentproj", "{1EAB829E-74A6-448C-A14D-7A5BE8E31CF0}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceGame", "SpaceGame\SpaceGame.csproj", "{D46895D2-19FA-4F22-9387-4B152E7DB95E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +9,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{84638698-E2B6-4DAA-AA37-C3B64FC3CD94}.Debug|x86.ActiveCfg = Debug|x86
-		{84638698-E2B6-4DAA-AA37-C3B64FC3CD94}.Debug|x86.Build.0 = Debug|x86
-		{84638698-E2B6-4DAA-AA37-C3B64FC3CD94}.Release|x86.ActiveCfg = Release|x86
-		{84638698-E2B6-4DAA-AA37-C3B64FC3CD94}.Release|x86.Build.0 = Release|x86
-		{1EAB829E-74A6-448C-A14D-7A5BE8E31CF0}.Debug|x86.ActiveCfg = Debug|x86
-		{1EAB829E-74A6-448C-A14D-7A5BE8E31CF0}.Release|x86.ActiveCfg = Release|x86
+		{D46895D2-19FA-4F22-9387-4B152E7DB95E}.Debug|x86.ActiveCfg = Debug|x86
+		{D46895D2-19FA-4F22-9387-4B152E7DB95E}.Debug|x86.Build.0 = Debug|x86
+		{D46895D2-19FA-4F22-9387-4B152E7DB95E}.Release|x86.ActiveCfg = Release|x86
+		{D46895D2-19FA-4F22-9387-4B152E7DB95E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
