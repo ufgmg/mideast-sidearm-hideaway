@@ -58,6 +58,7 @@
     <Compile Include="states\Gamemenu.cs" />
     <Compile Include="states\Gamestate.cs" />
     <Compile Include="states\Level.cs" />
+    <Compile Include="ui\UIElement.cs" />
     <Compile Include="units\BlackHole.cs" />
     <Compile Include="units\Enemy.cs" />
     <Compile Include="units\FoodCart.cs" />
@@ -93,8 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-      <Content Condition=" '$(OS)' == 'Windows_NT' "
-               Include="..\..\..\..\..\..\..\Program Files %28x86%29\MonoGame\v3.0\Assemblies\WindowsGL\SDL.dll">
+    <Content Condition=" '$(OS)' == 'Windows_NT' " Include="..\..\..\..\..\..\..\Program Files %28x86%29\MonoGame\v3.0\Assemblies\WindowsGL\SDL.dll">
       <Link>SDL.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
