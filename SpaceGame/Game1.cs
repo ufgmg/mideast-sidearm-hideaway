@@ -17,6 +17,8 @@ using SpaceGame.utility;
 using SpaceGame.equipment;
 using SpaceGame.states;
 
+using MonoGameExtensions;
+
 
 namespace SpaceGame
 {
@@ -68,7 +70,7 @@ namespace SpaceGame
         /// </summary>
         protected override void Initialize()
         {
-
+            Window.SetPosition(new Point(0, 0));
             _inputManager = new InputManager();
             _weaponManager = new InventoryManager();
             gamestate = GameStates.Menu;
