@@ -83,6 +83,7 @@ namespace SpaceGame.states
             im.setPrimaryWeapon(new ProjectileWeapon("Rocket", _player));
             im.setSecondaryWeapon(new ThrowableWeapon("Cryonade", _player));
             im.setPrimaryGadget(new Gadget("Teleporter", this));
+            im.setSecondaryGadget(new Gadget("Stopwatch", this));
             im.setSlot(1, new ThrowableWeapon("Cryonade", _player));
 
             //Set Weapon holders in level
@@ -98,6 +99,7 @@ namespace SpaceGame.states
             _foodCarts = data.FoodCarts;
 
             _primaryGadget = im.getPrimaryGadget();
+            _secondaryGadget = im.getSecondaryGadget();
             _inventoryManager = im;
             
             userInterface = new GUI(_player, _blackHole);
@@ -221,6 +223,10 @@ namespace SpaceGame.states
                 if (input.TriggerGadget1)
                 {
                     _primaryGadget.Trigger();
+                }
+                if (input.TriggerGadget2)
+                {
+                    _secondaryGadget.Trigger();
                 }
             }
 
