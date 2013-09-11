@@ -56,7 +56,7 @@ namespace SpaceGame
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;
             
             //TODO: replace with custom cursor
-            this.IsMouseVisible = true;
+            this.IsMouseVisible = false;
 
         }
 
@@ -106,6 +106,8 @@ namespace SpaceGame
             SpaceGame.graphics.hud.GUI.button4 = Content.Load<Texture2D>("gui/Numer 4");
             SpaceGame.graphics.hud.GUI.button6 = Content.Load<Texture2D>("gui/Numer 6");
             SpaceGame.graphics.hud.GUI.voidWheel = Content.Load<Texture2D>("gui/Score_&_Void_Tracker");
+
+			Level.s_CursorTexture = Content.Load<Texture2D>("gui/Cross_Hair_Basic_Green");
 
             Sprite.IceCubeTexture = Content.Load<Texture2D>("spritesheets/IceCube");
 

@@ -19,6 +19,8 @@ namespace SpaceGame.states
 
     class Level : Gamestate
     {
+		public static Texture2D s_CursorTexture;
+
         #region classes
         public struct LevelData
         {
@@ -53,6 +55,9 @@ namespace SpaceGame.states
         Camera2D _camera;
 
         bool _timeSlowed;
+
+		Vector2 _cursorTextureCenter;
+
         #endregion
 
         #region constructor
@@ -96,6 +101,8 @@ namespace SpaceGame.states
             _inventoryManager = im;
             
             userInterface = new GUI(_player, _blackHole);
+
+			_cursorTextureCenter = new Vector2(s_CursorTexture.Width / 2 , s_CursorTexture.Height / 2);
         }
 
         #endregion
@@ -255,6 +262,7 @@ namespace SpaceGame.states
 
             spriteBatch.Begin();
             userInterface.draw(spriteBatch);
+			spriteBatch.Draw(s_CursorTexture, _mousePos - _cursorTextureCenter, Color.White);
             spriteBatch.End();
 
         }
