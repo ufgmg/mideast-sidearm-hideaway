@@ -14,9 +14,13 @@ namespace SpaceGame.utility
 {
     class InventoryManager
     {
+        #region const
+        const int c_numSlots = 6;
+        #endregion
+
         #region members
         //There are 6 Item slots
-        private IConsumable[] _slots = new IConsumable[6];
+        private IConsumable[] _slots = new IConsumable[c_numSlots];
         private IConsumable _item;
         private Weapon primaryWeapon;
         private Weapon secondaryWeapon;
@@ -167,7 +171,7 @@ namespace SpaceGame.utility
                     _currentSlot = 5;
                     _item = _slots[5];
                 }
-                _currentSlot = _currentSlot + 1;
+                _currentSlot = (_currentSlot + 1) % c_numSlots;
                 _item = _slots[_currentSlot];
             }
             
