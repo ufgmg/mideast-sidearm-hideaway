@@ -105,8 +105,28 @@ namespace SpaceGame.states
             userInterface = new GUI(_player, _blackHole);
 
 			_cursorTextureCenter = new Vector2(s_CursorTexture.Width / 2 , s_CursorTexture.Height / 2);
+            selectRandomWeapons();
         }
 
+        void selectRandomWeapons()
+        {
+            Random rand = new Random();
+            int rand1 = rand.Next(0, 4);
+            int rand2;
+            do
+            {
+                rand2 = rand.Next(0, 4);
+            } while (rand2 == rand1);
+            ProjectileWeapon[] weapons = new ProjectileWeapon[]
+            {
+                new ProjectileWeapon("Shotgun", _player),
+                new ProjectileWeapon("Gatling", _player),
+                new ProjectileWeapon("Flamethrower", _player),
+                new ProjectileWeapon("Rocket", _player),
+            };
+            _primaryWeapon = weapons[rand1];
+            _secondaryWeapon = weapons[rand2];
+        }
         #endregion
 
         #region methods

@@ -107,6 +107,7 @@
     </None>
     <None Include="data\LevelData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="data\ParticleEffectData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

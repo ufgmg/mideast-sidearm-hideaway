@@ -75,7 +75,8 @@ namespace SpaceGame.states
                     if (this.Iterator == 0)
                     {
                         //load game
-                        ReplaceState = new Shop(wm);
+                        //ReplaceState = new Shop(wm);
+                        ReplaceState = new Level(1, wm);
                     }
                     else if (this.Iterator == 1)
                     {

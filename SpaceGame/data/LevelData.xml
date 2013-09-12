@@ -11,7 +11,22 @@
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
       </TrickleWave> 
-      <BurstWave SpawnInterval="0.4" StartTime="5.0" >
+      <TrickleWave SpawnInterval="5" StartTime="10">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </TrickleWave> 
+      <TrickleWave SpawnInterval="5" StartTime="30">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </TrickleWave>
+      <TrickleWave SpawnInterval="5" StartTime="60">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </TrickleWave>
+      <!-->BurstWave SpawnInterval="0.4" StartTime="5.0" >
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
@@ -24,6 +39,35 @@
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
       </BurstWave> 
+      <BurstWave SpawnInterval="0.25" StartTime="20.0">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </BurstWave> 
+      <BurstWave SpawnInterval="0.4" StartTime="30.0">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </BurstWave> 
+      <BurstWave SpawnInterval="0.4" StartTime="40.0">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </BurstWave--> 
     </Waves>
   </Level>
 
