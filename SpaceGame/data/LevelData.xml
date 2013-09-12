@@ -26,6 +26,11 @@
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
       </TrickleWave>
+      <TrickleWave SpawnInterval="3" StartTime="120">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </TrickleWave>
       <!-->BurstWave SpawnInterval="0.4" StartTime="5.0" >
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>

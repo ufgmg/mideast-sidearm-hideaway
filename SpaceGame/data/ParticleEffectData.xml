@@ -154,7 +154,7 @@
   <ParticleGeneratorData Name="UnicornCharge" 
                       Speed="400.0" SpeedVariance="0.3" DecelerationFactor="8.0" ParticleRotation="100.0" 
                       StartScale ="20" ScaleVariance="0.3" EndScale="10.0" 
-                      SpawnArc="0.0" SpawnRate="200" ParticleLife="1" ParticleLifeVariance="0.3"
+                      SpawnArc="0.0" SpawnRate="50" ParticleLife="0.5" ParticleLifeVariance="0.3"
                       StartColor="255,0,0,0" EndColor ="0,0,0,0"
                       UniqueParticle="HollowSquare2"
                       Reversed="False"/>
