@@ -70,7 +70,7 @@ namespace SpaceGame.states
                     this.Iterator++;
                 }
 
-                if (input.Confirm)
+                if (input.Confirm || input.FirePrimary)
                 {
                     if (this.Iterator == 0)
                     {
