@@ -28,6 +28,7 @@ namespace SpaceGame.equipment
     {
         #region const
         const float c_maxGadgetEnergy = 100.0f;
+        const float c_energyPerSecond = 10.0f;
         #endregion
 
         #region static
@@ -88,6 +89,11 @@ namespace SpaceGame.equipment
             {
                 Energy -= _energyConsumption * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
+            else
+            {
+                Energy += c_energyPerSecond * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
             if (Energy <= 0 && Active == true)
             {
                 Active = false;

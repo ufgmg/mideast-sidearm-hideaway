@@ -169,6 +169,7 @@ namespace SpaceGame.states
             }
             _player.Update(gameTime, _levelBounds);
             _primaryGadget.Update(gameTime);
+            _secondaryGadget.Update(gameTime);
             _blackHole.Update(gameTime);
 
 
