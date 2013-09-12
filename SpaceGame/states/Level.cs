@@ -243,7 +243,7 @@ namespace SpaceGame.states
                 {
                     _primaryWeapon.Trigger(_player.Position, input.MouseLocation);
                 }
-                if (input.FireSecondary)
+                else if (input.FireSecondary)
                 {
                     _secondaryWeapon.Trigger(_player.Position, input.MouseLocation);
                 }
