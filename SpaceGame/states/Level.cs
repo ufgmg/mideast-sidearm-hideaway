@@ -260,11 +260,6 @@ namespace SpaceGame.states
                     _secondaryGadget.Trigger();
                 }
             }
-
-            if (input.DebugKey)
-            {
-                _blackHole.Explode();
-            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
