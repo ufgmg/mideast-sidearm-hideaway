@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Levels>
   <Level LevelNumber="1" LevelWidth="1200" LevelHeight="800">
-    <Player X="100" Y="100"/>
-    <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="500"/>
+    <Player X="800" Y="100"/>
+    <BlackHole X="200" Y="700" Gravity="18000" Radius="100" Capacity="200"/>
     <Unicorn StartTime="4" EndTime="1000" SpawnTime="8"/>
     <FoodCart StartTime="0" Duration="10"/>
     <Waves>
-      <TrickleWave SpawnInterval="3" StartTime="0">
+      <TrickleWave SpawnInterval="5" StartTime="0">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </TrickleWave> 
+      <TrickleWave SpawnInterval="5" StartTime="20">
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
       </TrickleWave> 
-      <TrickleWave SpawnInterval="5" StartTime="10">
-        <Enemy Name="Goblin"/>
-        <Enemy Name="Goblin"/>
-        <Enemy Name="Goblin"/>
-      </TrickleWave> 
-      <TrickleWave SpawnInterval="5" StartTime="30">
+      <TrickleWave SpawnInterval="5" StartTime="40">
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
@@ -26,7 +25,12 @@
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
       </TrickleWave>
-      <TrickleWave SpawnInterval="3" StartTime="120">
+      <TrickleWave SpawnInterval="3" StartTime="80">
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+        <Enemy Name="Goblin"/>
+      </TrickleWave>
+      <TrickleWave SpawnInterval="2" StartTime="120">
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>
         <Enemy Name="Goblin"/>

@@ -133,7 +133,8 @@ namespace SpaceGame.states
         #region methods
         public override void Update(GameTime gameTime, InputManager input, InventoryManager im)
         {
-            if (_player.UnitLifeState == PhysicalUnit.LifeState.Destroyed || _player.UnitLifeState == PhysicalUnit.LifeState.Disabled)
+            if (_player.UnitLifeState == PhysicalUnit.LifeState.Destroyed || _player.UnitLifeState == PhysicalUnit.LifeState.Disabled
+                || _blackHole.capacityUsed > _blackHole.totalCapacity)
             {
                 _gameOverTimer -= gameTime.ElapsedGameTime;
             }
