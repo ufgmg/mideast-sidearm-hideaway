@@ -19,8 +19,8 @@ namespace SpaceGame.states
         Merchandise[] _merchandise;
         Texture2D _background;
 
-        public Shop(InventoryManager im)
-            :base(false)
+        public Shop(ContentManager content, InventoryManager im)
+            :base(content, false)
         {
             _inventoryManager = im;
             _background = Content.Load<Texture2D>("gui/Shop_GUI");

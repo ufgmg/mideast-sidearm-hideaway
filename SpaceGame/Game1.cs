@@ -151,7 +151,7 @@ namespace SpaceGame
                     DataLoader.GADGET_DATA_PATH, "GadgetData").ToDictionary(t => t.Name);
 
             Gamemenu.LoadContent(Content);
-            _stateStack.Add(new Gamemenu());
+            _stateStack.Add(new Gamemenu(Content));
         }
 
         /// <summary>

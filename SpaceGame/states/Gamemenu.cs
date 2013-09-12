@@ -18,7 +18,7 @@ namespace SpaceGame.states
         public string title { get; set; }
         public static SpriteFont spriteFont;
 
-        public Gamemenu() : base(false)
+        public Gamemenu(ContentManager content) : base(content, false)
         {
             title = "Space Game";
             MenuItems = new List<string>();
@@ -76,7 +76,7 @@ namespace SpaceGame.states
                     {
                         //load game
                         //ReplaceState = new Shop(wm);
-                        ReplaceState = new Level(1, wm);
+                        ReplaceState = new Level(_content, 1, wm);
                     }
                     else if (this.Iterator == 1)
                     {

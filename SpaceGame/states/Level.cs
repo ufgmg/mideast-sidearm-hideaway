@@ -11,6 +11,7 @@ using SpaceGame.graphics.hud;
 using SpaceGame.utility;
 using SpaceGame.units;
 using SpaceGame.equipment;
+using Microsoft.Xna.Framework.Content;
 
 namespace SpaceGame.states
 {
@@ -62,8 +63,8 @@ namespace SpaceGame.states
         #endregion
 
         #region constructor
-        public Level (int levelNumber, InventoryManager im)
-            : base(false)
+        public Level (ContentManager content, int levelNumber, InventoryManager im)
+            : base(content, false)
         {
             LevelData data = DataLoader.LoadLevel(levelNumber);
             _levelBounds = new Rectangle(0, 0, data.Width, data.Height);
@@ -140,7 +141,7 @@ namespace SpaceGame.states
             }
             if (_gameOverTimer < TimeSpan.Zero)
             {
-                ReplaceState = new Gamemenu();
+                ReplaceState = new Gamemenu(_content);
             }
             _mousePos = input.MouseLocation;
             input.SetCameraOffset(_camera.Position);

@@ -23,12 +23,14 @@ namespace SpaceGame.states
         public Gamestate ReplaceState { get; protected set; }
         //if true, the state below on the stack should also be drawn
         public bool Transparent { get; protected set; }
+        protected ContentManager _content;
         #endregion
 
         #region constructor
-        public Gamestate(bool transparent)
+        public Gamestate(ContentManager content, bool transparent)
         {
             Transparent = transparent;
+            _content = content;
         }
         #endregion
 
