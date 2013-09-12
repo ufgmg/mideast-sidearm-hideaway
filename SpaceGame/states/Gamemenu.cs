@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 using SpaceGame.utility;
 
@@ -27,7 +28,10 @@ namespace SpaceGame.states
             MenuItems.Add("Exit Game");
             Iterator = 0;
             infoText = string.Empty;
-            
+            Song song = content.Load<Song>("music/space");
+            MediaPlayer.Volume = 0.7f;
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(song);
         }
 
         public int Iterator
