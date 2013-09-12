@@ -118,6 +118,7 @@ namespace SpaceGame
 
             Sprite.Content = Content;   //Sprite gets reference to content so it can load textures
             ParticleGenerator.Content = Content;   //ParticleGenerator gets reference to content so it can load textures
+            Gamestate.Content = Content;
 
             //load data from xml
             ParticleGenerator.Data = DataLoader.CollectData<ParticleGeneratorData>(

@@ -13,6 +13,7 @@ namespace SpaceGame.states
 {
     abstract class Gamestate
     {
+        public static ContentManager Content;
         #region properties
         //request to exit state (pop off state stack)
         public bool PopState { get; protected set; }

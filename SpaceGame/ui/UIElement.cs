@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace SpaceGame.ui
 {
-    class UIElement
+    public class UIElement
     {
 		protected const string c_uiTexturePath = "gui/";
 		public static ContentManager s_Content;

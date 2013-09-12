@@ -8,6 +8,6 @@ namespace SpaceGame.ui
 {
     interface IClickable
     {
-        public abstract void HandleClick(Vector2 mousepos, bool leftClick);
+        void HandleClick(Vector2 mousepos, bool leftClick);
     }
 }

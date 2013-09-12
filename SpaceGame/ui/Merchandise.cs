@@ -11,7 +11,7 @@ namespace SpaceGame.ui
 {
     public delegate void ClickDelegate(Merchandise item);
 
-    class Merchandise : UIElement, IClickable
+    public class Merchandise : UIElement, IClickable
     {
         const string c_merchandiseTexturePrefix = "merchandise/";
         const int c_weaponPrice = 0;

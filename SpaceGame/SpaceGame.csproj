@@ -59,6 +59,9 @@
     <Compile Include="states\Gamemenu.cs" />
     <Compile Include="states\Gamestate.cs" />
     <Compile Include="states\Level.cs" />
+    <Compile Include="states\Shop.cs" />
+    <Compile Include="ui\IClickable.cs" />
+    <Compile Include="ui\Merchandise.cs" />
     <Compile Include="ui\UIElement.cs" />
     <Compile Include="units\BlackHole.cs" />
     <Compile Include="units\Enemy.cs" />
@@ -127,6 +130,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\gui\icons\storage-slot.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\gui\Shop_GUI.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
