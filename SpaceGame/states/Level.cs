@@ -58,6 +58,7 @@ namespace SpaceGame.states
 
 		Vector2 _cursorTextureCenter;
 
+        TimeSpan _gameOverTimer = TimeSpan.FromSeconds(3.0);
         #endregion
 
         #region constructor
@@ -132,6 +133,14 @@ namespace SpaceGame.states
         #region methods
         public override void Update(GameTime gameTime, InputManager input, InventoryManager im)
         {
+            if (_player.UnitLifeState == PhysicalUnit.LifeState.Destroyed || _player.UnitLifeState == PhysicalUnit.LifeState.Disabled)
+            {
+                _gameOverTimer -= gameTime.ElapsedGameTime;
+            }
+            if (_gameOverTimer < TimeSpan.Zero)
+            {
+                ReplaceState = new Gamemenu();
+            }
             _mousePos = input.MouseLocation;
             input.SetCameraOffset(_camera.Position);
             handleInput(input);
